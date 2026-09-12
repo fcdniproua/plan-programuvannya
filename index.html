@@ -74,14 +74,14 @@ footer{margin-top:40px; padding-top:20px; border-top:1px solid var(--line);
 <div class="wrap">
   <p class="eyebrow">fcdniproua.github.io/plan-programuvannya</p>
   <h1>План навчання програмуванню</h1>
-  <p class="lead">Журнал занять, карта на два роки, поурочний план основ і розписані заняття на перші дванадцять уроків. Займаємось двічі на тиждень по 60–90 хвилин; усі інструкції — під macOS. Прогрес зберігається в браузері, і його можна вивантажити у файл.</p>
+  <p class="lead">Журнал занять, карта на два роки, поурочний план основ і розписані заняття на перші пʼятнадцять уроків. Займаємось двічі на тиждень по 60–90 хвилин; усі інструкції — під macOS. Прогрес зберігається в браузері, і його можна вивантажити у файл.</p>
 
   <div class="docs">
     <a class="doc" href="5-zhurnal.html" style="--c:var(--ok)">
       <span class="num">▶</span>
       <span>
         <h2>Журнал занять</h2>
-        <p>Головний робочий документ: розклад на 24 заняття, сценарій кожного по хвилинах із домашкою, облік проведеного — дати, статуси, складність, нотатки.</p>
+        <p>Головний робочий документ: розклад на 30 занять, сценарій кожного по хвилинах із домашкою, облік проведеного — дати, статуси, складність, нотатки.</p>
         <span class="meta"><span class="pill">2 заняття на тиждень</span><span class="pill">почніть звідси</span><span class="pill" id="p5">журнал порожній</span></span>
       </span>
     </a>
@@ -129,6 +129,14 @@ footer{margin-top:40px; padding-top:20px; border-top:1px solid var(--line);
         <span class="meta"><span class="pill">уроки 10–12</span><span class="pill">6 занять</span><span class="pill">31 приклад коду</span></span>
       </span>
     </a>
+    <a class="doc" href="7-riadky-fayly.html" style="--c:var(--base)">
+      <span class="num">06</span>
+      <span>
+        <h2>Рядки, файли, помилки</h2>
+        <p>Сценарії занять на уроки 13–15: текст і регулярки, дати, файли, JSON як сховище, обробка помилок і трекер звичок.</p>
+        <span class="meta"><span class="pill">уроки 13–15</span><span class="pill">6 занять</span><span class="pill">31 приклад коду</span></span>
+      </span>
+    </a>
   </div>
 
   <section class="how">
@@ -158,7 +166,7 @@ footer{margin-top:40px; padding-top:20px; border-top:1px solid var(--line);
     var j = JSON.parse(localStorage.getItem("lesson-journal-v1") || "{}");
     var done = Object.keys(j).filter(function(k){ return j[k] && j[k].status === "done"; }).length;
     var el5 = document.getElementById("p5");
-    if (done) { el5.textContent = done + " / 24 заняття проведено"; el5.className = "pill on"; }
+    if (done) { el5.textContent = done + " / 30 занять проведено"; el5.className = "pill on"; }
   } catch(e) {}
   CARDS.forEach(function(c){
     var el = document.getElementById(c.id);

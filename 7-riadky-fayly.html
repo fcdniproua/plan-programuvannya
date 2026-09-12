@@ -1,0 +1,1288 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Рядки, файли, помилки</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💾</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.nav,.dash,.track,.row-ctl,textarea{display:none !important}
+  body{background:#fff !important}
+  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage,.plan-body,.row,.hw,.watch,.how{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#0B6E99; --accent-soft:#DCEEF7;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC;
+  --warn:#C2401E; --warn-bg:#FCEDE8;
+  --code-bg:#15181F; --code-ink:#E4E7EF; --code-c:#6E7788; --code-s:#8FD98A;
+  --code-v:#A6C0FF; --code-k:#E9A3D2; --code-n:#F0C071;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#56C3F0; --accent-soft:#0E2430;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+    --warn:#FF8A6B; --warn-bg:#2A1611;
+    --code-bg:#0A0C12; --code-ink:#DFE3EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#56C3F0; --accent-soft:#0E2430;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+  --warn:#FF8A6B; --warn-bg:#2A1611;
+  --code-bg:#0A0C12; --code-ink:#DFE3EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:880px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px}
+h1,h2,h3,h4{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:64ch; margin-top:14px; font-size:clamp(1rem,2.2vw,1.06rem)}
+code:not(pre code){font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px; white-space:nowrap}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:5; margin:26px -4px 0; padding:10px 4px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(8px);
+  display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--line)}
+.nav a{font-family:"JetBrains Mono",monospace; font-size:.73rem; text-decoration:none;
+  color:var(--ink-2); background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; padding:6px 11px}
+.nav a:hover{border-color:var(--accent); color:var(--accent)}
+
+/* setup */
+.setup{margin-top:30px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.setup h2{font-size:1.08rem; font-weight:700; margin-bottom:6px}
+.setup > p{color:var(--ink-2); font-size:.95rem; margin-bottom:16px}
+.os{display:grid; gap:18px 26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.os h3{font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.os ol{margin:0; padding-left:19px; display:grid; gap:6px; font-size:.91rem; color:var(--ink-2)}
+.os a{color:var(--accent); font-weight:600; text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--accent) 32%, transparent)}
+
+/* week */
+.week{margin-top:56px; scroll-margin-top:64px}
+.w-head{border-top:3px solid var(--accent); padding-top:18px}
+.w-tag{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent)}
+.w-head h2{font-size:clamp(1.3rem,3.4vw,1.75rem); font-weight:700; margin-top:8px}
+.w-goal{color:var(--ink-2); margin-top:10px; max-width:64ch}
+
+.ses{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  margin-top:16px; box-shadow:var(--shadow)}
+.ses-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  padding-bottom:12px; border-bottom:1px solid var(--line)}
+.ses-day{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:4px 9px;
+  border-radius:6px}
+.ses-head h3{font-size:1.06rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0; flex:1}
+.ses-time{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3)}
+.body{display:flex; flex-direction:column; gap:15px}
+.body p{color:var(--ink-2)}
+.body p strong{color:var(--ink)}
+.body ul{margin:0; padding-left:19px; display:grid; gap:7px; color:var(--ink-2)}
+.body ul strong{color:var(--ink)}
+.say{border-left:3px solid var(--accent); padding:2px 0 2px 15px; color:var(--ink);
+  font-size:.97rem}
+.say b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:4px}
+
+pre{margin:0; background:var(--code-bg); border-radius:11px; padding:15px 17px; overflow-x:auto;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.83rem; line-height:1.65;
+  color:var(--code-ink); tab-size:4}
+pre .c{color:var(--code-c); font-style:italic}
+pre .s{color:var(--code-s)}
+pre .v{color:var(--code-v)}
+pre .k{color:var(--code-k)}
+pre .n{color:var(--code-n)}
+.code-wrap{position:relative}
+.code-wrap .tag{position:absolute; top:0; right:12px; font-family:"JetBrains Mono",monospace;
+  font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--code-c);
+  background:var(--code-bg); padding:3px 6px; border-radius:0 0 5px 5px}
+.out{background:var(--surface-2); border:1px solid var(--line); border-left:3px solid var(--ink-3);
+  border-radius:0 8px 8px 0; padding:11px 14px; font-family:"JetBrains Mono",monospace;
+  font-size:.8rem; color:var(--ink-2); white-space:pre-wrap; overflow-x:auto}
+.out b{display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:5px; font-weight:700}
+
+.note{border-radius:11px; padding:13px 16px; font-size:.94rem}
+.note b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; display:block; margin-bottom:5px}
+.note.tip{background:var(--ok-bg); border:1px solid color-mix(in srgb, var(--ok) 30%, transparent)}
+.note.tip b{color:var(--ok)}
+.note.warn{background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 32%, transparent)}
+.note.warn b{color:var(--warn)}
+.note.idea{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 32%, transparent)}
+.note.idea b{color:var(--amber)}
+
+/* tasks */
+.tasks{margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow)}
+.tasks > h3{font-size:1.02rem; font-weight:700; margin-bottom:4px}
+.tasks > p{color:var(--ink-2); font-size:.92rem; margin-bottom:14px}
+.task{border-top:1px solid var(--line); padding:15px 0 3px}
+.task:first-of-type{border-top:0; padding-top:4px}
+.task h4{font-size:.97rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  display:flex; gap:10px; align-items:baseline}
+.task h4 i{font-family:"JetBrains Mono",monospace; font-style:normal; font-size:.75rem;
+  color:var(--accent); flex:none}
+.task > p{color:var(--ink-2); font-size:.93rem; margin:6px 0 10px; padding-left:26px}
+.task details{padding-left:26px}
+.task summary{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3);
+  cursor:pointer; list-style:none; display:inline-flex; gap:7px; align-items:center;
+  border:1px solid var(--line); border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.task summary::-webkit-details-marker{display:none}
+.task summary:hover{color:var(--accent); border-color:var(--accent)}
+.task details[open] summary{margin-bottom:11px}
+.task details > div{display:flex; flex-direction:column; gap:11px}
+
+/* checks */
+.checks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:18px}
+.chkbox{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+  box-shadow:var(--shadow)}
+.chkbox h3{font-size:.95rem; font-weight:700; margin-bottom:11px}
+.chkbox ul{margin:0; padding-left:18px; display:grid; gap:7px; font-size:.91rem; color:var(--ink-2)}
+.chkbox.traps{border-color:color-mix(in srgb, var(--warn) 40%, var(--line))}
+.chkbox.traps h3{color:var(--warn)}
+.chkbox.quiz{border-color:color-mix(in srgb, var(--ok) 40%, var(--line))}
+.chkbox.quiz h3{color:var(--ok)}
+.chkbox.quiz ul{list-style:none; padding-left:0}
+.chkbox.quiz li{padding-left:16px; position:relative}
+.chkbox.quiz li::before{content:"?"; position:absolute; left:0; color:var(--ok); font-weight:700;
+  font-family:"JetBrains Mono",monospace}
+
+.final{margin-top:64px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:24px 26px; box-shadow:var(--shadow)}
+.final h2{font-size:1.2rem; font-weight:700; margin-bottom:6px}
+.final > p{color:var(--ink-2); margin-bottom:16px}
+.final ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2)}
+.final strong{color:var(--ink)}
+footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3);
+  font-size:.84rem}
+@media (max-width:520px){ pre{font-size:.76rem} .task > p,.task details{padding-left:0} }
+</style>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Блок основ · уроки 13–15 · шість занять</p>
+    <h1>Рядки, файли, помилки</h1>
+    <p class="lead">Модуль, після якого програма перестає бути одноразовою. Досі все, що вона нарахувала, зникало разом із закриттям терміналу — тепер дані житимуть у файлах, а несподіванки не валитимуть програму. Це остання зупинка перед ООП.</p>
+    <nav class="nav">
+      <a href="#start">Перед стартом</a>
+      <a href="#u13">13 · Рядки</a>
+      <a href="#u14">14 · Дати й файли</a>
+      <a href="#u15">15 · JSON і помилки</a>
+      <a href="#final">Підсумок</a>
+    </nav>
+  </header>
+
+  <section class="setup" id="start">
+    <h2>Перед стартом</h2>
+    <p>Модуль практичний: тут майже немає нових ідей, зате багато інструментів, які використовуються щодня. Головне — не заучувати назви функцій, а знати, що вони існують, і вміти знайти потрібну в документації.</p>
+    <div class="os">
+      <div>
+        <h3>Має бути засвоєно</h3>
+        <ol>
+          <li>Власні функції з <code>return</code> і типами</li>
+          <li>Масиви: індексовані, асоціативні, вкладені</li>
+          <li>Розбиття проєкту на файли через <code>require_once</code></li>
+          <li>Читання помилки за номером рядка</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Що зміниться</h3>
+        <ol>
+          <li>Дані переживуть закриття програми</li>
+          <li>Зʼявиться формат JSON — той самий, яким говорять усі веб-сервіси</li>
+          <li>Програма перестане падати від дивного введення</li>
+          <li>Кирилиця нарешті перестане ламати довжину рядків</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Навіщо це для Laravel</h3>
+        <ol>
+          <li>JSON — мова, якою фронтенд говорить із бекендом</li>
+          <li><code>try/catch</code> — основа обробки помилок у будь-якому фреймворку</li>
+          <li>Робота з датами потрібна в кожному другому завданні</li>
+          <li>Логи — перше, куди дивляться, коли на сервері щось зламалось</li>
+        </ol>
+      </div>
+    </div>
+    <div class="note tip" style="margin-top:18px">
+      <b>Одна звичка на весь модуль</b>
+      Для будь-якої дії з текстом спершу шукаємо функцію з префіксом <code>mb_</code> — це версія, яка правильно рахує кирилицю. <code>mb_strlen</code>, <code>mb_substr</code>, <code>mb_strtolower</code>, <code>mb_str_pad</code>. Без цього префікса функція рахує байти, і українська літера важить дві. Половина дивних багів цього модуля — саме звідси.
+    </div>
+  </section>
+
+  <main id="weeks"></main>
+
+  <section class="final" id="final">
+    <h2>Підсумок модуля</h2>
+    <p>Перевіряється демонстрацією: показує сам, без підказок.</p>
+    <ul id="final-list"></ul>
+  </section>
+
+  <footer>Далі — уроки 16–20, ООП: класи, обʼєкти, наслідування, інтерфейси й Composer. Найважливіший модуль усього блоку, бо Laravel складається саме з цього.</footer>
+</div>
+
+<script>
+const WEEKS = [
+{
+ id:"u13", tag:"Урок 13 · заняття 25–26", title:"Рядки",
+ goal:"Текст — це те, з чим програміст працює найчастіше: імена, адреси, повідомлення, дані з форм. Урок практичний і майже без нових ідей — зате з набором інструментів, які використовуються щодня.",
+ sessions:[
+ {
+  day:"Заняття 25", time:"90 хв", title:"Довжина, пошук, заміна",
+  body:[
+   {t:"say", h:"З чого почати", x:"Памʼятаєш, як на другому тижні var_dump показав string(12) для слова «Максим»? Сьогодні розберемось, чому так — і чому це найголовніше, що треба знати про рядки в PHP."},
+   {t:"code", tag:"length.php", x:`<?php
+
+declare(strict_types=1);
+
+$word = "Максим";
+
+echo strlen($word);      // 12 — байтів
+echo "\\n";
+echo mb_strlen($word);   // 6  — символів`},
+   {t:"p", x:"<strong>Правило на весь модуль:</strong> для тексту завжди беремо версію з префіксом <code>mb_</code>. Українська літера займає два байти, і без цього префікса всі підрахунки будуть неправильні — причому без жодної помилки, просто тихо неправильні."},
+   {t:"p", x:"<strong>Пошук усередині рядка.</strong> У PHP 8 зʼявились три зручні функції, які читаються як речення:"},
+   {t:"code", tag:"search.php", x:`<?php
+
+$email = "maksym@gmail.com";
+
+var_dump(str_contains($email, '@'));        // true
+var_dump(str_starts_with($email, 'maks'));  // true
+var_dump(str_ends_with($email, '.com'));    // true
+
+echo mb_strpos($email, '@');   // 6 — позиція символу`},
+   {t:"p", x:"<strong>Заміна й вирізання:</strong>"},
+   {t:"code", tag:"modify.php", x:`<?php
+
+declare(strict_types=1);
+
+$text = "Привіт, світе!";
+
+echo str_replace('світе', 'Максиме', $text);   // Привіт, Максиме!
+echo "\\n";
+echo mb_substr($text, 0, 6);                   // Привіт
+echo "\\n";
+echo mb_strtoupper($text);                     // ПРИВІТ, СВІТЕ!
+echo "\\n";
+echo mb_strtolower($text);                     // привіт, світе!`},
+   {t:"note", k:"warn", h:"ucfirst не працює з кирилицею", x:"<code>ucfirst('привіт')</code> поверне «привіт» без змін — ця функція знає тільки латиницю. Робоча заміна: <code>mb_strtoupper(mb_substr($s, 0, 1)) . mb_substr($s, 1)</code>. Виглядає громіздко, тому це ідеальний кандидат на власну функцію з попереднього уроку."},
+   {t:"p", x:"<strong>Практика заняття:</strong> аналізатор тексту — приймає абзац і виводить кількість символів, слів і речень, найдовше слово й середню довжину слова. Далі — маскування email виду <code>m****m@gmail.com</code>."}
+  ]
+ },
+ {
+  day:"Заняття 26", time:"90 хв", title:"Форматування і перше знайомство з регулярками",
+  body:[
+   {t:"p", x:"Розбір домашки, потім два інструменти: один для краси виводу, другий для перевірки того, що ввів користувач."},
+   {t:"p", x:"<strong>sprintf</strong> збирає рядок за шаблоном. Зручніше за склеювання, коли значень багато:"},
+   {t:"code", tag:"sprintf.php", x:`<?php
+
+declare(strict_types=1);
+
+$name = "Максим";
+$score = 9.5;
+$place = 3;
+
+echo sprintf("%s посів %d місце з балом %.2f\\n", $name, $place, $score);
+
+// printf — те саме, але одразу друкує
+printf("Товар %-15s ціна %8.2f грн\\n", "Клавіатура", 1234.5);
+printf("Товар %-15s ціна %8.2f грн\\n", "Мишка", 450.0);`},
+   {t:"out", x:"Максим посів 3 місце з балом 9.50\nТовар Клавіатура ціна  1234.50 грн\nТовар Мишка      ціна   450.00 грн"},
+   {t:"p", x:"Шаблони прості: <code>%s</code> — рядок, <code>%d</code> — ціле, <code>%.2f</code> — дробове з двома знаками, <code>%-15s</code> — рядок завширшки 15 з вирівнюванням ліворуч."},
+   {t:"note", k:"warn", h:"Подивіться на вивід уважно", x:"Колонка «ціна» розʼїхалась. «Клавіатура» — це 10 літер, але 20 байтів, тому <code>%-15s</code> не додав жодного пробілу; «Мишка» — 10 байтів, і пробіли додались. Та сама історія з байтами, що й зі <code>strlen</code>. Висновок: <code>sprintf</code> чудовий для чисел і форматів, але вирівнювати колонки з українським текстом ним не можна — тільки <code>mb_str_pad</code>."},
+   {t:"say", h:"Тепер регулярні вирази", x:"Це маленька окрема мова для опису того, як виглядає текст. «Одна або більше цифр», «щось, потім собачка, потім щось, потім крапка». Виглядає страшно, але на цьому етапі нам потрібні чотири значки, а не вся мова."},
+   {t:"code", tag:"regex.php", x:`<?php
+
+declare(strict_types=1);
+
+// [0-9] — будь-яка цифра, + означає «одна або більше»
+var_dump(preg_match('/[0-9]+/', 'квартира 42'));     // 1 — знайдено
+
+// ^ — початок рядка, $ — кінець
+var_dump(preg_match('/^\\+380[0-9]{9}$/', '+380501234567'));  // 1
+
+// заміна за шаблоном
+echo preg_replace('/[0-9]/', '*', 'код 1234');        // код ****`},
+   {t:"note", k:"tip", h:"Скільки регулярок треба знати зараз", x:"Рівно стільки: <code>[0-9]</code> цифра, <code>[a-z]</code> літера, <code>+</code> одна або більше, <code>{9}</code> рівно девʼять, <code>^</code> початок, <code>$</code> кінець. Решту гуглять усе життя — навіть дорослі розробники. Головне — розуміти, що саме перевіряє шаблон, а не вміти написати його напамʼять."},
+   {t:"p", x:"<strong>Проєкт заняття:</strong> перевірка форми реєстрації. Функції <code>isValidEmail</code>, <code>isValidPhone</code>, <code>isStrongPassword</code> — кожна повертає true або false. Плюс <code>makeSlug</code>, яка перетворює «Привіт, світе!» на <code>pryvit-svite</code> — саме так формуються адреси сторінок на сайтах."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Аналізатор тексту", x:"Функція приймає абзац і повертає масив зі статистикою: символів, слів, речень, найдовше слово, середня довжина слова.",
+  sol:[{t:"code", tag:"analyze-text.php", x:`<?php
+
+declare(strict_types=1);
+
+function analyzeText(string $text): array
+{
+    $clean = trim(preg_replace('/\\s+/', ' ', $text));
+    $words = explode(' ', $clean);
+
+    $longest = '';
+    $total = 0;
+
+    foreach ($words as $word) {
+        $word = trim($word, '.,!?;:()');
+        $total += mb_strlen($word);
+
+        if (mb_strlen($word) > mb_strlen($longest)) {
+            $longest = $word;
+        }
+    }
+
+    return [
+        'chars'     => mb_strlen($clean),
+        'words'     => count($words),
+        'sentences' => preg_match_all('/[.!?]/', $clean),
+        'longest'   => $longest,
+        'avgLength' => round($total / count($words), 1),
+    ];
+}
+
+$text = "Програмування — це не про код. Це про вміння розкласти
+складну задачу на прості кроки! Решта справа техніки.";
+
+print_r(analyzeText($text));`},
+       {t:"out", x:"Array\n(\n    [chars] => 108\n    [words] => 18\n    [sentences] => 3\n    [longest] => Програмування\n    [avgLength] => 4.9\n)"},
+       {t:"p", x:"<code>preg_replace('/\\s+/', ' ', $text)</code> зводить будь-яку кількість пробілів і переносів до одного — без цього порожні рядки рахувались би як слова."}]
+ },
+ {
+  n:"2", t:"Маскування даних", x:"Дві функції: <code>maskEmail</code> перетворює maksym@gmail.com на m****m@gmail.com, <code>maskPhone</code> залишає видимими тільки останні чотири цифри.",
+  sol:[{t:"code", tag:"mask.php", x:`<?php
+
+declare(strict_types=1);
+
+function maskEmail(string $email): string
+{
+    if (!str_contains($email, '@')) {
+        return $email;
+    }
+
+    [$name, $domain] = explode('@', $email);
+
+    if (mb_strlen($name) <= 2) {
+        return str_repeat('*', mb_strlen($name)) . '@' . $domain;
+    }
+
+    $first = mb_substr($name, 0, 1);
+    $last = mb_substr($name, -1);
+    $stars = str_repeat('*', mb_strlen($name) - 2);
+
+    return $first . $stars . $last . '@' . $domain;
+}
+
+function maskPhone(string $phone): string
+{
+    $digits = preg_replace('/[^0-9]/', '', $phone);
+    $visible = mb_substr($digits, -4);
+
+    return str_repeat('*', mb_strlen($digits) - 4) . $visible;
+}
+
+echo maskEmail('maksym@gmail.com') . "\\n";
+echo maskPhone('+38 (050) 123-45-67') . "\\n";`},
+       {t:"out", x:"m****m@gmail.com\n********4567"},
+       {t:"p", x:"Саме так виглядають дані в особистих кабінетах банків і сервісів: показати достатньо, щоб людина впізнала своє, і замало, щоб хтось інший скористався."}]
+ },
+ {
+  n:"3", t:"Перевірка форми", x:"Три функції валідації: email, український телефон, надійний пароль. Кожна повертає <code>bool</code>. Плюс головна функція <code>validateForm</code>, яка збирає всі помилки в масив.",
+  sol:[{t:"code", tag:"validate.php", x:`<?php
+
+declare(strict_types=1);
+
+function isValidEmail(string $email): bool
+{
+    return (bool) preg_match('/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-z]{2,}$/', $email);
+}
+
+function isValidPhone(string $phone): bool
+{
+    $digits = preg_replace('/[^0-9]/', '', $phone);
+
+    return (bool) preg_match('/^380[0-9]{9}$/', $digits);
+}
+
+function isStrongPassword(string $password): bool
+{
+    return mb_strlen($password) >= 8
+        && preg_match('/[0-9]/', $password)
+        && preg_match('/[A-Z]/', $password);
+}
+
+function validateForm(array $data): array
+{
+    $errors = [];
+
+    if (!isValidEmail($data['email'] ?? '')) {
+        $errors['email'] = 'Схоже, це не email';
+    }
+
+    if (!isValidPhone($data['phone'] ?? '')) {
+        $errors['phone'] = 'Телефон має бути у форматі +380XXXXXXXXX';
+    }
+
+    if (!isStrongPassword($data['password'] ?? '')) {
+        $errors['password'] = 'Мінімум 8 символів, цифра і велика літера';
+    }
+
+    return $errors;
+}
+
+$form = [
+    'email'    => 'maksym@gmail.com',
+    'phone'    => '+38 050 123 45 67',
+    'password' => 'qwerty',
+];
+
+$errors = validateForm($form);
+
+if (count($errors) === 0) {
+    echo "Форма заповнена правильно\\n";
+} else {
+    foreach ($errors as $field => $message) {
+        echo "$field: $message\\n";
+    }
+}`},
+       {t:"out", x:"password: Мінімум 8 символів, цифра і велика літера"},
+       {t:"note", k:"idea", h:"Це вже майже справжній код", x:"Рівно так виглядає валідація у веб-застосунках: масив полів на вході, масив помилок на виході, ключ помилки збігається з назвою поля. У Laravel це робить вбудований механізм, але робить саме це. Варто сказати вголос: ось так виглядає код, за який платять."}]
+ },
+ {
+  n:"4", t:"Генератор адрес сторінок", x:"Функція <code>makeSlug</code>: «Привіт, світе!» → <code>pryvit-svite</code>. Кирилиця транслітерується, розділові знаки зникають, пробіли стають дефісами.",
+  sol:[{t:"code", tag:"slug.php", x:`<?php
+
+declare(strict_types=1);
+
+function makeSlug(string $title): string
+{
+    $map = [
+        'а'=>'a','б'=>'b','в'=>'v','г'=>'h','ґ'=>'g','д'=>'d','е'=>'e','є'=>'ie',
+        'ж'=>'zh','з'=>'z','и'=>'y','і'=>'i','ї'=>'i','й'=>'i','к'=>'k','л'=>'l',
+        'м'=>'m','н'=>'n','о'=>'o','п'=>'p','р'=>'r','с'=>'s','т'=>'t','у'=>'u',
+        'ф'=>'f','х'=>'kh','ц'=>'ts','ч'=>'ch','ш'=>'sh','щ'=>'shch','ь'=>'',
+        'ю'=>'iu','я'=>'ia',
+    ];
+
+    $slug = mb_strtolower(trim($title));
+    $slug = strtr($slug, $map);
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+
+    return trim($slug, '-');
+}
+
+echo makeSlug('Привіт, світе!') . "\\n";
+echo makeSlug('Морський бій на PHP 8') . "\\n";
+echo makeSlug('  Щоденник   програміста  ') . "\\n";`},
+       {t:"out", x:"pryvit-svite\nmorskyi-bii-na-php-8\nshchodennyk-prohramista"},
+       {t:"p", x:"<code>strtr</code> замінює багато пар одразу за таблицею — зручніше за десяток <code>str_replace</code>. Саме такі slug ви бачите в адресах статей: вони читабельні, латиницею й без пробілів."}]
+ }],
+ traps:[
+  "<strong><code>strlen</code> замість <code>mb_strlen</code>.</strong> Головна пастка модуля: підрахунки тихо неправильні, помилки немає.",
+  "<strong><code>ucfirst</code> на кирилиці.</strong> Просто нічого не робить — потрібна власна функція через <code>mb_substr</code>.",
+  "<strong>Регулярка без обмежувачів.</strong> <code>preg_match('[0-9]', ...)</code> — помилка: шаблон має бути в косих рисках, <code>'/[0-9]/'</code>.",
+  "<strong>Спроба зрозуміти регулярки повністю.</strong> Не треба. Чотири значки зараз, решта — за потребою й з документацією.",
+  "<strong>Вирівнювання через <code>%-15s</code> у sprintf на українських назвах.</strong> Та сама історія з байтами — тільки <code>mb_str_pad</code>."
+ ],
+ quiz:[
+  "Чому <code>strlen('Максим')</code> дає 12, а не 6?",
+  "Як перевірити, що рядок містить символ @, трьома різними способами?",
+  "Що означають <code>^</code> і <code>$</code> у регулярному виразі?",
+  "Навіщо потрібен slug і чому він латиницею?"
+ ]
+},
+{
+ id:"u14", tag:"Урок 14 · заняття 27–28", title:"Дати й файли",
+ goal:"Два практичних інструменти. Дати потрібні в кожному другому завданні й мають купу пасток. Файли — перший спосіб зберегти дані так, щоб вони пережили закриття програми.",
+ sessions:[
+ {
+  day:"Заняття 27", time:"90 хв", title:"Дати й час",
+  body:[
+   {t:"p", x:"Розбір домашки, потім найпростіше: поточна дата й форматування."},
+   {t:"code", tag:"dates.php", x:`<?php
+
+declare(strict_types=1);
+
+echo date('d.m.Y');            // 12.09.2026
+echo "\\n";
+echo date('H:i');              // 14:30
+echo "\\n";
+echo date('d.m.Y H:i:s');      // 12.09.2026 14:30:15`},
+   {t:"p", x:"Літери в шаблоні — це коди: <code>d</code> день, <code>m</code> місяць, <code>Y</code> рік із чотирьох цифр, <code>H</code> години, <code>i</code> хвилини. Заучувати не треба, вони є в документації — але <code>d.m.Y</code> і <code>H:i</code> запамʼятаються самі, бо потрібні постійно."},
+   {t:"p", x:"<strong>Клас DateTime</strong> зручніший, коли треба щось порахувати. Це перший клас, з яким він працює, — сказати про це прямо: на 16-му уроці ми навчимось писати такі самі."},
+   {t:"code", tag:"datetime.php", x:`<?php
+
+declare(strict_types=1);
+
+$birthday = new DateTime('2013-05-17');
+$today = new DateTime('2026-09-12');
+
+$age = $today->diff($birthday);
+
+echo "Років: " . $age->y . "\\n";
+echo "Місяців понад це: " . $age->m . "\\n";
+echo "Усього днів: " . $age->days . "\\n";`},
+   {t:"out", x:"Років: 13\nМісяців понад це: 3\nУсього днів: 4866"},
+   {t:"p", x:"<strong>Зсув дати</strong> — <code>modify</code> розуміє звичайні англійські фрази:"},
+   {t:"code", tag:"modify.php", x:`<?php
+
+$date = new DateTime('2026-09-12');
+
+echo $date->modify('+1 day')->format('d.m.Y');     // 13.09.2026
+echo "\\n";
+echo $date->modify('+2 weeks')->format('d.m.Y');   // 27.09.2026
+echo "\\n";
+echo $date->modify('first day of next month')->format('d.m.Y');`},
+   {t:"note", k:"warn", h:"modify змінює сам обʼєкт", x:"Кожен виклик <code>modify</code> зсуває ту саму дату далі — саме тому в прикладі вище друге число рахується вже від 13 вересня, а не від 12. Це класична пастка: людина думає, що отримує нову дату, а насправді псує стару. Показати обовʼязково — і згадати, що є <code>DateTimeImmutable</code>, який так не робить."},
+   {t:"p", x:"<strong>Практика заняття:</strong> скільки днів до дня народження (з урахуванням того, що він міг уже бути цього року), вік у форматі «13 років, 3 місяці, 26 днів», і скільки днів минуло від першого заняття з програмування."}
+  ]
+ },
+ {
+  day:"Заняття 28", time:"90 хв", title:"Файли: дані переживають закриття",
+  body:[
+   {t:"say", h:"Головна думка заняття", x:"Досі кожна твоя програма починала життя з чистого аркуша: закрив термінал — усе зникло. Сьогодні це закінчиться. Список покупок памʼятатиме, що ти вчора додав, а трекер звичок — скільки днів поспіль ти щось робив."},
+   {t:"code", tag:"files.php", x:`<?php
+
+declare(strict_types=1);
+
+// записати (перезаписує весь файл)
+file_put_contents('note.txt', "Перший рядок\\n");
+
+// дописати в кінець
+file_put_contents('note.txt', "Другий рядок\\n", FILE_APPEND);
+
+// прочитати цілком
+echo file_get_contents('note.txt');
+
+// прочитати рядками у масив
+$lines = file('note.txt', FILE_IGNORE_NEW_LINES);
+print_r($lines);`},
+   {t:"p", x:"<strong>Перевірка перед читанням</strong> обовʼязкова — файлу може не бути:"},
+   {t:"code", tag:"check.php", x:`<?php
+
+declare(strict_types=1);
+
+function readNotes(string $path): array
+{
+    if (!file_exists($path)) {
+        return [];
+    }
+
+    return file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+}
+
+print_r(readNotes('немає-такого.txt'));   // порожній масив, без помилки`},
+   {t:"p", x:"<strong>Логер</strong> — перша по-справжньому корисна функція з файлами. Саме так пишуть журнали подій на серверах:"},
+   {t:"code", tag:"log.php", x:`<?php
+
+declare(strict_types=1);
+
+function logEvent(string $message, string $path = 'app.log'): void
+{
+    $line = date('Y-m-d H:i:s') . ' | ' . $message . PHP_EOL;
+
+    file_put_contents($path, $line, FILE_APPEND);
+}
+
+logEvent('Програма запущена');
+logEvent('Користувач додав завдання');
+
+echo file_get_contents('app.log');`},
+   {t:"out", x:"2026-09-12 14:30:15 | Програма запущена\n2026-09-12 14:30:15 | Користувач додав завдання"},
+   {t:"p", x:"<strong>CSV</strong> — таблиця в текстовому файлі, формат, у якому вивантажують дані з Excel і з будь-якої бази. PHP уміє його читати рядок за рядком:"},
+   {t:"code", tag:"csv.php", x:`<?php
+
+declare(strict_types=1);
+
+$handle = fopen('grades.csv', 'r');
+
+while (($row = fgetcsv($handle, 1000, ';')) !== false) {
+    [$name, $subject, $grade] = $row;
+    echo mb_str_pad($name, 12) . mb_str_pad($subject, 14) . $grade . "\\n";
+}
+
+fclose($handle);`},
+   {t:"note", k:"tip", h:"Про кирилицю у файлах", x:"PHP пише файли в UTF-8, і з кирилицею проблем не буде — але тільки якщо сам файл теж у UTF-8. Якщо CSV вивантажили з Excel на Windows, там може бути інше кодування, і замість тексту зʼявляться знаки питання. Це не поломка коду: перевірити кодування можна в VS Code у правому нижньому куті."},
+   {t:"p", x:"<strong>Проєкт заняття:</strong> щоденник у файлі. Меню: додати запис, показати всі, показати за сьогодні, порахувати, скільки записів за тиждень. Кожен запис зберігається рядком із датою."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Календар подій", x:"Функція рахує, скільки днів залишилось до дати. Якщо дата вже минула цього року — рахувати до наступного. Перевірити на дні народження всіх у родині.",
+  sol:[{t:"code", tag:"countdown.php", x:`<?php
+
+declare(strict_types=1);
+
+function daysUntil(string $day, string $month): int
+{
+    $today = new DateTime('today');
+    $year = (int) $today->format('Y');
+
+    $target = new DateTime("$year-$month-$day");
+
+    if ($target < $today) {
+        $target->modify('+1 year');
+    }
+
+    return (int) $today->diff($target)->days;
+}
+
+$family = [
+    'Максим' => ['17', '05'],
+    'Мама'   => ['03', '11'],
+    'Тато'   => ['28', '09'],
+];
+
+foreach ($family as $name => [$day, $month]) {
+    $left = daysUntil($day, $month);
+    echo mb_str_pad($name, 10) . "через $left днів\\n";
+}`},
+       {t:"p", x:"<code>new DateTime('today')</code> дає сьогоднішню дату з обнуленим часом — інакше порівняння дат ламається через години й хвилини. Це дрібниця, на якій спотикаються всі."}]
+ },
+ {
+  n:"2", t:"Вік із точністю до дня", x:"Вивести вік у форматі «13 років, 3 місяці, 26 днів» і додатково — скільки це всього днів, годин і хвилин.",
+  sol:[{t:"code", tag:"age.php", x:`<?php
+
+declare(strict_types=1);
+
+function describeAge(string $birthDate): string
+{
+    $birth = new DateTime($birthDate);
+    $now = new DateTime('today');
+    $diff = $now->diff($birth);
+
+    return sprintf(
+        '%d років, %d місяців, %d днів',
+        $diff->y,
+        $diff->m,
+        $diff->d
+    );
+}
+
+$birth = '2013-05-17';
+$days = (new DateTime($birth))->diff(new DateTime('today'))->days;
+
+echo describeAge($birth) . "\\n";
+echo "Усього днів: " . number_format($days, 0, ',', ' ') . "\\n";
+echo "Годин: " . number_format($days * 24, 0, ',', ' ') . "\\n";
+echo "Хвилин: " . number_format($days * 24 * 60, 0, ',', ' ') . "\\n";`},
+       {t:"p", x:"Порівняйте з програмою з третього заняття, де вік у хвилинах рахувався множенням на 365. Тепер результат точний — з урахуванням високосних років, і без жодних зусиль."}]
+ },
+ {
+  n:"3", t:"Щоденник у файлі", x:"Меню: додати запис, показати всі, показати тільки сьогоднішні, порахувати записи за останні сім днів. Дані зберігаються у файлі й не зникають після виходу.",
+  sol:[{t:"code", tag:"diary.php", x:`<?php
+
+declare(strict_types=1);
+
+const DIARY = 'diary.txt';
+
+function addEntry(string $text): void
+{
+    $line = date('Y-m-d H:i') . ' | ' . $text . PHP_EOL;
+    file_put_contents(DIARY, $line, FILE_APPEND);
+}
+
+function readEntries(): array
+{
+    if (!file_exists(DIARY)) {
+        return [];
+    }
+
+    return file(DIARY, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+}
+
+function entriesForToday(): array
+{
+    $today = date('Y-m-d');
+
+    return array_values(array_filter(
+        readEntries(),
+        fn(string $line): bool => str_starts_with($line, $today)
+    ));
+}
+
+do {
+    echo "\\n1) Додати  2) Усі записи  3) Сьогодні  4) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Що записати: ";
+        addEntry(trim(fgets(STDIN)));
+        echo "Збережено\\n";
+
+    } elseif ($choice === '2') {
+        foreach (readEntries() as $entry) {
+            echo $entry . "\\n";
+        }
+
+    } elseif ($choice === '3') {
+        $today = entriesForToday();
+        echo "Записів сьогодні: " . count($today) . "\\n";
+
+        foreach ($today as $entry) {
+            echo $entry . "\\n";
+        }
+    }
+} while ($choice !== '4');`},
+       {t:"note", k:"idea", h:"Перевірка, заради якої все", x:"Закрити програму. Відкрити знову. Записи на місці. Це перший раз, коли його програма щось памʼятає — момент, який варто відзначити окремо."}]
+ },
+ {
+  n:"4", t:"Читання CSV з оцінками", x:"Створити файл <code>grades.csv</code> руками, прочитати його програмою, порахувати середній бал по кожному предмету й вивести таблицею.",
+  sol:[{t:"code", tag:"grades.csv", x:`Максим;Математика;11
+Максим;Історія;9
+Максим;Фізика;10
+Аня;Математика;12
+Аня;Історія;11`},
+       {t:"code", tag:"read-csv.php", x:`<?php
+
+declare(strict_types=1);
+
+function readGrades(string $path): array
+{
+    if (!file_exists($path)) {
+        return [];
+    }
+
+    $result = [];
+    $handle = fopen($path, 'r');
+
+    while (($row = fgetcsv($handle, 1000, ';')) !== false) {
+        if (count($row) < 3) {
+            continue;
+        }
+
+        [$name, $subject, $grade] = $row;
+        $result[$subject][] = (int) $grade;
+    }
+
+    fclose($handle);
+
+    return $result;
+}
+
+$bySubject = readGrades('grades.csv');
+
+foreach ($bySubject as $subject => $grades) {
+    $average = round(array_sum($grades) / count($grades), 2);
+
+    echo mb_str_pad($subject, 14);
+    echo mb_str_pad((string) count($grades), 4);
+    echo $average . "\\n";
+}`},
+       {t:"out", x:"Математика    2   11.5\nІсторія       2   10\nФізика        1   10"},
+       {t:"p", x:"Перевірка <code>count($row) &lt; 3</code> рятує від порожнього останнього рядка у файлі — його майже завжди туди дописує редактор."}]
+ }],
+ traps:[
+  "<strong><code>modify</code> змінює обʼєкт.</strong> Другий виклик рахується вже від зміненої дати. Якщо потрібна незмінна — <code>DateTimeImmutable</code>.",
+  "<strong>Порівняння дат із часом.</strong> «Сьогодні» о 14:30 більше за «сьогодні» о 00:00 — тому для дат беруть <code>new DateTime('today')</code>.",
+  "<strong>Читання неіснуючого файлу.</strong> Warning і <code>false</code> замість вмісту. Завжди <code>file_exists</code> спершу.",
+  "<strong>Забутий <code>FILE_APPEND</code>.</strong> Кожен запис затирає весь файл — і вчорашні дані зникають назавжди.",
+  "<strong>Порожній останній рядок у файлі.</strong> Дає зайвий елемент масиву — рятує <code>FILE_SKIP_EMPTY_LINES</code>."
+ ],
+ quiz:[
+  "Чому після двох викликів <code>modify('+1 day')</code> дата зсунулась на два дні?",
+  "Що робить <code>FILE_APPEND</code> і що буде без нього?",
+  "Як перевірити, що файл існує, перш ніж його читати?",
+  "Чим CSV відрізняється від звичайного текстового файлу?"
+ ]
+},
+{
+ id:"u15", tag:"Урок 15 · заняття 29–30", title:"JSON і обробка помилок",
+ goal:"Останній урок перед ООП. JSON — формат, яким говорять усі веб-сервіси; саме в ньому Laravel віддає дані фронтенду. А обробка помилок — те, що відрізняє програму, якою можна користуватись, від програми, яка падає від порожнього Enter.",
+ sessions:[
+ {
+  day:"Заняття 29", time:"90 хв", title:"JSON: масив, що вміє зберігатись",
+  body:[
+   {t:"say", h:"З чого почати", x:"Твій щоденник зберігає рядки тексту. А як зберегти масив із вкладеними масивами — список учнів з оцінками? Можна вигадати свій формат із крапками з комою, але його вже вигадали за нас, і він називається JSON. Ним говорять усі сайти й застосунки у світі."},
+   {t:"code", tag:"json.php", x:`<?php
+
+declare(strict_types=1);
+
+$player = [
+    'name'  => 'Максим',
+    'level' => 5,
+    'items' => ['меч', 'щит'],
+];
+
+$json = json_encode($player, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+echo $json;`},
+   {t:"out", x:'{\n    "name": "Максим",\n    "level": 5,\n    "items": [\n        "меч",\n        "щит"\n    ]\n}'},
+   {t:"note", k:"warn", h:"Два прапорці, без яких боляче", x:"Без <code>JSON_UNESCAPED_UNICODE</code> кирилиця перетвориться на <code>\\u041c\\u0430\\u043a</code> — технічно правильно, читати неможливо. Без <code>JSON_PRETTY_PRINT</code> усе злипнеться в один рядок. Обидва прапорці ставимо завжди, коли файл читатиме людина."},
+   {t:"p", x:"<strong>Назад у масив</strong> — <code>json_decode</code>. Другий аргумент <code>true</code> обовʼязковий, інакше отримаєте обʼєкт, а не масив:"},
+   {t:"code", tag:"decode.php", x:`<?php
+
+declare(strict_types=1);
+
+$json = '{"name":"Максим","level":5}';
+
+$data = json_decode($json, true);
+
+echo $data['name'];    // Максим
+echo "\\n";
+var_dump(is_array($data));   // bool(true)`},
+   {t:"p", x:"<strong>Разом із файлами</strong> це дає повноцінне сховище — дві функції, які далі використовуватимуться в кожному проєкті:"},
+   {t:"code", tag:"storage.php", x:`<?php
+
+declare(strict_types=1);
+
+function saveData(string $path, array $data): void
+{
+    $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+    file_put_contents($path, $json);
+}
+
+function loadData(string $path): array
+{
+    if (!file_exists($path)) {
+        return [];
+    }
+
+    $data = json_decode(file_get_contents($path), true);
+
+    return is_array($data) ? $data : [];
+}
+
+$tasks = loadData('tasks.json');
+$tasks[] = ['text' => 'Дописати трекер', 'done' => false];
+
+saveData('tasks.json', $tasks);
+
+echo "Завдань у файлі: " . count(loadData('tasks.json')) . "\\n";`},
+   {t:"p", x:"<strong>Практика заняття:</strong> переписати список покупок із чотирнадцятого заняття так, щоб він зберігався у JSON. Далі — файл налаштувань програми: імʼя користувача, улюблений колір, кількість запусків, яка збільшується щоразу."}
+  ]
+ },
+ {
+  day:"Заняття 30", time:"90–120 хв", title:"Помилки під контролем і проєкт-бос",
+  body:[
+   {t:"p", x:"Спершу — три види проблем, які виглядають по-різному. Показати кожну навмисно:"},
+   {t:"code", tag:"errors.php", x:`<?php
+
+// 1. Warning — програма скаржиться, але працює далі
+$x = $notDefined ?? null;
+echo file_get_contents('немає.txt');
+
+// 2. Fatal error — програма зупиняється
+// undefinedFunction();
+
+// 3. Exception — помилку можна впіймати
+try {
+    $result = 10 / 0;
+} catch (DivisionByZeroError $e) {
+    echo "Впіймали: " . $e->getMessage() . "\\n";
+}`},
+   {t:"say", h:"Ідея try/catch", x:"Уяви, що ти несеш склянку. try — це «спробуй пронести». catch — «а якщо впустиш, ось віник, приберемо і підемо далі». Без catch падіння склянки зупиняє всю програму; з catch — це просто неприємність, яку передбачили."},
+   {t:"code", tag:"trycatch.php", x:`<?php
+
+declare(strict_types=1);
+
+function loadConfig(string $path): array
+{
+    if (!file_exists($path)) {
+        throw new RuntimeException("Файл $path не знайдено");
+    }
+
+    $data = json_decode(file_get_contents($path), true);
+
+    if (!is_array($data)) {
+        throw new RuntimeException("Файл $path зіпсований");
+    }
+
+    return $data;
+}
+
+try {
+    $config = loadConfig('settings.json');
+    echo "Налаштування завантажені\\n";
+} catch (RuntimeException $e) {
+    echo "Не вдалось: " . $e->getMessage() . "\\n";
+    $config = ['theme' => 'default'];
+} finally {
+    echo "Продовжуємо роботу\\n";
+}`},
+   {t:"out", x:"Не вдалось: Файл settings.json не знайдено\nПродовжуємо роботу"},
+   {t:"note", k:"idea", h:"Кидати виняток — це не поразка", x:"<code>throw</code> означає «я не можу тут вирішити цю проблему, хай вирішує той, хто мене викликав». Функція <code>loadConfig</code> не знає, що робити без файлу: може, взяти значення за замовчуванням, а може, зупинити програму. Це рішення головної частини, і саме тому функція просто повідомляє про проблему."},
+   {t:"p", x:"<strong>Проєкт-бос модуля: трекер звичок.</strong> Зводить разом усе: JSON-сховище, дати, рядки, обробку помилок і функції з попереднього уроку."},
+   {t:"code", tag:"src/tracker.php", x:`<?php
+
+declare(strict_types=1);
+
+function markToday(array $habits, string $name): array
+{
+    $today = date('Y-m-d');
+
+    if (!isset($habits[$name])) {
+        throw new InvalidArgumentException("Звички «$name» немає у списку");
+    }
+
+    if (in_array($today, $habits[$name]['days'], true)) {
+        return $habits;
+    }
+
+    $habits[$name]['days'][] = $today;
+
+    return $habits;
+}
+
+function currentStreak(array $days): int
+{
+    if (count($days) === 0) {
+        return 0;
+    }
+
+    sort($days);
+    $streak = 1;
+
+    for ($i = count($days) - 1; $i > 0; $i--) {
+        $current = new DateTime($days[$i]);
+        $previous = new DateTime($days[$i - 1]);
+
+        if ((int) $previous->diff($current)->days === 1) {
+            $streak++;
+        } else {
+            break;
+        }
+    }
+
+    return $streak;
+}`},
+   {t:"p", x:"<strong>Порядок роботи той самий:</strong> спершу мінімальна версія — додати звичку, відмітити сьогодні, показати список. Переконатись, що дані переживають перезапуск. І тільки потім серії днів, статистика й діаграма."},
+   {t:"p", x:"<strong>Рубіж модуля.</strong> Це половина блоку основ. Наступні пʼять уроків — ООП, найважливіша частина всього маршруту: саме з класів складається Laravel."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Список покупок на JSON", x:"Переписати програму з чотирнадцятого заняття так, щоб список зберігався у файл і не зникав після виходу. Функції <code>saveData</code> і <code>loadData</code> винести в окремий файл.",
+  sol:[{t:"code", tag:"src/storage.php", x:`<?php
+
+declare(strict_types=1);
+
+function saveData(string $path, array $data): void
+{
+    file_put_contents(
+        $path,
+        json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+    );
+}
+
+function loadData(string $path): array
+{
+    if (!file_exists($path)) {
+        return [];
+    }
+
+    $data = json_decode(file_get_contents($path), true);
+
+    return is_array($data) ? $data : [];
+}`},
+       {t:"code", tag:"index.php", x:`<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/src/storage.php';
+
+const FILE = 'shopping.json';
+
+$items = loadData(FILE);
+
+do {
+    echo "\\n=== СПИСОК (" . count($items) . ") ===\\n";
+
+    foreach ($items as $index => $item) {
+        echo ($index + 1) . ". $item\\n";
+    }
+
+    echo "\\n1) Додати  2) Видалити за номером  3) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Що додати: ";
+        $items[] = trim(fgets(STDIN));
+        saveData(FILE, $items);
+
+    } elseif ($choice === '2') {
+        echo "Номер: ";
+        $number = (int) trim(fgets(STDIN));
+
+        if ($number >= 1 && $number <= count($items)) {
+            array_splice($items, $number - 1, 1);
+            saveData(FILE, $items);
+        } else {
+            echo "Такого номера немає\\n";
+        }
+    }
+} while ($choice !== '3');`},
+       {t:"p", x:"Головне тут — <code>saveData</code> викликається після кожної зміни. Забути один виклик і втратити дані — типова помилка, тому варто перевірити всі гілки меню."}]
+ },
+ {
+  n:"2", t:"Налаштування програми", x:"Файл <code>settings.json</code>: імʼя користувача, тема, лічильник запусків. При кожному запуску лічильник збільшується, а програма вітається на імʼя. Якщо файлу немає — створити з типовими значеннями.",
+  sol:[{t:"code", tag:"settings.php", x:`<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/src/storage.php';
+
+const SETTINGS = 'settings.json';
+
+$defaults = [
+    'name'  => 'Гість',
+    'theme' => 'light',
+    'runs'  => 0,
+];
+
+$settings = array_merge($defaults, loadData(SETTINGS));
+$settings['runs']++;
+
+if ($settings['runs'] === 1) {
+    echo "Схоже, ти тут уперше. Як тебе звати? ";
+    $settings['name'] = trim(fgets(STDIN));
+}
+
+saveData(SETTINGS, $settings);
+
+echo "Привіт, {$settings['name']}!\\n";
+echo "Це твій запуск номер {$settings['runs']}\\n";`},
+       {t:"note", k:"tip", h:"array_merge із значеннями за замовчуванням", x:"Прийом, який варто запамʼятати: беремо типові значення й накриваємо їх тим, що знайшлось у файлі. Якщо у файлі бракує якогось ключа — підставиться типовий, і програма не впаде. Так налаштовується половина реальних застосунків."}]
+ },
+ {
+  n:"3", t:"Стійкий до поломок завантажувач", x:"Функція читає JSON-файл і кидає зрозумілий виняток, якщо файлу немає або він зіпсований. У головній програмі виняток ловиться, і робота продовжується зі значеннями за замовчуванням. Перевірити: зіпсувати файл руками.",
+  sol:[{t:"code", tag:"safe-load.php", x:`<?php
+
+declare(strict_types=1);
+
+function loadOrFail(string $path): array
+{
+    if (!file_exists($path)) {
+        throw new RuntimeException("Файл $path не знайдено");
+    }
+
+    $raw = file_get_contents($path);
+    $data = json_decode($raw, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new RuntimeException(
+            "Файл $path зіпсований: " . json_last_error_msg()
+        );
+    }
+
+    if (!is_array($data)) {
+        throw new RuntimeException("У файлі $path не масив");
+    }
+
+    return $data;
+}
+
+try {
+    $data = loadOrFail('broken.json');
+    echo "Завантажено записів: " . count($data) . "\\n";
+
+} catch (RuntimeException $e) {
+    echo "Помилка: " . $e->getMessage() . "\\n";
+    echo "Працюю з порожнім списком\\n";
+    $data = [];
+}`},
+       {t:"out", x:"Помилка: Файл broken.json зіпсований: Syntax error\nПрацюю з порожнім списком"},
+       {t:"p", x:"Обовʼязково зіпсувати файл руками — прибрати одну дужку — і запустити. Побачити, що програма не впала, а чемно повідомила й пішла далі. Це і є різниця між навчальним кодом і робочим."}]
+ },
+ {
+  n:"4", t:"Трекер звичок", x:"Проєкт-бос модуля. Додавання звичок, відмітка на сьогодні, серія днів поспіль, статистика за місяць, збереження у JSON. Розкласти на файли, написати README.",
+  sol:[{t:"code", tag:"index.php", x:`<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/src/storage.php';
+require_once __DIR__ . '/src/tracker.php';
+
+const FILE = 'habits.json';
+
+$habits = loadData(FILE);
+
+do {
+    echo "\\n=== ТРЕКЕР ЗВИЧОК ===\\n";
+
+    foreach ($habits as $name => $habit) {
+        $streak = currentStreak($habit['days']);
+        $today = in_array(date('Y-m-d'), $habit['days'], true) ? '[x]' : '[ ]';
+
+        echo $today . ' ' . mb_str_pad($name, 20);
+        echo 'серія: ' . $streak . ' дн.  ';
+        echo str_repeat('#', min($streak, 20)) . "\\n";
+    }
+
+    echo "\\n1) Нова звичка  2) Відмітити  3) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Назва: ";
+        $name = trim(fgets(STDIN));
+
+        if ($name !== '' && !isset($habits[$name])) {
+            $habits[$name] = ['created' => date('Y-m-d'), 'days' => []];
+            saveData(FILE, $habits);
+        }
+
+    } elseif ($choice === '2') {
+        echo "Яку звичку відмітити: ";
+        $name = trim(fgets(STDIN));
+
+        try {
+            $habits = markToday($habits, $name);
+            saveData(FILE, $habits);
+            echo "Відмічено!\\n";
+        } catch (InvalidArgumentException $e) {
+            echo $e->getMessage() . "\\n";
+        }
+    }
+} while ($choice !== '3');`},
+       {t:"note", k:"idea", h:"Що перевірити наприкінці", x:"Відмітити звичку, вийти, зайти знову — серія на місці. Спробувати відмітити двічі за день — другий раз нічого не змінює. Спробувати відмітити неіснуючу звичку — програма чемно повідомляє, а не падає. Три перевірки, які показують, що проєкт справді робочий."},
+       {t:"p", x:"Наступного дня варто запустити ще раз і побачити, як серія стала двійкою. Це перша його програма, яка живе довше за одну сесію — і саме тому вона запамʼятається."}]
+ }],
+ traps:[
+  "<strong><code>json_decode</code> без <code>true</code>.</strong> Повертає обʼєкт, і <code>$data['name']</code> не працює. Другий аргумент обовʼязковий.",
+  "<strong>Кирилиця як <code>\\u041c</code>.</strong> Забутий <code>JSON_UNESCAPED_UNICODE</code>. Файл робочий, але читати неможливо.",
+  "<strong>Забутий <code>saveData</code> в одній із гілок меню.</strong> Дані «іноді не зберігаються» — найнеприємніший тип багу, бо відтворюється не завжди.",
+  "<strong><code>catch (Exception $e)</code> навколо всього коду.</strong> Ловити треба конкретну помилку в конкретному місці, інакше справжня причина ховається.",
+  "<strong>Порожній <code>catch</code>.</strong> Помилка спіймана й мовчки викинута — програма поводиться дивно, а слідів немає."
+ ],
+ quiz:[
+  "Навіщо в <code>json_decode</code> другий аргумент <code>true</code>?",
+  "Що робить <code>throw</code> і хто має ловити виняток?",
+  "Чому функція <code>loadConfig</code> сама не вирішує, що робити без файлу?",
+  "Як перевірити, що JSON-файл не зіпсований?"
+ ]
+}
+];
+
+const FINAL = [
+ "<strong>Працює з текстом правильно.</strong> Завжди бере <code>mb_</code>-версії функцій і знає, чому це важливо для української мови.",
+ "<strong>Читає прості регулярні вирази.</strong> Може перевірити email, телефон і пароль — і розуміє, що саме перевіряє шаблон.",
+ "<strong>Рахує дати.</strong> Різниця, зсув, форматування; знає пастку з <code>modify</code>, що змінює обʼєкт.",
+ "<strong>Зберігає дані у файли.</strong> Текст, CSV і JSON; перевіряє існування файлу перед читанням.",
+ "<strong>Використовує JSON як сховище.</strong> Пара функцій <code>saveData</code> / <code>loadData</code> тепер є в кожному його проєкті.",
+ "<strong>Обробляє помилки.</strong> <code>try/catch</code> у потрібному місці, власні винятки зі зрозумілим текстом, ніяких порожніх <code>catch</code>.",
+ "<strong>Має трекер звичок:</strong> програму, яка живе довше за одну сесію й показує серії днів.",
+ "<strong>Готовий до уроків 16–20:</strong> ООП. Найважливіший модуль блоку — саме з класів складається Laravel."
+];
+</script>
+<script>
+(function(){
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const RE = /(\/\/[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(<\?php|\?>)|(\$[A-Za-z_]\w*)|\b(declare|strict_types|echo|print|if|elseif|else|match|function|return|true|false|null|exit|new|class|foreach|for|while)\b|\b(\d+\.?\d*)\b/g;
+
+  function hl(code){
+    let out = "", last = 0;
+    code.replace(RE, (m,c,s,t,v,k,n,off)=>{
+      out += esc(code.slice(last, off));
+      const cls = c ? "c" : s ? "s" : t ? "k" : v ? "v" : k ? "k" : "n";
+      out += '<span class="'+cls+'">'+esc(m)+'</span>';
+      last = off + m.length;
+      return m;
+    });
+    return out + esc(code.slice(last));
+  }
+
+  function blocks(list){
+    return list.map(b=>{
+      if (b.t === "p")    return `<p>${b.x}</p>`;
+      if (b.t === "ul")   return `<ul>${b.x.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+      if (b.t === "code") return `<div class="code-wrap"><pre>${hl(b.x)}</pre>${b.tag?`<span class="tag">${esc(b.tag)}</span>`:""}</div>`;
+      if (b.t === "out")  return `<div class="out"><b>Що виведе</b>${esc(b.x)}</div>`;
+      if (b.t === "note") return `<div class="note ${b.k}"><b>${esc(b.h)}</b>${b.x}</div>`;
+      if (b.t === "say")  return `<div class="say"><b>${esc(b.h)}</b>${b.x}</div>`;
+      return "";
+    }).join("");
+  }
+
+  document.getElementById("weeks").innerHTML = WEEKS.map(w=>`
+    <section class="week" id="${w.id}">
+      <div class="w-head">
+        <span class="w-tag">${esc(w.tag)}</span>
+        <h2>${esc(w.title)}</h2>
+        <p class="w-goal">${esc(w.goal)}</p>
+      </div>
+
+      ${w.sessions.map(s=>`
+      <article class="ses">
+        <div class="ses-head">
+          <span class="ses-day">${esc(s.day)}</span>
+          <h3>${esc(s.title)}</h3>
+          <span class="ses-time">${esc(s.time)}</span>
+        </div>
+        <div class="body">${blocks(s.body)}</div>
+      </article>`).join("")}
+
+      <div class="tasks">
+        <h3>Завдання тижня</h3>
+        <p>Робити самостійно. Розвʼязок відкривати тільки після власної спроби — або разом, якщо застряг більше ніж на 15 хвилин.</p>
+        ${w.tasks.map(t=>`
+        <div class="task">
+          <h4><i>№${esc(t.n)}</i>${esc(t.t)}</h4>
+          <p>${esc(t.x)}</p>
+          <details>
+            <summary>Показати розвʼязок</summary>
+            <div>${blocks(t.sol)}</div>
+          </details>
+        </div>`).join("")}
+      </div>
+
+      <div class="checks">
+        <div class="chkbox traps">
+          <h3>Типові пастки тижня</h3>
+          <ul>${w.traps.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="chkbox quiz">
+          <h3>Питання на перевірку</h3>
+          <ul>${w.quiz.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </section>`).join("");
+
+  document.getElementById("final-list").innerHTML = FINAL.map(x=>`<li>${x}</li>`).join("");
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+})();
+</script>
+</body>
+</html>

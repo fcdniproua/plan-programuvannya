@@ -88,6 +88,10 @@ h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin
 .btn:focus-visible,summary:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{
   outline:2px solid var(--accent); outline-offset:2px}
 #sync{font-family:"JetBrains Mono",monospace; font-size:.7rem; color:var(--ink-3)}
+#cloud{font-family:"JetBrains Mono",monospace; font-size:.7rem; color:var(--ink-3);
+  border:1px solid var(--line); border-radius:8px; padding:5px 10px; background:var(--surface-2)}
+#cloud.on{color:var(--accent); border-color:color-mix(in srgb, var(--accent) 45%, transparent);
+  background:var(--accent-soft)}
 
 .sect-title{margin:56px 0 6px; font-size:1.35rem; font-weight:700}
 .sect-sub{color:var(--ink-2); margin-bottom:20px; max-width:64ch}
@@ -197,6 +201,7 @@ footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); colo
 
     <div class="tools">
       <button class="btn" id="reset">Очистити журнал</button>
+      <span id="cloud" title="Синхронізація між пристроями">☁ локально</span>
       <span id="sync"></span>
     </div>
   </header>
@@ -225,7 +230,8 @@ footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); colo
       <li><strong>Складність оцінює син, не ви.</strong> Одне питання в кінці: «наскільки важко було від 1 до 5». Дві четвірки поспіль — сигнал сповільнитись, дві одиниці — можна прискоритись.</li>
       <li><strong>Домашка</strong> має статус «здано» тільки коли ви подивились результат разом. Не здана двічі поспіль — завдання завелике, ріжте навпіл.</li>
       <li><strong>Нотатка</strong> — один рядок: що не пішло, до чого повернутись. Перед наступним заняттям перечитуєте саме її.</li>
-      <li><strong>Резервна копія</strong> — кнопка «Зберегти у файл» у локальній версії. Журнал живе в браузері, тому раз на місяць варто вивантажити.</li>
+      <li><strong>Синхронізація.</strong> В онлайн-версії журнал зберігається у хмарі — позначка «☁ синхронізовано» біля кнопок. Відкрийте те саме посилання з телефона під своїм акаунтом і побачите ті самі записи. У локальній версії з файлів синхронізації немає: там журнал живе в конкретному браузері.</li>
+      <li><strong>Резервна копія</strong> — кнопка «Зберегти у файл» у локальній версії. Раз на місяць варто вивантажити.</li>
     </ul>
   </section>
 
@@ -336,7 +342,70 @@ const SESSIONS = [
   function save(){
     try { localStorage.setItem(KEY, JSON.stringify(data)); status("збережено"); }
     catch(e){ status("браузер блокує збереження"); }
+    pushToCloud();
   }
+
+  /* ── синхронізація між пристроями ── */
+  let docRef = null, pushTimer = null, applying = false;
+
+  function pushToCloud(){
+    if (!docRef) return;
+    clearTimeout(pushTimer);
+    pushTimer = setTimeout(function(){
+      docRef.set({ entries: data, updated: new Date().toISOString() })
+        .then(function(){ status("збережено у хмарі"); })
+        .catch(function(){ status("не вдалось зберегти у хмарі"); });
+    }, 600);
+  }
+
+  function applyToControls(){
+    applying = true;
+    document.querySelectorAll("[data-f]").forEach(function(el){
+      const r = rec(+el.dataset.n);
+      el.value = r[el.dataset.f] || (el.dataset.f === "dur" ? "90" : "");
+    });
+    applying = false;
+  }
+
+  (async function(){
+    if (typeof claude === "undefined" || !claude.use) return;
+    let db = null;
+    try { db = await claude.use("db"); } catch(e){ db = null; }
+    if (!db) return;
+
+    const cloud = document.getElementById("cloud");
+    docRef = db.doc("journal/main");
+    let first = true;
+
+    docRef.onSnapshot(function(snap){
+      const remote = snap.exists ? snap.data() : null;
+      cloud.textContent = "☁ синхронізовано";
+      cloud.classList.add("on");
+
+      if (first) {
+        first = false;
+        const localHasData = Object.keys(data).some(function(k){
+          const r = data[k];
+          return r && (r.status || r.date || r.note || r.diff || r.hw);
+        });
+        if (!remote || !remote.entries) {
+          if (localHasData) pushToCloud();
+          return;
+        }
+      }
+
+      if (remote && remote.entries) {
+        data = remote.entries;
+        try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
+        applyToControls();
+        render();
+      }
+    }, function(){
+      cloud.textContent = "☁ тільки цей пристрій";
+      cloud.classList.remove("on");
+      docRef = null;
+    });
+  })();
   function rec(n){ return data[n] || (data[n] = {date:"", status:"", dur:"90", hw:"", diff:"", note:""}); }
 
   /* ── plans ── */
@@ -436,7 +505,7 @@ const SESSIONS = [
 
   document.addEventListener("change", e=>{
     const el = e.target;
-    if (!el.dataset || !el.dataset.f) return;
+    if (applying || !el.dataset || !el.dataset.f) return;
     rec(+el.dataset.n)[el.dataset.f] = el.value;
     render(); save();
   });

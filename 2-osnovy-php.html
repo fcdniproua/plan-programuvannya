@@ -10,9 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 @media print{
-  .tools,.nav,.dash,.track{display:none !important}
+  .tools,.nav,.dash,.track,.row-ctl,textarea{display:none !important}
   body{background:#fff !important}
-  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage{break-inside:avoid; box-shadow:none !important}
+  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage,.plan-body,.row,.hw,.watch,.how{break-inside:avoid; box-shadow:none !important}
   pre{white-space:pre-wrap; word-break:break-word}
   a{text-decoration:none}
 }
@@ -206,6 +206,7 @@ footer{margin-top:52px; padding-top:20px; border-top:1px solid var(--line); colo
         <ul>
           <li><a href="3-pershyi-misyats.html" target="_blank" rel="noopener noreferrer">Уроки 1–4: перший місяць коду</a> — запуск, змінні, введення даних, умови</li>
           <li><a href="4-tsykly-masyvy.html" target="_blank" rel="noopener noreferrer">Уроки 5–9: цикли і масиви</a> — найважчий модуль блоку</li>
+          <li><a href="6-funktsii.html" target="_blank" rel="noopener noreferrer">Уроки 10–12: функції і структура коду</a> — код розпадається на частини з назвами</li>
           <li>Далі уроки розписуються так само, блоками</li>
         </ul>
       </div>
@@ -298,7 +299,7 @@ const MODULES = [
 },
 {
  m:"M3", title:"Функції та структура коду", weeks:"уроки 10–12 · ~3 тижні",
- sub:"Перехід від «скрипта на 200 рядків» до коду, у якому можна щось знайти. Саме звідси починається різниця між школярем і початківцем-розробником.",
+ sub:"Перехід від «скрипта на 200 рядків» до коду, у якому можна щось знайти. Саме звідси починається різниця між школярем і початківцем-розробником. Ці три уроки теж розписані по заняттях окремо.",
  lessons:[
  {
   n:10, t:"Власні функції", h:"~5 год",
@@ -572,16 +573,16 @@ const NOTES = [
     b.textContent=txt; b.addEventListener("click", fn); return b; }
   var inp=document.createElement("input"); inp.type="file"; inp.accept="application/json,.json";
   inp.style.display="none";
-  tools.appendChild(mk("Зберегти у файл", function(){
-    var raw; try{ raw = localStorage.getItem(KEY) || "[]"; }catch(e){ raw = "[]"; }
+  tools.insertBefore(mk("Зберегти у файл", function(){
+    var raw; try{ raw = localStorage.getItem(KEY) || '[]'; }catch(e){ raw = '[]'; }
     var payload = {key:KEY, saved:new Date().toISOString(), done:JSON.parse(raw)};
     var blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a"); a.href=url; a.download=NAME;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-  }));
-  tools.appendChild(mk("Відновити з файлу", function(){ inp.click(); }));
+  }), tools.firstChild);
+  tools.insertBefore(mk("Відновити з файлу", function(){ inp.click(); }), tools.firstChild);
   tools.appendChild(inp);
   inp.addEventListener("change", function(){
     var f = inp.files && inp.files[0]; if(!f) return;
@@ -589,11 +590,11 @@ const NOTES = [
     r.onload = function(){
       try{
         var o = JSON.parse(r.result);
-        var arr = Array.isArray(o) ? o : o.done;
-        if(!Array.isArray(arr)) throw new Error("bad shape");
-        localStorage.setItem(KEY, JSON.stringify(arr));
+        var val = (o && typeof o === "object" && "done" in o) ? o.done : o;
+        if(!val || typeof val !== "object") throw new Error("bad");
+        localStorage.setItem(KEY, JSON.stringify(val));
         location.reload();
-      }catch(e){ alert("Не вдалося прочитати файл прогресу — потрібен той, що зберігався кнопкою «Зберегти у файл»."); }
+      }catch(e){ alert("Не вдалося прочитати файл — потрібен той, що зберігався кнопкою «Зберегти у файл»."); }
     };
     r.readAsText(f);
   });

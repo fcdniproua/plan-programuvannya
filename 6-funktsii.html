@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Функції і структура коду</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧩</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.nav,.dash,.track,.row-ctl,textarea{display:none !important}
+  body{background:#fff !important}
+  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage,.plan-body,.row,.hw,.watch,.how{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#0F7B4F; --accent-soft:#DEF3E9;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC;
+  --warn:#C2401E; --warn-bg:#FCEDE8;
+  --code-bg:#15181F; --code-ink:#E4E7EF; --code-c:#6E7788; --code-s:#8FD98A;
+  --code-v:#A6C0FF; --code-k:#E9A3D2; --code-n:#F0C071;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#45D399; --accent-soft:#10241C;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+    --warn:#FF8A6B; --warn-bg:#2A1611;
+    --code-bg:#0A0C12; --code-ink:#DFE3EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#45D399; --accent-soft:#10241C;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+  --warn:#FF8A6B; --warn-bg:#2A1611;
+  --code-bg:#0A0C12; --code-ink:#DFE3EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:880px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px}
+h1,h2,h3,h4{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:64ch; margin-top:14px; font-size:clamp(1rem,2.2vw,1.06rem)}
+code:not(pre code){font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px; white-space:nowrap}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:5; margin:26px -4px 0; padding:10px 4px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(8px);
+  display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--line)}
+.nav a{font-family:"JetBrains Mono",monospace; font-size:.73rem; text-decoration:none;
+  color:var(--ink-2); background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; padding:6px 11px}
+.nav a:hover{border-color:var(--accent); color:var(--accent)}
+
+/* setup */
+.setup{margin-top:30px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.setup h2{font-size:1.08rem; font-weight:700; margin-bottom:6px}
+.setup > p{color:var(--ink-2); font-size:.95rem; margin-bottom:16px}
+.os{display:grid; gap:18px 26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.os h3{font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.os ol{margin:0; padding-left:19px; display:grid; gap:6px; font-size:.91rem; color:var(--ink-2)}
+.os a{color:var(--accent); font-weight:600; text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--accent) 32%, transparent)}
+
+/* week */
+.week{margin-top:56px; scroll-margin-top:64px}
+.w-head{border-top:3px solid var(--accent); padding-top:18px}
+.w-tag{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent)}
+.w-head h2{font-size:clamp(1.3rem,3.4vw,1.75rem); font-weight:700; margin-top:8px}
+.w-goal{color:var(--ink-2); margin-top:10px; max-width:64ch}
+
+.ses{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  margin-top:16px; box-shadow:var(--shadow)}
+.ses-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  padding-bottom:12px; border-bottom:1px solid var(--line)}
+.ses-day{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:4px 9px;
+  border-radius:6px}
+.ses-head h3{font-size:1.06rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0; flex:1}
+.ses-time{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3)}
+.body{display:flex; flex-direction:column; gap:15px}
+.body p{color:var(--ink-2)}
+.body p strong{color:var(--ink)}
+.body ul{margin:0; padding-left:19px; display:grid; gap:7px; color:var(--ink-2)}
+.body ul strong{color:var(--ink)}
+.say{border-left:3px solid var(--accent); padding:2px 0 2px 15px; color:var(--ink);
+  font-size:.97rem}
+.say b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:4px}
+
+pre{margin:0; background:var(--code-bg); border-radius:11px; padding:15px 17px; overflow-x:auto;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.83rem; line-height:1.65;
+  color:var(--code-ink); tab-size:4}
+pre .c{color:var(--code-c); font-style:italic}
+pre .s{color:var(--code-s)}
+pre .v{color:var(--code-v)}
+pre .k{color:var(--code-k)}
+pre .n{color:var(--code-n)}
+.code-wrap{position:relative}
+.code-wrap .tag{position:absolute; top:0; right:12px; font-family:"JetBrains Mono",monospace;
+  font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--code-c);
+  background:var(--code-bg); padding:3px 6px; border-radius:0 0 5px 5px}
+.out{background:var(--surface-2); border:1px solid var(--line); border-left:3px solid var(--ink-3);
+  border-radius:0 8px 8px 0; padding:11px 14px; font-family:"JetBrains Mono",monospace;
+  font-size:.8rem; color:var(--ink-2); white-space:pre-wrap; overflow-x:auto}
+.out b{display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:5px; font-weight:700}
+
+.note{border-radius:11px; padding:13px 16px; font-size:.94rem}
+.note b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; display:block; margin-bottom:5px}
+.note.tip{background:var(--ok-bg); border:1px solid color-mix(in srgb, var(--ok) 30%, transparent)}
+.note.tip b{color:var(--ok)}
+.note.warn{background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 32%, transparent)}
+.note.warn b{color:var(--warn)}
+.note.idea{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 32%, transparent)}
+.note.idea b{color:var(--amber)}
+
+/* tasks */
+.tasks{margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow)}
+.tasks > h3{font-size:1.02rem; font-weight:700; margin-bottom:4px}
+.tasks > p{color:var(--ink-2); font-size:.92rem; margin-bottom:14px}
+.task{border-top:1px solid var(--line); padding:15px 0 3px}
+.task:first-of-type{border-top:0; padding-top:4px}
+.task h4{font-size:.97rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  display:flex; gap:10px; align-items:baseline}
+.task h4 i{font-family:"JetBrains Mono",monospace; font-style:normal; font-size:.75rem;
+  color:var(--accent); flex:none}
+.task > p{color:var(--ink-2); font-size:.93rem; margin:6px 0 10px; padding-left:26px}
+.task details{padding-left:26px}
+.task summary{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3);
+  cursor:pointer; list-style:none; display:inline-flex; gap:7px; align-items:center;
+  border:1px solid var(--line); border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.task summary::-webkit-details-marker{display:none}
+.task summary:hover{color:var(--accent); border-color:var(--accent)}
+.task details[open] summary{margin-bottom:11px}
+.task details > div{display:flex; flex-direction:column; gap:11px}
+
+/* checks */
+.checks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:18px}
+.chkbox{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+  box-shadow:var(--shadow)}
+.chkbox h3{font-size:.95rem; font-weight:700; margin-bottom:11px}
+.chkbox ul{margin:0; padding-left:18px; display:grid; gap:7px; font-size:.91rem; color:var(--ink-2)}
+.chkbox.traps{border-color:color-mix(in srgb, var(--warn) 40%, var(--line))}
+.chkbox.traps h3{color:var(--warn)}
+.chkbox.quiz{border-color:color-mix(in srgb, var(--ok) 40%, var(--line))}
+.chkbox.quiz h3{color:var(--ok)}
+.chkbox.quiz ul{list-style:none; padding-left:0}
+.chkbox.quiz li{padding-left:16px; position:relative}
+.chkbox.quiz li::before{content:"?"; position:absolute; left:0; color:var(--ok); font-weight:700;
+  font-family:"JetBrains Mono",monospace}
+
+.final{margin-top:64px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:24px 26px; box-shadow:var(--shadow)}
+.final h2{font-size:1.2rem; font-weight:700; margin-bottom:6px}
+.final > p{color:var(--ink-2); margin-bottom:16px}
+.final ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2)}
+.final strong{color:var(--ink)}
+footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3);
+  font-size:.84rem}
+@media (max-width:520px){ pre{font-size:.76rem} .task > p,.task details{padding-left:0} }
+</style>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Блок основ · уроки 10–12 · шість занять</p>
+    <h1>Функції і структура коду</h1>
+    <p class="lead">Найлегший модуль після найважчого — і той, після якого код перестає бути суцільною стіною. Тут програма розпадається на частини з назвами, а проєкт — на файли. Формат змінився під ваш темп: два заняття на урок, домашка між ними.</p>
+    <nav class="nav">
+      <a href="#start">Перед стартом</a>
+      <a href="#u10">10 · Свої функції</a>
+      <a href="#u11">11 · Видимість і рекурсія</a>
+      <a href="#u12">12 · Файли і проєкт</a>
+      <a href="#final">Підсумок</a>
+    </nav>
+  </header>
+
+  <section class="setup" id="start">
+    <h2>Перед стартом</h2>
+    <p>Модуль спирається на цикли й масиви. Якщо аналізатор класу з вісімнадцятого заняття працює і зрозумілий — усе готово. Якщо ні, поверніться до нього: саме його ми тут розберемо на функції.</p>
+    <div class="os">
+      <div>
+        <h3>Має бути засвоєно</h3>
+        <ol>
+          <li>Цикли <code>for</code> і <code>foreach</code> без підглядання</li>
+          <li>Масиви: індексовані, асоціативні, вкладені</li>
+          <li>Сума, максимум і підрахунок за умовою — написані руками</li>
+          <li>Читання помилки за номером рядка</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Чому це легше</h3>
+        <ol>
+          <li>Нових складних ідей лише дві — область видимості й рекурсія</li>
+          <li>Решта — спосіб охайно записати те, що він уже вміє</li>
+          <li>Результат видно одразу: файл на 300 рядків стає п'ятьма зрозумілими</li>
+          <li>Це перший модуль, де код починає виглядати «дорослим»</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Навіщо це для Laravel</h3>
+        <ol>
+          <li>Laravel — це тисячі чужих функцій; спершу треба навчитись писати свої</li>
+          <li>Типізовані параметри тут — прямий підступ до типізованих методів класів</li>
+          <li><code>require</code> і структура папок — те, що Composer потім робить автоматично</li>
+          <li>Розбиття на файли — перша репетиція структури <code>app/</code></li>
+        </ol>
+      </div>
+    </div>
+    <div class="note tip" style="margin-top:18px">
+      <b>Головна думка модуля</b>
+      Функція — це не спосіб скоротити код, а спосіб дати шматку роботи імʼя. Коли в програмі є <code>calculateAverage()</code> і <code>drawBar()</code>, її можна читати як текст, не заглядаючи всередину. Саме тому далі йде розбиття на файли: це те саме, тільки поверхом вище.
+    </div>
+  </section>
+
+  <main id="weeks"></main>
+
+  <section class="final" id="final">
+    <h2>Підсумок модуля</h2>
+    <p>Перевіряється так само: сідає за компʼютер і показує сам.</p>
+    <ul id="final-list"></ul>
+  </section>
+
+  <footer>Далі — уроки 13–15: рядки, файли й обробка помилок. Після них програма навчиться зберігати дані між запусками, і почнеться підготовка до ООП.</footer>
+</div>
+
+<script>
+const WEEKS = [
+{
+ id:"u10", tag:"Урок 10 · заняття 19–20", title:"Свої функції",
+ goal:"Мета уроку — навчитись давати шматкам роботи імена. Функція не про економію рядків: вона про те, щоб програму можна було читати як текст, не заглядаючи всередину кожного кроку.",
+ sessions:[
+ {
+  day:"Заняття 19", time:"90 хв", title:"Перша власна функція",
+  body:[
+   {t:"say", h:"З чого почати", x:"Ти вже користувався чужими функціями: count, array_sum, str_repeat. Хтось їх колись написав. Сьогодні напишеш свої — і різниці між твоїми і вбудованими не буде жодної, крім того, що твої розв'язують саме твою задачу."},
+   {t:"p", x:"Найпростіша функція — назва, дужки, тіло. Виклик виглядає так само, як у знайомих функцій:"},
+   {t:"code", tag:"first.php", x:`<?php
+
+declare(strict_types=1);
+
+function greet(): void
+{
+    echo "Привіт!\\n";
+}
+
+greet();
+greet();
+greet();`},
+   {t:"p", x:"<strong>Далі — параметри.</strong> Це те, що функція отримує ззовні. І <strong>повернення</strong> — те, що вона віддає назад:"},
+   {t:"code", tag:"area.php", x:`<?php
+
+declare(strict_types=1);
+
+function area(float $width, float $height): float
+{
+    return $width * $height;
+}
+
+$room = area(4.2, 3.5);
+$kitchen = area(3.0, 2.8);
+
+echo "Кімната: $room м²\\n";
+echo "Кухня: $kitchen м²\\n";
+echo "Разом: " . ($room + $kitchen) . " м²\\n";`},
+   {t:"out", x:"Кімната: 14.7 м²\nКухня: 8.4 м²\nРазом: 23.1 м²"},
+   {t:"note", k:"idea", h:"Головна ідея заняття — return, а не echo", x:"Спокуса написати всередині функції <code>echo</code> й на цьому заспокоїтись. Але тоді результат неможливо використати далі: не складеш, не порівняєш, не запишеш у файл. Функція має <strong>повертати</strong> значення, а виводить нехай той, хто її викликав. Показати обидва варіанти й спробувати скласти дві площі — з echo-версією це просто не вийде."},
+   {t:"p", x:"<strong>Типи в оголошенні</strong> — <code>float $width</code> і <code>: float</code> у кінці — це обіцянка: сюди приходять числа, звідси виходить число. З <code>declare(strict_types=1)</code> PHP перевірить обіцянку і скаржитиметься одразу, а не через десять кроків."},
+   {t:"p", x:"<strong>Значення за замовчуванням</strong> роблять аргумент необовʼязковим:"},
+   {t:"code", tag:"default.php", x:`<?php
+
+function formatPrice(float $price, string $currency = 'грн'): string
+{
+    return number_format($price, 2, ',', ' ') . ' ' . $currency;
+}
+
+echo formatPrice(1234.5);          // 1 234,50 грн
+echo "\\n";
+echo formatPrice(99.9, 'USD');     // 99,90 USD`},
+   {t:"p", x:"<strong>Практика заняття:</strong> взяти калькулятор із пʼятого заняття й розкласти його на чотири функції — <code>add</code>, <code>subtract</code>, <code>multiply</code>, <code>divide</code>. Потім написати <code>formatPrice</code> і <code>drawBar</code>, яка малює смужку з решіток заданої довжини."}
+  ]
+ },
+ {
+  day:"Заняття 20", time:"90 хв", title:"Функції глибше і рефакторинг аналізатора",
+  body:[
+   {t:"p", x:"Розбір домашки, потім чотири речі, які роблять функції по-справжньому зручними."},
+   {t:"p", x:"<strong>Ранній вихід.</strong> Замість вкладених умов — відсіяти неможливе на початку й вийти:"},
+   {t:"code", tag:"guard.php", x:`<?php
+
+declare(strict_types=1);
+
+function divide(float $a, float $b): float
+{
+    if ($b === 0.0) {
+        return 0.0;          // вийшли одразу, далі не йдемо
+    }
+
+    return $a / $b;
+}`},
+   {t:"p", x:"<strong>Функція може повернути масив</strong> — так віддають кілька значень одразу:"},
+   {t:"code", tag:"stats.php", x:`<?php
+
+declare(strict_types=1);
+
+function analyze(array $grades): array
+{
+    return [
+        'count'   => count($grades),
+        'sum'     => array_sum($grades),
+        'average' => round(array_sum($grades) / count($grades), 2),
+        'best'    => max($grades),
+        'worst'   => min($grades),
+    ];
+}
+
+$stats = analyze([12, 10, 11, 9, 12]);
+
+echo "Середній бал: {$stats['average']}\\n";
+echo "Найкраща: {$stats['best']}, найгірша: {$stats['worst']}\\n";`},
+   {t:"out", x:"Середній бал: 10.8\nНайкраща: 12, найгірша: 9"},
+   {t:"p", x:"<strong>Іменовані аргументи</strong> рятують, коли параметрів багато й порядок забувається:"},
+   {t:"code", tag:"named.php", x:`<?php
+
+function makeBar(int $value, int $max = 12, string $char = '#'): string
+{
+    $length = (int) round($value / $max * 20);
+    return str_repeat($char, $length);
+}
+
+echo makeBar(9);
+echo "\\n";
+echo makeBar(value: 9, char: '=');`},
+   {t:"note", k:"warn", h:"Порожній масив ламає analyze", x:"У функції вище <code>array_sum($grades) / count($grades)</code> при порожньому масиві дає ділення на нуль. Спробувати навмисно: <code>analyze([])</code>. Це привід додати ранній вихід на початку — і перша розмова про те, що функція має думати про дивні вхідні дані, а не тільки про правильні."},
+   {t:"p", x:"<strong>Проєкт заняття:</strong> переписати «Аналізатор класу» з вісімнадцятого заняття на функції. Було — суцільний скрипт; стало — чотири функції з іменами і десять рядків, які їх викликають. Порівняти обидві версії поруч: це найнаочніша демонстрація сенсу всього уроку."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Калькулятор на функціях", x:"Розкласти калькулятор на чотири функції з типізованими параметрами. Ділення на нуль має повертати нуль, а не ламати програму.",
+  sol:[{t:"code", tag:"calc.php", x:`<?php
+
+declare(strict_types=1);
+
+function add(float $a, float $b): float
+{
+    return $a + $b;
+}
+
+function subtract(float $a, float $b): float
+{
+    return $a - $b;
+}
+
+function multiply(float $a, float $b): float
+{
+    return $a * $b;
+}
+
+function divide(float $a, float $b): float
+{
+    if ($b === 0.0) {
+        echo "На нуль ділити не можна, повертаю 0\\n";
+        return 0.0;
+    }
+
+    return $a / $b;
+}
+
+echo "Перше число: ";
+$x = (float) trim(fgets(STDIN));
+
+echo "Друге число: ";
+$y = (float) trim(fgets(STDIN));
+
+echo "Сума: " . add($x, $y) . "\\n";
+echo "Різниця: " . subtract($x, $y) . "\\n";
+echo "Добуток: " . multiply($x, $y) . "\\n";
+echo "Частка: " . divide($x, $y) . "\\n";`},
+       {t:"p", x:"Головне тут — що кожна функція повертає число, а виводить його вже головна частина програми. Тому результати можна складати, порівнювати чи записувати у файл."}]
+ },
+ {
+  n:"2", t:"Форматування ціни й прогрес-бар", x:"Дві функції: перша перетворює число на «1 234,50 грн», друга малює смужку з решіток пропорційно значенню. Обидві мають повертати рядок, а не друкувати його.",
+  sol:[{t:"code", tag:"format.php", x:`<?php
+
+declare(strict_types=1);
+
+function formatPrice(float $price, string $currency = 'грн'): string
+{
+    return number_format($price, 2, ',', ' ') . ' ' . $currency;
+}
+
+function makeBar(float $value, float $max, int $width = 20): string
+{
+    if ($max <= 0) {
+        return '';
+    }
+
+    $length = (int) round($value / $max * $width);
+
+    return str_repeat('#', $length) . str_repeat('.', $width - $length);
+}
+
+$sales = ['Січень' => 45000, 'Лютий' => 62000, 'Березень' => 38000];
+$max = max($sales);
+
+foreach ($sales as $month => $amount) {
+    echo mb_str_pad($month, 12);
+    echo makeBar((float) $amount, (float) $max);
+    echo ' ' . formatPrice((float) $amount) . "\\n";
+}`},
+       {t:"out", x:"Січень      ###############..... 45 000,00 грн\nЛютий       #################### 62 000,00 грн\nБерезень    ############........ 38 000,00 грн"},
+       {t:"p", x:"Зверніть увагу: <code>makeBar</code> нічого не знає ані про місяці, ані про гроші. Вона вміє одне — намалювати смужку. Саме так і мають виглядати хороші функції."}]
+ },
+ {
+  n:"3", t:"Перевірка пароля, що повертає список проблем", x:"Функція приймає пароль і повертає масив із текстами проблем. Порожній масив означає, що пароль надійний.",
+  sol:[{t:"code", tag:"password.php", x:`<?php
+
+declare(strict_types=1);
+
+function checkPassword(string $password): array
+{
+    $problems = [];
+
+    if (mb_strlen($password) < 8) {
+        $problems[] = 'закороткий, треба мінімум 8 символів';
+    }
+
+    if (!preg_match('/[0-9]/', $password)) {
+        $problems[] = 'немає жодної цифри';
+    }
+
+    if (!preg_match('/[A-Z]/', $password)) {
+        $problems[] = 'немає великої літери';
+    }
+
+    return $problems;
+}
+
+echo "Придумай пароль: ";
+$password = trim(fgets(STDIN));
+
+$problems = checkPassword($password);
+
+if (count($problems) === 0) {
+    echo "Пароль надійний!\\n";
+} else {
+    echo "Проблеми:\\n";
+    foreach ($problems as $problem) {
+        echo "- $problem\\n";
+    }
+}`},
+       {t:"note", k:"tip", h:"Чому саме масив, а не текст", x:"Функція повертає дані, а не готовий вивід. Завтра той самий <code>checkPassword</code> знадобиться на сайті, де проблеми треба показати червоним у формі, а не в консолі — і функцію не доведеться переписувати. Це і є різниця між кодом на один раз і кодом, який живе."}]
+ },
+ {
+  n:"4", t:"Аналізатор класу на функціях", x:"Переписати проєкт із вісімнадцятого заняття: <code>analyze</code> рахує статистику одного учня, <code>makeBar</code> малює діаграму, <code>printTable</code> виводить рейтинг. Головна частина програми має вміститись у десяток рядків.",
+  sol:[{t:"code", tag:"analyzer.php", x:`<?php
+
+declare(strict_types=1);
+
+function analyze(array $grades): array
+{
+    if (count($grades) === 0) {
+        return ['count' => 0, 'average' => 0.0, 'best' => 0, 'worst' => 0];
+    }
+
+    return [
+        'count'   => count($grades),
+        'average' => round(array_sum($grades) / count($grades), 2),
+        'best'    => max($grades),
+        'worst'   => min($grades),
+    ];
+}
+
+function makeBar(float $value, int $width = 12): string
+{
+    return str_repeat('#', (int) round($value));
+}
+
+function printTable(array $students): void
+{
+    $place = 1;
+
+    foreach ($students as $student) {
+        echo mb_str_pad((string) $place . '.', 4);
+        echo mb_str_pad($student['name'], 10);
+        echo mb_str_pad((string) $student['stats']['average'], 7);
+        echo makeBar($student['stats']['average']) . "\\n";
+        $place++;
+    }
+}
+
+$raw = [
+    'Максим' => [12, 10, 11, 9, 12],
+    'Аня'    => [11, 12, 12, 10, 11],
+    'Олег'   => [7, 9, 8, 10, 6],
+];
+
+$students = [];
+
+foreach ($raw as $name => $grades) {
+    $students[] = ['name' => $name, 'stats' => analyze($grades)];
+}
+
+usort($students, fn($a, $b) => $b['stats']['average'] <=> $a['stats']['average']);
+
+printTable($students);`},
+       {t:"out", x:"1.  Аня       11.2   ###########\n2.  Максим    10.8   ###########\n3.  Олег      8      ########"},
+       {t:"p", x:"Порівняйте головну частину з версією з вісімнадцятого заняття. Логіка та сама, але тепер видно структуру: підготували дані, відсортували, вивели. Деталі сховані у функціях, і туди можна не заглядати, поки все працює."}]
+ }],
+ traps:[
+  "<strong><code>echo</code> замість <code>return</code>.</strong> Функція щось показує, але результат неможливо використати далі. Найчастіша помилка уроку.",
+  "<strong>Функція, яка робить три речі одразу.</strong> Рахує, виводить і ще й зберігає. Ознака — «і» в назві: <code>calculateAndPrint</code>. Ділити на дві.",
+  "<strong>Забутий <code>return</code>.</strong> Функція мовчки повертає <code>null</code>, і далі все ламається в іншому місці — шукати важко.",
+  "<strong>Назва ні про що.</strong> <code>doIt()</code>, <code>func2()</code>. Назва має відповідати на питання «що вона робить»: <code>calculateAverage</code>.",
+  "<strong>Порожній масив на вході.</strong> Ділення на <code>count()</code> при нулі елементів валить програму — потрібен ранній вихід."
+ ],
+ quiz:[
+  "Чим <code>return</code> відрізняється від <code>echo</code> всередині функції?",
+  "Навіщо писати типи параметрів, якщо PHP і без них працює?",
+  "Як повернути з функції кілька значень одразу?",
+  "Чому функція <code>makeBar</code> нічого не знає про місяці й гроші — і чому це добре?"
+ ]
+},
+{
+ id:"u11", tag:"Урок 11 · заняття 21–22", title:"Область видимості, замикання, рекурсія",
+ goal:"Два справді нових поняття всього модуля. Перше пояснює, чому змінна «зникає» — і чому це добре. Друге виглядає як магія, поки не намалюєш його на папері.",
+ sessions:[
+ {
+  day:"Заняття 21", time:"90 хв", title:"Кожна функція — окрема кімната",
+  body:[
+   {t:"say", h:"Пояснення, яке працює", x:"Уяви, що функція — це окрема кімната з зачиненими дверима. Усе, що ти створив усередині, залишається всередині. І навпаки: те, що лежить у коридорі, всередині кімнати не видно. Хочеш щось передати — простягни через двері, тобто через параметр."},
+   {t:"code", tag:"scope.php", x:`<?php
+
+declare(strict_types=1);
+
+$name = "Максим";
+
+function greet(): void
+{
+    echo "Привіт, $name!\\n";   // помилка: тут $name не існує
+}
+
+greet();`},
+   {t:"out", x:"Warning: Undefined variable $name\nПривіт, !"},
+   {t:"p", x:"Правильно — передати через параметр. Тоді функція не залежить від того, що діється зовні, і працюватиме в будь-якій програмі:"},
+   {t:"code", tag:"scope-fixed.php", x:`<?php
+
+declare(strict_types=1);
+
+function greet(string $name): void
+{
+    echo "Привіт, $name!\\n";
+}
+
+greet("Максим");
+greet("Аня");`},
+   {t:"note", k:"warn", h:"Про global — і чому ми ним не користуємось", x:"У PHP є слово <code>global</code>, яке «відчиняє двері» й пускає зовнішню змінну всередину. Воно працює — і саме тому спокусливе. Але функція одразу перестає бути самостійною: перенеси її в інший файл, і вона зламається. Показати один раз, пояснити, чому це поганий шлях, і більше не використовувати. У Laravel такого коду немає взагалі."},
+   {t:"p", x:"<strong>Змінні всередині теж не витікають назовні:</strong>"},
+   {t:"code", tag:"inside.php", x:`<?php
+
+function calculate(): int
+{
+    $result = 42;      // живе тільки тут
+    return $result;
+}
+
+calculate();
+echo $result ?? 'змінної немає';   // змінної немає`},
+   {t:"p", x:"<strong>Передача за посиланням</strong> — виняток, який варто побачити, але рідко застосовувати. Знак <code>&amp;</code> означає «працюй із самою змінною, а не з копією»:"},
+   {t:"code", tag:"reference.php", x:`<?php
+
+declare(strict_types=1);
+
+function addBonus(array $scores): array
+{
+    foreach ($scores as $i => $score) {
+        $scores[$i] = $score + 1;
+    }
+    return $scores;              // повертаємо новий масив — так зрозуміліше
+}
+
+function addBonusByRef(array &$scores): void
+{
+    foreach ($scores as $i => $score) {
+        $scores[$i] = $score + 1;   // міняємо оригінал
+    }
+}
+
+$a = [10, 11, 9];
+$b = addBonus($a);       // $a не змінився
+addBonusByRef($a);       // а тепер змінився`},
+   {t:"p", x:"<strong>Практика заняття:</strong> взяти три функції з минулого уроку й перевірити, чи жодна з них не залежить від зовнішніх змінних. Потім написати функцію, яка приймає масив оцінок і повертає новий масив тільки з тими, що вище середнього — не змінюючи оригінал."}
+  ]
+ },
+ {
+  day:"Заняття 22", time:"90 хв", title:"Функція всередині функції та рекурсія",
+  body:[
+   {t:"p", x:"Спершу — те, що він уже бачив, але не розумів. Оцей рядок із сортування таблиці:"},
+   {t:"code", tag:"callback.php", x:`<?php
+
+usort($clubs, fn($a, $b) => $b['points'] <=> $a['points']);`},
+   {t:"p", x:"<code>fn($a, $b) => ...</code> — це функція без імені, написана прямо на місці. Її називають <strong>стрілочною</strong>. Ми передаємо саму функцію як аргумент — так само, як передавали б число. <code>usort</code> потім викликає її для кожної пари.",},
+   {t:"code", tag:"arrow.php", x:`<?php
+
+declare(strict_types=1);
+
+// звичайна функція
+function double(int $n): int
+{
+    return $n * 2;
+}
+
+// та сама, але без імені й на місці
+$doubled = array_map(fn(int $n): int => $n * 2, [1, 2, 3]);
+
+print_r($doubled);   // 2, 4, 6`},
+   {t:"note", k:"idea", h:"Коли яка", x:"Якщо дія коротка й потрібна в одному місці — стрілочна функція прямо в аргументі. Якщо в неї є сенс і назва, або вона потрібна двічі — звичайна функція з іменем. Не намагайтесь запхати в <code>fn</code> десять рядків: воно технічно можливо, але читати неможливо."},
+   {t:"p", x:"<strong>Тепер рекурсія.</strong> Функція, яка викликає саму себе. Найкраще пояснення — матрьошка: відкриваєш ляльку, всередині така сама, тільки менша. І так до найменшої, яка вже не відкривається."},
+   {t:"code", tag:"factorial.php", x:`<?php
+
+declare(strict_types=1);
+
+function factorial(int $n): int
+{
+    if ($n <= 1) {
+        return 1;          // найменша матрьошка — далі не йдемо
+    }
+
+    return $n * factorial($n - 1);
+}
+
+echo factorial(5);   // 120`},
+   {t:"say", h:"Розібрати на папері", x:"Напишіть разом на аркуші: factorial(5) — це 5 × factorial(4), а це 5 × 4 × factorial(3), і так до одиниці. Потім усе згортається назад. Поки він не побачить цей ланцюжок очима, рекурсія залишатиметься магією. Пʼять хвилин з ручкою економлять годину пояснень."},
+   {t:"note", k:"warn", h:"Умова виходу — обовʼязкова", x:"Прибрати перевірку <code>if ($n &lt;= 1)</code> і запустити. Програма впаде з помилкою про перевищення глибини стека — це рекурсивний аналог нескінченного циклу. Показати обовʼязково: тепер він знатиме, як виглядає ця поломка."},
+   {t:"p", x:"<strong>Практичне застосування</strong> — обхід вкладеного масиву невідомої глибини. Циклом це не зробити, бо не знаєш, скільки там рівнів:"},
+   {t:"code", tag:"tree.php", x:`<?php
+
+declare(strict_types=1);
+
+function printTree(array $items, int $level = 0): void
+{
+    foreach ($items as $name => $children) {
+        echo str_repeat('  ', $level) . '- ' . $name . "\\n";
+
+        if (is_array($children)) {
+            printTree($children, $level + 1);
+        }
+    }
+}
+
+$menu = [
+    'Ігри' => [
+        'Стратегії' => ['Age of Empires' => [], 'Civilization' => []],
+        'Шутери' => ['Counter-Strike' => []],
+    ],
+    'Музика' => ['Рок' => [], 'Реп' => []],
+];
+
+printTree($menu);`},
+   {t:"out", x:"- Ігри\n  - Стратегії\n    - Age of Empires\n    - Civilization\n  - Шутери\n    - Counter-Strike\n- Музика\n  - Рок\n  - Реп"},
+   {t:"p", x:"Саме так виводять дерево коментарів, структуру папок і меню сайту з підпунктами. Це перша задача, де рекурсія не вправа, а єдиний нормальний спосіб."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Функції без залежностей", x:"Перевірити всі функції з минулого уроку: чи жодна не використовує змінну, якої немає в її параметрах. Якщо знайшлась — переробити через параметр.",
+  sol:[{t:"p", x:"Найпростіша перевірка: скопіювати функцію в порожній новий файл, викликати її там і подивитись, чи працює. Якщо не працює — вона таємно залежала від чогось зовнішнього."},
+       {t:"code", tag:"check.php", x:`<?php
+
+declare(strict_types=1);
+
+// було: залежить від зовнішнього $taxRate
+function withTax(float $price): float
+{
+    global $taxRate;
+    return $price * (1 + $taxRate);
+}
+
+// стало: усе своє
+function withTaxFixed(float $price, float $taxRate = 0.2): float
+{
+    return $price * (1 + $taxRate);
+}
+
+echo withTaxFixed(1000);        // 1200
+echo "\\n";
+echo withTaxFixed(1000, 0.05);  // 1050`}]
+ },
+ {
+  n:"2", t:"Фільтр без зміни оригіналу", x:"Функція приймає масив оцінок і повертає новий масив тільки з тими, що вище середнього. Оригінальний масив має залишитись недоторканим — перевірити це через <code>print_r</code> до і після.",
+  sol:[{t:"code", tag:"filter.php", x:`<?php
+
+declare(strict_types=1);
+
+function aboveAverage(array $grades): array
+{
+    if (count($grades) === 0) {
+        return [];
+    }
+
+    $average = array_sum($grades) / count($grades);
+
+    return array_values(array_filter($grades, fn($g) => $g > $average));
+}
+
+$grades = [12, 9, 11, 8, 10, 7, 12];
+
+print_r(aboveAverage($grades));
+print_r($grades);   // не змінився`},
+       {t:"p", x:"Функція отримує копію масиву, тому оригінал у безпеці. Це поведінка за замовчуванням у PHP — і саме тому <code>&amp;</code> потрібен так рідко."}]
+ },
+ {
+  n:"3", t:"Числа Фібоначчі двома способами", x:"Порахувати перші 15 чисел послідовності: спершу циклом, потім рекурсивно. Порівняти час виконання для 30-го числа через <code>microtime</code>.",
+  sol:[{t:"code", tag:"fib.php", x:`<?php
+
+declare(strict_types=1);
+
+function fibLoop(int $n): int
+{
+    $a = 0;
+    $b = 1;
+
+    for ($i = 0; $i < $n; $i++) {
+        [$a, $b] = [$b, $a + $b];
+    }
+
+    return $a;
+}
+
+function fibRecursive(int $n): int
+{
+    if ($n <= 1) {
+        return $n;
+    }
+
+    return fibRecursive($n - 1) + fibRecursive($n - 2);
+}
+
+for ($i = 1; $i <= 15; $i++) {
+    echo fibLoop($i) . ' ';
+}
+echo "\\n\\n";
+
+$start = microtime(true);
+fibLoop(30);
+echo "Цикл: " . round((microtime(true) - $start) * 1000, 2) . " мс\\n";
+
+$start = microtime(true);
+fibRecursive(30);
+echo "Рекурсія: " . round((microtime(true) - $start) * 1000, 2) . " мс\\n";`},
+       {t:"note", k:"idea", h:"Тут ховається важливий урок", x:"Рекурсивна версія для 30-го числа працює в сотні разів повільніше, бо перераховує ті самі значення знову й знову. Красивий код не завжди швидкий. Це перше зіткнення з тим, що в програмуванні бувають компроміси — і привід сказати, що на 21-му уроці ми навчимось такі речі оцінювати."}]
+ },
+ {
+  n:"4", t:"Дерево категорій", x:"Вивести вкладене меню будь-якої глибини з відступами. Додати нумерацію рівнів: перший рівень цифрами, другий — літерами, третій — рисками.",
+  sol:[{t:"code", tag:"menu.php", x:`<?php
+
+declare(strict_types=1);
+
+function printMenu(array $items, int $level = 0): void
+{
+    $number = 1;
+
+    foreach ($items as $name => $children) {
+        $prefix = match ($level) {
+            0 => $number . '. ',
+            1 => '   ' . chr(96 + $number) . ') ',
+            default => str_repeat('   ', $level) . '- ',
+        };
+
+        echo $prefix . $name . "\\n";
+
+        if (is_array($children) && count($children) > 0) {
+            printMenu($children, $level + 1);
+        }
+
+        $number++;
+    }
+}
+
+$catalog = [
+    'Електроніка' => [
+        'Компʼютери' => ['Ноутбуки' => [], 'Монітори' => []],
+        'Телефони' => [],
+    ],
+    'Книги' => ['Фантастика' => [], 'Детективи' => []],
+];
+
+printMenu($catalog);`},
+       {t:"p", x:"Параметр <code>$level</code> зі значенням за замовчуванням — типовий прийом рекурсії: зовні функцію викликають без нього, а сама себе вона викликає з наступним рівнем."}]
+ }],
+ traps:[
+  "<strong><code>global</code> замість параметра.</strong> Працює сьогодні, ламається при першому перенесенні коду. Якщо зʼявилось — переробляти одразу.",
+  "<strong>Рекурсія без умови виходу.</strong> Fatal error про глибину стека. Перше, що перевіряти в рекурсивній функції, — чи є вихід і чи він досяжний.",
+  "<strong>Рекурсія там, де достатньо циклу.</strong> Факторіал і Фібоначчі — навчальні приклади; у реальному коді рекурсія потрібна для дерев і вкладених структур.",
+  "<strong>Спроба змінити масив усередині функції й здивування, що зовні нічого не змінилось.</strong> Так і має бути: функція отримує копію.",
+  "<strong>Стрілочна функція на десять рядків.</strong> Технічно можна, читати неможливо — це вже звичайна функція з іменем."
+ ],
+ quiz:[
+  "Чому змінна, створена всередині функції, не видна ззовні — і чому це зручно?",
+  "Що поганого в <code>global</code>, якщо воно працює?",
+  "Що станеться, якщо в рекурсивній функції забути умову виходу?",
+  "Коли рекурсія справді потрібна, а коли достатньо звичайного циклу?"
+ ]
+},
+{
+ id:"u12", tag:"Урок 12 · заняття 23–24", title:"Файли, структура і проєкт-бос",
+ goal:"Останній урок модуля. Функції вже є — тепер вони переїжджають у власні файли, а проєкт отримує структуру, у якій сторонній людині зрозуміло, де що лежить. Завершується грою на кілька сотень рядків.",
+ sessions:[
+ {
+  day:"Заняття 23", time:"90 хв", title:"Проєкт розпадається на файли",
+  body:[
+   {t:"say", h:"Навіщо це", x:"Твій аналізатор — це вже сто рядків в одному файлі. Морський бій буде триста. У Laravel-проєкті їх десятки тисяч, і ніхто не тримає це в одному місці. Розкладати код по файлах — не естетика, а єдиний спосіб потім щось у ньому знайти."},
+   {t:"p", x:"Механізм простий: <code>require</code> вставляє вміст іншого файлу в те місце, де він написаний."},
+   {t:"code", tag:"структура", x:`morskyi-bii/
+├── index.php          # запуск: тут тільки виклики
+├── src/
+│   ├── board.php      # функції поля
+│   ├── ships.php      # розстановка кораблів
+│   └── display.php    # усе, що малює на екрані
+└── README.md`},
+   {t:"code", tag:"index.php", x:`<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/src/board.php';
+require_once __DIR__ . '/src/ships.php';
+require_once __DIR__ . '/src/display.php';
+
+$board = createBoard(8);
+$board = placeShips($board, 5);
+
+drawBoard($board);`},
+   {t:"note", k:"tip", h:"Чому require_once і __DIR__", x:"<code>require_once</code> вставляє файл лише раз, навіть якщо його підключили двічі — інакше PHP скаржиться, що функція вже оголошена. <code>__DIR__</code> — це папка поточного файлу; без нього шлях рахується від того місця, звідки запустили програму, і все ламається при першому ж запуску з іншої папки. Дві звички, які варто взяти одразу назавжди."},
+   {t:"p", x:"<strong>Як ділити.</strong> Правило просте: в одному файлі — функції про одну тему. Не «утиліти», не «різне», а конкретно: усе про поле, усе про кораблі, усе про вивід. Якщо не можеш придумати назву файлу — швидше за все, у ньому змішалось те, що не має бути разом."},
+   {t:"p", x:"<strong>Практика заняття — рефакторинг.</strong> Взяти аналізатор класу й розкласти: <code>src/stats.php</code> з обчисленнями, <code>src/display.php</code> з виводом, <code>index.php</code> із десятком рядків. Після цього — DRY: пройтись по всіх старих програмах і знайти код, який повторюється двічі. Кожен такий шматок стає функцією."},
+   {t:"p", x:"<strong>І README.</strong> Файл, який пояснює проєкт незнайомій людині: що це, як запустити, що вміє. Три абзаци, не більше. Це те, що першим бачать на GitHub — і те, чого майже ніхто не робить."},
+   {t:"code", tag:"README.md", x:`# Аналізатор класу
+
+Консольна програма: рахує середні бали учнів,
+будує рейтинг і малює текстову діаграму.
+
+## Запуск
+
+    php index.php
+
+## Структура
+
+- index.php — точка входу
+- src/stats.php — обчислення
+- src/display.php — вивід у консоль`}
+  ]
+ },
+ {
+  day:"Заняття 24", time:"90–120 хв", title:"Проєкт-бос: морський бій",
+  body:[
+   {t:"p", x:"Фінальна робота модуля. Гра проти компʼютера в консолі: поле 8×8, пʼять кораблів, постріли за координатами, підрахунок влучань."},
+   {t:"say", h:"Почати з паперу, а не з коду", x:"Перші пʼятнадцять хвилин — без компʼютера. Питання: які дії має вміти програма? Виписати їх списком: створити поле, розставити кораблі, намалювати, прийняти постріл, перевірити влучання, порахувати, чи всі потоплені. Кожен пункт цього списку стане функцією. Це і є проєктування, і саме цієї навички не дають курси."},
+   {t:"code", tag:"src/board.php", x:`<?php
+
+declare(strict_types=1);
+
+function createBoard(int $size): array
+{
+    $board = [];
+
+    for ($row = 0; $row < $size; $row++) {
+        for ($col = 0; $col < $size; $col++) {
+            $board[$row][$col] = '.';
+        }
+    }
+
+    return $board;
+}
+
+function placeShips(array $board, int $count): array
+{
+    $size = count($board);
+    $placed = 0;
+
+    while ($placed < $count) {
+        $row = random_int(0, $size - 1);
+        $col = random_int(0, $size - 1);
+
+        if ($board[$row][$col] === '.') {
+            $board[$row][$col] = 'S';
+            $placed++;
+        }
+    }
+
+    return $board;
+}
+
+function countShips(array $board): int
+{
+    $count = 0;
+
+    foreach ($board as $row) {
+        foreach ($row as $cell) {
+            if ($cell === 'S') {
+                $count++;
+            }
+        }
+    }
+
+    return $count;
+}`},
+   {t:"code", tag:"src/display.php", x:`<?php
+
+declare(strict_types=1);
+
+function drawBoard(array $board, bool $showShips = false): void
+{
+    $size = count($board);
+
+    echo "\\n   ";
+    for ($col = 0; $col < $size; $col++) {
+        echo ($col + 1) . ' ';
+    }
+    echo "\\n";
+
+    foreach ($board as $index => $row) {
+        echo chr(65 + $index) . '  ';
+
+        foreach ($row as $cell) {
+            if ($cell === 'S' && !$showShips) {
+                echo '. ';
+            } else {
+                echo $cell . ' ';
+            }
+        }
+
+        echo "\\n";
+    }
+}`},
+   {t:"p", x:"<strong>Головний цикл</strong> — в <code>index.php</code>. Він читається як опис гри, бо всі деталі сховані у функціях:"},
+   {t:"code", tag:"index.php", x:`<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/src/board.php';
+require_once __DIR__ . '/src/display.php';
+require_once __DIR__ . '/src/shots.php';
+
+$board = placeShips(createBoard(8), 5);
+$shots = 0;
+
+echo "Морський бій. Поле 8x8, сховано 5 кораблів.\\n";
+
+while (countShips($board) > 0) {
+    drawBoard($board);
+
+    echo "\\nТвій постріл (наприклад B3): ";
+    $input = trim(fgets(STDIN));
+
+    $coords = parseShot($input, count($board));
+
+    if ($coords === null) {
+        echo "Не зрозумів координати, спробуй ще.\\n";
+        continue;
+    }
+
+    [$row, $col] = $coords;
+    $shots++;
+
+    $board = applyShot($board, $row, $col);
+}
+
+drawBoard($board, true);
+echo "\\nПеремога! Витрачено пострілів: $shots\\n";`},
+   {t:"note", k:"idea", h:"Прочитати головний файл уголос", x:"«Створити поле, розставити кораблі. Поки лишились кораблі: намалювати, спитати постріл, розібрати координати, застосувати». Це читається як правила гри, а не як код — і саме в цьому сенс усього модуля. Обовʼязково зверніть на це його увагу: пів року тому та сама програма була б суцільною стіною на триста рядків."},
+   {t:"p", x:"<strong>Порядок роботи:</strong> спершу мінімальна версія, де поле малюється й приймається один постріл. Переконатись, що працює. Тільки потім — перевірка координат, підрахунок, екран перемоги. Не намагатись зробити все одразу: це найважливіша звичка, яку варто винести з проєкту."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Розкласти аналізатор на файли", x:"Створити структуру з <code>index.php</code>, <code>src/stats.php</code> і <code>src/display.php</code>. Головний файл має вміститись у 15 рядків.",
+  sol:[{t:"code", tag:"src/stats.php", x:`<?php
+
+declare(strict_types=1);
+
+function analyze(array $grades): array
+{
+    if (count($grades) === 0) {
+        return ['count' => 0, 'average' => 0.0, 'best' => 0, 'worst' => 0];
+    }
+
+    return [
+        'count'   => count($grades),
+        'average' => round(array_sum($grades) / count($grades), 2),
+        'best'    => max($grades),
+        'worst'   => min($grades),
+    ];
+}
+
+function buildRating(array $raw): array
+{
+    $students = [];
+
+    foreach ($raw as $name => $grades) {
+        $students[] = ['name' => $name, 'stats' => analyze($grades)];
+    }
+
+    usort($students, fn($a, $b) => $b['stats']['average'] <=> $a['stats']['average']);
+
+    return $students;
+}`},
+       {t:"code", tag:"index.php", x:`<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/src/stats.php';
+require_once __DIR__ . '/src/display.php';
+
+$raw = [
+    'Максим' => [12, 10, 11, 9, 12],
+    'Аня'    => [11, 12, 12, 10, 11],
+    'Олег'   => [7, 9, 8, 10, 6],
+];
+
+printTable(buildRating($raw));`},
+       {t:"p", x:"Перевірка якості: якщо в <code>index.php</code> залишились обчислення або <code>str_repeat</code> — розділення неповне. Головний файл має тільки готувати дані й викликати функції."}]
+ },
+ {
+  n:"2", t:"Знайти повторення", x:"Пройтись по всіх програмах, написаних за пʼять місяців, і знайти код, який повторюється у двох і більше місцях. Винести кожен такий шматок у функцію й скласти з них файл <code>src/helpers.php</code>.",
+  sol:[{t:"p", x:"Найчастіші кандидати, які знаходяться майже в кожного:"},
+       {t:"code", tag:"src/helpers.php", x:`<?php
+
+declare(strict_types=1);
+
+function ask(string $question): string
+{
+    echo $question . ' ';
+    return trim(fgets(STDIN));
+}
+
+function askNumber(string $question): float
+{
+    return (float) ask($question);
+}
+
+function line(int $length = 40): void
+{
+    echo str_repeat('-', $length) . "\\n";
+}
+
+function formatPrice(float $price, string $currency = 'грн'): string
+{
+    return number_format($price, 2, ',', ' ') . ' ' . $currency;
+}`},
+       {t:"note", k:"tip", h:"Одна функція, яка змінить усе", x:"<code>ask()</code> прибирає з коду <code>trim(fgets(STDIN))</code> назавжди. Замість трьох рядків — <code>$name = ask('Як тебе звати?');</code>. Такі маленькі помічники — те, з чого починається власна бібліотека, і те, чим по суті є половина Laravel."}]
+ },
+ {
+  n:"3", t:"Морський бій: мінімальна версія", x:"Поле 8×8, пʼять кораблів у випадкових клітинках, один постріл за координатами виду B3, повідомлення про влучання чи промах. Розкладено щонайменше на три файли.",
+  sol:[{t:"code", tag:"src/shots.php", x:`<?php
+
+declare(strict_types=1);
+
+function parseShot(string $input, int $size): ?array
+{
+    $input = mb_strtoupper(trim($input));
+
+    if (mb_strlen($input) < 2) {
+        return null;
+    }
+
+    $row = ord(mb_substr($input, 0, 1)) - 65;
+    $col = (int) mb_substr($input, 1) - 1;
+
+    if ($row < 0 || $row >= $size || $col < 0 || $col >= $size) {
+        return null;
+    }
+
+    return [$row, $col];
+}
+
+function applyShot(array $board, int $row, int $col): array
+{
+    if ($board[$row][$col] === 'S') {
+        $board[$row][$col] = 'X';
+        echo "Влучання!\\n";
+    } elseif ($board[$row][$col] === '.') {
+        $board[$row][$col] = 'o';
+        echo "Мимо.\\n";
+    } else {
+        echo "Сюди вже стріляли.\\n";
+    }
+
+    return $board;
+}`},
+       {t:"p", x:"<code>?array</code> у типі повернення означає «масив або null». Повертати null для «не вдалося розібрати» — звичайна практика, і саме тому в головному циклі стоїть перевірка <code>if ($coords === null)</code>."},
+       {t:"note", k:"warn", h:"Найімовірніше місце помилки", x:"Координати. Гравець пише B3, а масив рахує з нуля: B — це рядок 1, 3 — це колонка 2. Порадьте на час налагодження виводити <code>var_dump($coords)</code> після розбору — стане видно одразу."}]
+ },
+ {
+  n:"4", t:"Довести гру до кінця", x:"Додати підрахунок пострілів, екран перемоги з показом усього поля, захист від повторного пострілу в ту саму клітинку і README з інструкцією запуску.",
+  sol:[{t:"p", x:"Захист від повторного пострілу вже вбудований у <code>applyShot</code> — гілка «сюди вже стріляли». Варто зробити так, щоб такий постріл не рахувався:"},
+       {t:"code", tag:"index.php", x:`<?php
+
+// у головному циклі
+$before = countShots($board);
+$board = applyShot($board, $row, $col);
+
+if (countShots($board) > $before) {
+    $shots++;   // рахуємо тільки нові постріли
+}`},
+       {t:"p", x:"І фінальний штрих: після перемоги вивести не лише кількість пострілів, а й оцінку — 5 пострілів це ідеально, до 15 добре, більше 30 варто краще прицілюватись. Гра має говорити з гравцем, а не просто рахувати."}]
+ }],
+ traps:[
+  "<strong>Шлях без <code>__DIR__</code>.</strong> Працює, поки запускаєш із тієї самої папки, і ламається при першому ж запуску з іншої.",
+  "<strong><code>require</code> замість <code>require_once</code>.</strong> Файл підключився двічі — «Cannot redeclare function».",
+  "<strong>Файл <code>utils.php</code>, у який складається все підряд.</strong> Через місяць це знову одна велика купа, тільки в іншому місці.",
+  "<strong>Спроба зробити гру повністю з першого разу.</strong> Мінімальна робоча версія спершу — інакше нічого не запуститься до самого кінця, і мотивація зникне.",
+  "<strong>Координати без урахування нуля.</strong> B3 — це рядок 1, колонка 2. Класична помилка «на одиницю», яку легко знайти через <code>var_dump</code>."
+ ],
+ quiz:[
+  "Навіщо <code>__DIR__</code> у шляху до файлу?",
+  "Чим <code>require_once</code> відрізняється від <code>require</code>?",
+  "За яким принципом ділити функції по файлах?",
+  "Чому проєкт починають із мінімальної робочої версії, а не з повної?"
+ ]
+}
+];
+
+const FINAL = [
+ "<strong>Пише власні функції.</strong> З типізованими параметрами й <code>return</code>, а не <code>echo</code> всередині — і розуміє, чому це важливо.",
+ "<strong>Розділяє обчислення й вивід.</strong> Одна функція рахує, інша малює; жодна не робить обидва.",
+ "<strong>Розуміє область видимості.</strong> Знає, чому змінна не видна ззовні, і не лікує це через <code>global</code>.",
+ "<strong>Читає стрілочні функції.</strong> Рядок із <code>usort</code> і <code>array_map</code> перестав бути магічним заклинанням.",
+ "<strong>Уміє рекурсію.</strong> Може обійти вкладену структуру будь-якої глибини і знає, що буде без умови виходу.",
+ "<strong>Розкладає проєкт на файли.</strong> <code>index.php</code> плюс папка <code>src/</code>, у якій зрозуміло, де що лежить.",
+ "<strong>Має гру на 300 рядків:</strong> морський бій із полем, пострілами, підрахунком і README.",
+ "<strong>Готовий до уроків 13–15:</strong> рядки, дати, файли й обробка помилок. Після них дані нарешті переживатимуть закриття програми."
+];
+</script>
+<script>
+(function(){
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const RE = /(\/\/[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(<\?php|\?>)|(\$[A-Za-z_]\w*)|\b(declare|strict_types|echo|print|if|elseif|else|match|function|return|true|false|null|exit|new|class|foreach|for|while)\b|\b(\d+\.?\d*)\b/g;
+
+  function hl(code){
+    let out = "", last = 0;
+    code.replace(RE, (m,c,s,t,v,k,n,off)=>{
+      out += esc(code.slice(last, off));
+      const cls = c ? "c" : s ? "s" : t ? "k" : v ? "v" : k ? "k" : "n";
+      out += '<span class="'+cls+'">'+esc(m)+'</span>';
+      last = off + m.length;
+      return m;
+    });
+    return out + esc(code.slice(last));
+  }
+
+  function blocks(list){
+    return list.map(b=>{
+      if (b.t === "p")    return `<p>${b.x}</p>`;
+      if (b.t === "ul")   return `<ul>${b.x.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+      if (b.t === "code") return `<div class="code-wrap"><pre>${hl(b.x)}</pre>${b.tag?`<span class="tag">${esc(b.tag)}</span>`:""}</div>`;
+      if (b.t === "out")  return `<div class="out"><b>Що виведе</b>${esc(b.x)}</div>`;
+      if (b.t === "note") return `<div class="note ${b.k}"><b>${esc(b.h)}</b>${b.x}</div>`;
+      if (b.t === "say")  return `<div class="say"><b>${esc(b.h)}</b>${b.x}</div>`;
+      return "";
+    }).join("");
+  }
+
+  document.getElementById("weeks").innerHTML = WEEKS.map(w=>`
+    <section class="week" id="${w.id}">
+      <div class="w-head">
+        <span class="w-tag">${esc(w.tag)}</span>
+        <h2>${esc(w.title)}</h2>
+        <p class="w-goal">${esc(w.goal)}</p>
+      </div>
+
+      ${w.sessions.map(s=>`
+      <article class="ses">
+        <div class="ses-head">
+          <span class="ses-day">${esc(s.day)}</span>
+          <h3>${esc(s.title)}</h3>
+          <span class="ses-time">${esc(s.time)}</span>
+        </div>
+        <div class="body">${blocks(s.body)}</div>
+      </article>`).join("")}
+
+      <div class="tasks">
+        <h3>Завдання тижня</h3>
+        <p>Робити самостійно. Розвʼязок відкривати тільки після власної спроби — або разом, якщо застряг більше ніж на 15 хвилин.</p>
+        ${w.tasks.map(t=>`
+        <div class="task">
+          <h4><i>№${esc(t.n)}</i>${esc(t.t)}</h4>
+          <p>${esc(t.x)}</p>
+          <details>
+            <summary>Показати розвʼязок</summary>
+            <div>${blocks(t.sol)}</div>
+          </details>
+        </div>`).join("")}
+      </div>
+
+      <div class="checks">
+        <div class="chkbox traps">
+          <h3>Типові пастки тижня</h3>
+          <ul>${w.traps.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="chkbox quiz">
+          <h3>Питання на перевірку</h3>
+          <ul>${w.quiz.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </section>`).join("");
+
+  document.getElementById("final-list").innerHTML = FINAL.map(x=>`<li>${x}</li>`).join("");
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Маршрут до фулстеку</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.nav,.dash,.track{display:none !important}
+  body{background:#fff !important}
+  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --base:#2F5BEA; --web:#E1541F; --stack:#7440D8;
+  --ok:#0E8F49; --amber:#B9760A; --amber-bg:#FDF3E0;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+  --r-card:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --base:#7B9BFF; --web:#FF8B57; --stack:#B18CFF;
+    --ok:#3ECF8E; --amber:#F0B44B; --amber-bg:#221C10;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --base:#7B9BFF; --web:#FF8B57; --stack:#B18CFF;
+  --ok:#3ECF8E; --amber:#F0B44B; --amber-bg:#221C10;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif;
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px; margin:0 auto; padding:clamp(24px,5vw,56px) clamp(16px,4vw,32px) 96px;}
+h1,h2,h3{font-family:"Unbounded","Golos Text",system-ui,sans-serif; text-wrap:balance; margin:0; letter-spacing:-.01em;}
+p{margin:0}
+a{color:inherit}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+/* ── header ─────────────────────────────── */
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3);}
+h1{font-size:clamp(1.9rem,5.2vw,3rem); font-weight:700; line-height:1.08; margin:14px 0 0;}
+.lead{color:var(--ink-2); font-size:clamp(1rem,2.2vw,1.1rem); max-width:62ch; margin-top:14px;}
+
+.dash{
+  margin-top:30px; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-card); padding:20px 22px; box-shadow:var(--shadow);
+  display:flex; flex-direction:column; gap:16px;
+}
+.dash-top{display:flex; flex-wrap:wrap; align-items:flex-end; gap:22px 30px; justify-content:space-between;}
+.stats{display:flex; gap:28px; flex-wrap:wrap;}
+.stat b{display:block; font-family:"Unbounded",sans-serif; font-size:1.5rem; font-weight:700; line-height:1.1; font-variant-numeric:tabular-nums;}
+.stat span{font-family:"JetBrains Mono",monospace; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);}
+.lvl{text-align:right}
+.lvl b{color:var(--stack)}
+
+.bar{display:flex; gap:4px; height:12px;}
+.bar-seg{position:relative; border-radius:99px; overflow:hidden; background:var(--surface-2); border:1px solid var(--line);}
+.bar-fill{position:absolute; inset:0 auto 0 0; width:0; border-radius:99px; transition:width .45s cubic-bezier(.4,0,.2,1);}
+.legend{display:flex; flex-wrap:wrap; gap:6px 20px; font-size:.82rem; color:var(--ink-2);}
+.legend i{display:inline-block; width:12px; height:12px; border-radius:4px; margin-right:7px; vertical-align:-1px;}
+
+.tools{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; align-items:center;}
+.btn{
+  font-family:"JetBrains Mono",monospace; font-size:.75rem; letter-spacing:.03em;
+  background:var(--surface); color:var(--ink-2); border:1px solid var(--line);
+  border-radius:9px; padding:7px 13px; cursor:pointer;
+}
+.btn:hover{border-color:var(--ink-3); color:var(--ink)}
+.btn:focus-visible,summary:focus-visible,.chk:focus-visible{outline:2px solid var(--base); outline-offset:3px;}
+#sync{font-family:"JetBrains Mono",monospace; font-size:.7rem; color:var(--ink-3);}
+
+/* ── route ──────────────────────────────── */
+.route{margin-top:44px; display:flex; flex-direction:column;}
+.stage{display:grid; grid-template-columns:46px 1fr; gap:0 20px;}
+.rail{position:relative}
+.rail::before{
+  content:""; position:absolute; left:23px; top:8px; bottom:-4px; width:3px;
+  transform:translateX(-50%); background:var(--tc); opacity:.28; border-radius:2px;
+}
+.stage:last-child .rail::before{display:none}
+.node{
+  position:relative; z-index:1; width:46px; height:46px; border-radius:50%;
+  display:grid; place-items:center; background:var(--surface);
+  border:3px solid var(--tc); color:var(--tc);
+  font-family:"Unbounded",sans-serif; font-weight:700; font-size:1rem;
+  font-variant-numeric:tabular-nums;
+}
+.node.full{background:var(--tc); color:var(--surface); border-color:var(--tc)}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);
+  margin-bottom:20px; box-shadow:var(--shadow); overflow:hidden;
+}
+summary{list-style:none; cursor:pointer; padding:18px 20px; display:block;}
+summary::-webkit-details-marker{display:none}
+.s-head{display:flex; align-items:flex-start; gap:14px;}
+.s-title{flex:1; min-width:0}
+.s-title h2{font-size:clamp(1.05rem,2.6vw,1.3rem); font-weight:600; line-height:1.25;}
+.s-meta{display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:8px;
+  font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3);}
+.s-meta .dur{color:var(--tc)}
+.chev{flex:none; color:var(--ink-3); transition:transform .25s; margin-top:4px}
+details[open] .chev{transform:rotate(90deg)}
+.body{padding:2px 20px 22px; display:flex; flex-direction:column; gap:20px;}
+.goal{color:var(--ink-2)}
+.blk h3{
+  font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px;
+}
+.chips{display:flex; flex-wrap:wrap; gap:7px}
+.chip{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:99px;
+  padding:4px 11px; font-size:.82rem; color:var(--ink-2);
+}
+.links{display:grid; gap:8px; margin:0; padding:0; list-style:none;}
+.links li{display:flex; flex-wrap:wrap; gap:4px 9px; align-items:baseline; font-size:.92rem;}
+.links a{
+  font-weight:600; color:var(--tc); text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--tc) 35%, transparent);
+}
+.links a:hover{border-bottom-color:var(--tc)}
+.links em{color:var(--ink-3); font-style:normal; font-size:.86rem;}
+.boss{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 35%, transparent);
+  border-radius:11px; padding:14px 16px;}
+.boss h3{color:var(--amber); margin-bottom:6px}
+.boss p{color:var(--ink); font-size:.95rem}
+.steps{list-style:none; margin:0; padding:0; display:grid; gap:2px;}
+.steps li{display:flex}
+.chk{
+  display:flex; align-items:flex-start; gap:11px; width:100%; text-align:left;
+  background:none; border:0; padding:7px 8px; border-radius:8px; cursor:pointer;
+  font:inherit; font-size:.94rem; color:var(--ink); line-height:1.5;
+}
+.chk:hover{background:var(--surface-2)}
+.box{
+  flex:none; width:19px; height:19px; margin-top:2px; border-radius:6px;
+  border:2px solid var(--ink-3); display:grid; place-items:center; transition:.15s;
+}
+.chk[aria-pressed="true"] .box{background:var(--tc); border-color:var(--tc)}
+.box svg{opacity:0; width:11px; height:11px; color:var(--surface)}
+.chk[aria-pressed="true"] .box svg{opacity:1}
+.chk[aria-pressed="true"] .txt{color:var(--ink-3); text-decoration:line-through; text-decoration-color:color-mix(in srgb, var(--ink-3) 55%, transparent);}
+.gate{
+  display:flex; gap:11px; align-items:flex-start; font-size:.9rem; color:var(--ink-2);
+  border-top:1px dashed var(--line); padding-top:16px;
+}
+.gate b{color:var(--ok); font-family:"JetBrains Mono",monospace; font-size:.68rem;
+  letter-spacing:.1em; text-transform:uppercase; flex:none; margin-top:3px}
+
+/* ── notes ──────────────────────────────── */
+.notes{margin-top:60px; display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+.note{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:20px 22px; box-shadow:var(--shadow);}
+.note h2{font-size:1.02rem; font-weight:600; margin-bottom:12px}
+.note ul{margin:0; padding-left:18px; display:grid; gap:8px; font-size:.92rem; color:var(--ink-2);}
+.note ul strong{color:var(--ink); font-weight:600}
+.week{display:grid; gap:7px; margin-top:2px}
+.day{display:grid; grid-template-columns:92px 1fr; gap:12px; align-items:baseline; font-size:.9rem;}
+.day b{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3);}
+.day span{color:var(--ink-2)}
+.sect-title{margin:64px 0 22px; font-size:1.35rem; font-weight:700;}
+footer{margin-top:56px; padding-top:22px; border-top:1px solid var(--line); color:var(--ink-3); font-size:.84rem;}
+
+@media (max-width:560px){
+  .stage{grid-template-columns:34px 1fr; gap:0 13px}
+  .node{width:34px;height:34px;font-size:.85rem;border-width:2.5px}
+  .rail::before{left:17px}
+  .day{grid-template-columns:1fr; gap:1px}
+  .lvl{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">План навчання · 13 років · ціль: фулстек на Laravel + Vue</p>
+    <h1>Маршрут до фулстеку</h1>
+    <p class="lead">Одинадцять етапів від першого рядка коду до власного сервісу на Laravel і Vue, яким користуються живі люди. Мова обрана під ціль: PHP з першого дня, тому жодна година не витрачається на проміжні мови. Кожен етап закінчується не тестом, а робочою штукою. Відмічай кроки — прогрес зберігається.</p>
+
+    <div class="dash">
+      <div class="dash-top">
+        <div class="stats">
+          <div class="stat"><b id="st-done">0/0</b><span>кроків зроблено</span></div>
+          <div class="stat"><b id="st-stages">0/11</b><span>етапів закрито</span></div>
+          <div class="stat"><b id="st-xp">0</b><span>XP</span></div>
+        </div>
+        <div class="stat lvl"><b id="st-lvl">Рівень 1</b><span id="st-next">до наступного: 100 XP</span></div>
+      </div>
+      <div class="bar" id="bar"></div>
+      <div class="legend">
+        <span><i style="background:var(--base)"></i>Фундамент</span>
+        <span><i style="background:var(--web)"></i>Веб</span>
+        <span><i style="background:var(--stack)"></i>Фулстек</span>
+      </div>
+    </div>
+
+    <div class="tools">
+      <button class="btn" id="expand">Розгорнути все</button>
+      <button class="btn" id="collapse">Згорнути все</button>
+      <button class="btn" id="reset">Скинути прогрес</button>
+      <span id="sync"></span>
+    </div>
+  </header>
+
+  <main class="route" id="route"></main>
+
+  <h2 class="sect-title">Як це працює на практиці</h2>
+  <section class="notes" id="notes"></section>
+
+  <footer>Темп орієнтовний: розрахунок на 4–6 годин на тиждень, разом близько двох років до першого справжнього фулстек-проєкту. Якщо етап іде швидше — не гальмуй; якщо буксує — краще додати проєкт, ніж додати теорію.</footer>
+</div>
+
+<script>
+const ROUTE = [
+{
+  id:"s0", n:"0", track:"base", title:"Основи програмування на PHP",
+  dur:"5–6 місяців · 24 уроки",
+  goal:"Найдовший і найважливіший етап. Мова обрана під ціль: PHP — це те, на чому написаний Laravel, тому тут немає жодної години «на викид». Спочатку логіка й ООП у консолі, браузер — потім.",
+  topics:["змінні й типи","умови","цикли","масиви","функції","рядки й файли","JSON","ООП","Composer","алгоритми","Git"],
+  links:[
+    {t:"Детальний план: 24 уроки", u:"2-osnovy-php.html", n:"поурочний розбір цього етапу з практикою і критеріями"},
+    {t:"Laracasts: PHP for Beginners", u:"https://laracasts.com/series/php-for-beginners-2023-edition", n:"безкоштовно, від автора головних уроків з Laravel"},
+    {t:"Довідник php.net", u:"https://www.php.net/manual/uk/", n:"відкривати щоразу при незнайомій функції"},
+    {t:"Exercism PHP", u:"https://exercism.org/tracks/php", n:"задачі з ревʼю від менторів"}
+  ],
+  boss:"Консольний застосунок на класах: 5+ класів, інтерфейс, збереження в JSON, меню, обробка помилок, Composer і README.",
+  steps:[
+    "Модуль 1: синтаксис і перші програми (уроки 1–4)",
+    "Модуль 2: цикли й масиви (уроки 5–9)",
+    "Модуль 3: функції і структура коду (уроки 10–12)",
+    "Модуль 4: рядки, файли, помилки (уроки 13–15)",
+    "Модуль 5: ООП — фундамент під Laravel (уроки 16–20)",
+    "Модуль 6: алгоритми, структури даних, Git (уроки 21–23)",
+    "Фінальний бос основ (урок 24)"
+  ],
+  gate:"Пише програму на 300–500 рядків із класами, читає чужий PHP-код і сам знаходить причину помилки за повідомленням."
+},
+{
+  id:"s1", n:"1", track:"web", title:"HTML і CSS: перший видимий результат",
+  dur:"1,5–2 місяці",
+  goal:"Після пів року консолі — нарешті те, що можна показати посиланням. Верстка потім потрібна щодня: і в Blade-шаблонах Laravel, і в компонентах Vue.",
+  topics:["семантичні теги","форми","box model","селектори","flexbox","grid","адаптивність","CSS-змінні","знайомство з Tailwind"],
+  links:[
+    {t:"freeCodeCamp: Responsive Web Design", u:"https://www.freecodecamp.org/learn/2022/responsive-web-design/", n:"безкоштовний курс із практикою в браузері"},
+    {t:"Flexbox Froggy", u:"https://flexboxfroggy.com/#uk", n:"flexbox через жабенят, українською"},
+    {t:"Grid Garden", u:"https://cssgridgarden.com/#uk", n:"те саме для CSS Grid"},
+    {t:"MDN: HTML", u:"https://developer.mozilla.org/uk/docs/Web/HTML", n:"довідник на роки вперед"},
+    {t:"Tailwind CSS", u:"https://tailwindcss.com/docs/installation", n:"стандарт у сучасних Laravel-проєктах"}
+  ],
+  boss:"Сторінка-портфоліо з проєктами, зробленими на етапі основ. Адаптивна, опублікована через GitHub Pages.",
+  steps:[
+    "Зверстати сторінку тільки на HTML, без жодного стилю",
+    "Пройти Flexbox Froggy і Grid Garden до кінця",
+    "Скопіювати вигляд улюбленого сайту «на око», не підглядаючи в його код",
+    "Зробити сторінку адаптивною під телефон",
+    "Зверстати форму з валідацією на рівні HTML",
+    "Переписати одну сторінку на Tailwind і порівняти відчуття"
+  ],
+  gate:"Верстає макет із трьох колонок, які на телефоні стають однією, без копіювання чужого CSS."
+},
+{
+  id:"s2", n:"2", track:"web", title:"Git і GitHub до автоматизму",
+  dur:"2 тижні, паралельно з версткою",
+  goal:"Основи Git уже були — тут доводимо до звички. З цього моменту жоден проєкт не живе лише на диску: тільки репозиторій, гілки й pull request.",
+  topics:["гілки","merge","конфлікти",".gitignore","README","pull request","GitHub Pages","теги","профіль GitHub"],
+  links:[
+    {t:"Learn Git Branching", u:"https://learngitbranching.js.org/?locale=uk", n:"інтерактивний тренажер з візуалізацією гілок"},
+    {t:"GitHub Skills", u:"https://skills.github.com", n:"короткі практичні курси від GitHub"},
+    {t:"GitHub Pages", u:"https://pages.github.com", n:"безкоштовний хостинг для статичних сторінок"}
+  ],
+  boss:"Портфоліо-сторінка живе за адресою username.github.io, а історія комітів показує, як вона будувалась.",
+  steps:[
+    "Пройти Learn Git Branching до розділу про віддалені репозиторії",
+    "Створити конфлікт навмисно і розвʼязати його",
+    "Провести фічу через окрему гілку й pull request",
+    "Написати README зі скриншотом і інструкцією запуску",
+    "Опублікувати сайт і закріпити проєкти в профілі"
+  ],
+  gate:"Не боїться конфлікту і не починає проєкт з нуля, коли «Git зламався»."
+},
+{
+  id:"s3", n:"3", track:"web", title:"JavaScript і DOM",
+  dur:"2 місяці",
+  goal:"Друга мова дається втричі швидше за першу: цикли й функції вже в голові, залишається синтаксис і головне — браузер, події та асинхронність.",
+  topics:["типи й функції","масиви й обʼєкти","DOM","події","localStorage","fetch і JSON","async / await","модулі","DevTools"],
+  links:[
+    {t:"JavaScript.info", u:"https://uk.javascript.info", n:"найкращий підручник, українською"},
+    {t:"JavaScript30", u:"https://javascript30.com", n:"30 днів — 30 міні-проєктів без бібліотек"},
+    {t:"MDN: JavaScript", u:"https://developer.mozilla.org/uk/docs/Web/JavaScript", n:"довідник"},
+    {t:"Frontend Mentor", u:"https://www.frontendmentor.io", n:"справжні макети для тренування"}
+  ],
+  boss:"Односторінковий застосунок, який тягне дані з відкритого API, фільтрує їх і памʼятає стан після перезавантаження.",
+  steps:[
+    "Розвʼязати десять знайомих задач і на PHP, і на JS — знайти відмінності",
+    "Список справ зі збереженням у localStorage",
+    "Пройти щонайменше 10 проєктів із JavaScript30",
+    "Підтягнути дані з API через fetch з обробкою помилки",
+    "Навчитись ставити breakpoint у DevTools замість console.log всюди",
+    "Викласти застосунок на GitHub Pages"
+  ],
+  gate:"Розуміє, чому fetch повертає проміс, і не намагається прочитати відповідь до її отримання."
+},
+{
+  id:"s4", n:"4", track:"web", title:"Ігри на canvas — обіцяна нагорода",
+  dur:"1–1,5 місяця",
+  goal:"Не відступ від маршруту, а найкраща практика чистого JavaScript: ігровий цикл, стани, колізії й оптимізація. Плюс перший проєкт, у який реально грають друзі.",
+  topics:["canvas","ігровий цикл","requestAnimationFrame","координати й вектори","колізії","стани гри","спрайти","звук","рекорди"],
+  links:[
+    {t:"MDN: розробка ігор", u:"https://developer.mozilla.org/en-US/docs/Games", n:"туторіали з canvas із нуля"},
+    {t:"Phaser", u:"https://phaser.io", n:"якщо захочеться щось більше за арканоїд"},
+    {t:"itch.io", u:"https://itch.io", n:"куди викласти гру й зібрати відгуки"},
+    {t:"OpenGameArt", u:"https://opengameart.org", n:"безкоштовні спрайти й звуки"}
+  ],
+  boss:"Завершена гра з меню, рахунком, рекордом і звуком: «Змійка», арканоїд або платформер. Викладена так, щоб грали з телефона.",
+  steps:[
+    "Намалювати на canvas квадрат, що рухається стрілками",
+    "Додати зіткнення зі стінами й обʼєктами",
+    "Замінити фігури на спрайти й додати звуки",
+    "Зробити меню, паузу й екран програшу",
+    "Зберігати рекорд у localStorage",
+    "Викласти гру й зібрати три відгуки від друзів"
+  ],
+  gate:"У гру грають більше хвилини й вона не ламається на чужому пристрої."
+},
+{
+  id:"s5", n:"5", track:"web", title:"Веб на чистому PHP — без фреймворку",
+  dur:"2 місяці",
+  goal:"Найважливіший етап перед Laravel. Усе, що фреймворк робить автоматично, тут робиться руками. Після цього Laravel виглядає як зручність, а не як незрозуміла магія з чужих відео.",
+  topics:["HTTP-запит і відповідь","$_GET і $_POST","форми й валідація","сесії та куки","PDO","підготовлені запити","завантаження файлів","XSS і SQL-інʼєкції","password_hash","власний роутер","міні-MVC"],
+  links:[
+    {t:"PHP: The Right Way", u:"https://phptherightway.com", n:"як писати сучасно, а не як у старих туторіалах"},
+    {t:"MDN: основи HTTP", u:"https://developer.mozilla.org/uk/docs/Web/HTTP/Overview", n:"що насправді летить між браузером і сервером"},
+    {t:"php.net: безпека", u:"https://www.php.net/manual/en/security.php", n:"перший серйозний розділ про безпеку"}
+  ],
+  boss:"Міні-блог або дошка оголошень на чистому PHP: реєстрація, вхід, CRUD, завантаження картинок, власний роутер і розподіл на контролери й моделі.",
+  steps:[
+    "Форма, що зберігає дані в базу через PDO",
+    "Вхід і вихід через сесії",
+    "Паролі тільки через password_hash — і перевірити, як це виглядає в базі",
+    "Захист виводу від XSS через htmlspecialchars",
+    "Переписати всі запити на підготовлені",
+    "Написати власний роутер на 50 рядків",
+    "Розкласти проєкт на контролери, моделі й шаблони"
+  ],
+  gate:"Може крок за кроком пояснити, що відбувається між натисканням кнопки і появою нової сторінки."
+},
+{
+  id:"s6", n:"6", track:"web", title:"SQL і бази даних",
+  dur:"1 місяць, частково паралельно",
+  goal:"Дані — це те, за що платять фулстеку. Eloquent у Laravel напише SQL за тебе, але читати помилки й повільні запити доведеться саме в SQL.",
+  topics:["MySQL","типи даних","SELECT і WHERE","ORDER BY, LIMIT","JOIN","GROUP BY","індекси","звʼязки 1:1, 1:N, N:N","нормалізація","резервні копії"],
+  links:[
+    {t:"SQLBolt", u:"https://sqlbolt.com", n:"інтерактивний курс SQL за кілька вечорів"},
+    {t:"MySQL Tutorial", u:"https://dev.mysql.com/doc/refman/8.0/en/tutorial.html", n:"офіційний посібник"},
+    {t:"DBeaver", u:"https://dbeaver.io", n:"безкоштовний клієнт, щоб бачити базу очима"}
+  ],
+  boss:"Схема бази для власного проєкту: 5+ таблиць зі звʼязками, заповнена реальними даними, з десятком осмислених запитів.",
+  steps:[
+    "Пройти SQLBolt до кінця",
+    "Спроєктувати схему свого проєкту на папері",
+    "Створити таблиці зі звʼязками й зовнішніми ключами",
+    "Написати JOIN на три таблиці",
+    "Знайти повільний запит і прискорити його індексом",
+    "Зробити резервну копію бази й відновити її"
+  ],
+  gate:"Проєктує таблиці зі звʼязками сам і розуміє, коли потрібен JOIN, а коли окремий запит."
+},
+{
+  id:"s7", n:"7", track:"stack", title:"Laravel",
+  dur:"3–4 місяці",
+  goal:"Ціль маршруту. До цього моменту все, що робить фреймворк, уже зроблено руками — тому вчиться не «яку команду натиснути», а що саме відбувається під капотом.",
+  topics:["структура проєкту","роутинг","контролери","Blade","Eloquent ORM","міграції й сідери","валідація","Breeze і автентифікація","middleware","звʼязки моделей","Artisan","черги й події","перші тести"],
+  links:[
+    {t:"Laravel Bootcamp", u:"https://bootcamp.laravel.com", n:"офіційний старт: робочий застосунок за кілька вечорів"},
+    {t:"Документація Laravel", u:"https://laravel.com/docs", n:"читається як підручник, не як довідник"},
+    {t:"Laracasts: Laravel from Scratch", u:"https://laracasts.com/series/laravel-8-from-scratch", n:"класика, з якої починають майже всі"},
+    {t:"Laravel Herd", u:"https://herd.laravel.com", n:"локальне середовище без болю"}
+  ],
+  boss:"Повноцінний застосунок: реєстрація й ролі, CRUD із зображеннями, пошук і фільтри, адмінка, деплой на справжній хостинг.",
+  steps:[
+    "Пройти Laravel Bootcamp повністю",
+    "Перенести свій блог з етапу 5 на Laravel і порівняти обсяг коду",
+    "Міграції та сідери замість ручного заповнення бази",
+    "Звʼязки Eloquent: hasMany, belongsTo, belongsToMany",
+    "Автентифікація через Breeze плюс ролі користувачів",
+    "Валідація форм через Form Request",
+    "Написати перші пʼять тестів",
+    "Викласти проєкт на хостинг із доменом"
+  ],
+  gate:"Додає нову сутність із міграцією, моделлю, контролером і шаблонами приблизно за годину."
+},
+{
+  id:"s8", n:"8", track:"stack", title:"Vue 3",
+  dur:"2–3 місяці",
+  goal:"Друга половина стеку. Vue обрано під ціль: саме зв'язка Laravel + Vue найчастіше зустрічається у вакансіях і на фрилансі.",
+  topics:["реактивність","Composition API","компоненти й props","події","v-model","computed","watch","життєвий цикл","Vue Router","Pinia","Vite"],
+  links:[
+    {t:"Інтерактивний туторіал Vue", u:"https://vuejs.org/tutorial/", n:"перші кроки прямо в браузері"},
+    {t:"Документація Vue 3", u:"https://vuejs.org/guide/introduction.html", n:"основне джерело"},
+    {t:"Vue Router", u:"https://router.vuejs.org", n:"кілька екранів в одному застосунку"},
+    {t:"Pinia", u:"https://pinia.vuejs.org", n:"спільний стан застосунку"}
+  ],
+  boss:"SPA на кілька екранів, яка працює з API попередніх етапів: список, деталі, пошук, обране, авторизація.",
+  steps:[
+    "Пройти офіційний інтерактивний туторіал",
+    "Переписати застосунок з етапу 3 на Vue",
+    "Розбити інтерфейс на компоненти з props і подіями",
+    "Додати роутер і кілька екранів",
+    "Винести спільний стан у Pinia",
+    "Підключити фронт до свого Laravel-API"
+  ],
+  gate:"Сам вирішує, що виносити в компонент і де має жити стан, а не копіює структуру з відео."
+},
+{
+  id:"s9", n:"9", track:"stack", title:"Фулстек: Laravel і Vue разом",
+  dur:"2–3 місяці",
+  goal:"Момент, коли дві половини стають однією професією. Тут народжується головний проєкт портфоліо — той, посилання на який відкриють роботодавці й замовники.",
+  topics:["API-ресурси","JSON-відповіді","Sanctum і токени","CORS","Inertia.js","SPA проти багатосторінкового","проблема N+1","пагінація","завантаження файлів через API","деплой"],
+  links:[
+    {t:"Laravel Sanctum", u:"https://laravel.com/docs/sanctum", n:"авторизація для SPA і токенів"},
+    {t:"Inertia.js", u:"https://inertiajs.com", n:"Vue без окремого API — улюблений підхід у Laravel"},
+    {t:"API Resources", u:"https://laravel.com/docs/eloquent-resources", n:"як віддавати дані назовні охайно"},
+    {t:"Railway", u:"https://railway.com", n:"простий деплой для першого справжнього проєкту"}
+  ],
+  boss:"Головний проєкт портфоліо: реальний сервіс для школи, гуртка чи друзів — з API, авторизацією, адмінкою і живим доменом.",
+  steps:[
+    "Віддати дані з Laravel як JSON API",
+    "Підключити Vue-фронт до власного API",
+    "Авторизація через Sanctum",
+    "Спробувати Inertia і порівняти з підходом через API",
+    "Знайти й полагодити проблему N+1 запитів",
+    "Купити домен і викласти проєкт",
+    "Дати посилання людям і зібрати перші відгуки"
+  ],
+  gate:"Проєктом користуються люди, які не є родичами автора."
+},
+{
+  id:"s10", n:"10", track:"stack", title:"Професійна кухня",
+  dur:"постійно, з сьомого етапу",
+  goal:"Те, що відрізняє «вміє кодити» від «беруть на роботу». Підключати поступово, паралельно з Laravel, а не залишати на потім.",
+  topics:["Pest і PHPUnit","Docker і Laravel Sail","GitHub Actions","PHPStan","PSR-12","черги й Redis","кешування","code review","технічна англійська"],
+  links:[
+    {t:"Pest", u:"https://pestphp.com", n:"тести, які приємно писати"},
+    {t:"Laravel Sail", u:"https://laravel.com/docs/sail", n:"Docker без болю"},
+    {t:"GitHub Actions", u:"https://docs.github.com/actions", n:"тести запускаються самі при кожному пуші"},
+    {t:"Laravel News", u:"https://laravel-news.com", n:"тримати руку на пульсі екосистеми"}
+  ],
+  boss:"Перший прийнятий pull request у чужий open-source проєкт — і портфоліо з трьох живих посилань.",
+  steps:[
+    "Покрити тестами один свій проєкт",
+    "Підняти проєкт у Docker через Sail",
+    "Налаштувати GitHub Actions на прогон тестів",
+    "Додати PHPStan і виправити зауваження",
+    "Зробити pull request у чужий репозиторій",
+    "Зібрати портфоліо з трьох живих проєктів"
+  ],
+  gate:"Може прийти в чужий проєкт, розібратись у структурі й внести зміну, нічого не зламавши."
+}
+];
+
+const NOTES = [
+{
+  h:"Тижневий ритм",
+  week:[
+    ["Пн · 60–90 хв","Теорія: розділ, відео, конспект своїми словами"],
+    ["Ср · 60–90 хв","Практика: код руками, без готових рішень поруч"],
+    ["Сб · 90–120 хв","Проєкт: рухаємо власну штуку, коміт у GitHub"],
+    ["Нд · 15 хв","Демо: показати результат і відмітити крок тут"]
+  ]
+},
+{
+  h:"Правила гри",
+  ul:[
+    "<strong>Реліз кожні два тижні.</strong> Щось працює і показується — інакше етап затягнувся.",
+    "<strong>Теорії не більше 20%.</strong> Решта часу — руки на клавіатурі.",
+    "<strong>Правило 15 хвилин.</strong> Спершу читаємо помилку й гуглимо самі, потім просимо допомоги.",
+    "<strong>Коміт після кожного заняття.</strong> За рік історія комітів стає найкращим резюме.",
+    "<strong>Живий замовник.</strong> Хай хтось із рідних чи друзів просить фічу — це вчить краще за курси."
+  ]
+},
+{
+  h:"Роль дорослого",
+  ul:[
+    "Бути <strong>замовником і глядачем</strong>, а не вчителем: «а можна, щоб отут…» замість перевірки коду.",
+    "Не вирішувати задачу за нього. Максимум — питання: «а що каже помилка?»",
+    "Не перетворювати на шкільний предмет з оцінками: зникне головне паливо — цікавість.",
+    "Вкладатись у видимі речі: домен, хостинг, показ проєкту на сімейній вечері.",
+    "Дозволяти паузи. Місяць без коду після завершеного проєкту — нормально."
+  ]
+},
+{
+  h:"Червоні прапорці",
+  ul:[
+    "<strong>Стрибок у Laravel до кінця ООП.</strong> Найпоширеніша помилка: фреймворк без основ перетворюється на копіювання відео.",
+    "<strong>Курси без власного коду.</strong> Переглянуті уроки без завдань не рахуються взагалі.",
+    "<strong>Старі туторіали.</strong> Якщо в коді <strong>mysql_query</strong> або немає типів — матеріалу десять років, закриваємо.",
+    "Три тижні без завершеного результату — задача завелика, ріжемо навпіл.",
+    "Втратив інтерес — не тиснути, а змінити предмет: гра, бот, сайт для друга."
+  ]
+},
+{
+  h:"Як користуватись AI",
+  ul:[
+    "Домовитись про правило: <strong>спочатку 15 хвилин сам</strong>, потім питаємо.",
+    "Просити <strong>пояснення, а не готовий код</strong>: «чому тут помилка?» замість «напиши функцію».",
+    "Кожен вставлений рядок треба вміти пояснити — інакше він не свій.",
+    "Добре працює як тренер: «дай 5 задач на масиви й перевір мої відповіді»."
+  ]
+},
+{
+  h:"Скільки це триває насправді",
+  ul:[
+    "<strong>Пів року:</strong> впевнені основи й перший консольний застосунок на класах.",
+    "<strong>Рік:</strong> верстка, JavaScript, власна гра і сайт на чистому PHP з базою.",
+    "<strong>Півтора року:</strong> Laravel і перший серйозний застосунок з адмінкою.",
+    "<strong>Два роки:</strong> фулстек-проєкт на Laravel і Vue — рівень, з яким беруть перші фрилансові замовлення.",
+    "У 15–16 років це вже реальна професія, а не гурток."
+  ]
+}
+];
+</script>
+
+<script>
+(function(){
+  const KEY = "route-fullstack-progress-v1";
+  const TC = { base:"var(--base)", web:"var(--web)", stack:"var(--stack)" };
+  const PATH = '<path d="M2 6.4 4.6 9 10 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+  const TICK = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true">'+PATH+'</svg>';
+  const BIGTICK = '<svg viewBox="0 0 12 12" width="20" height="20" fill="none" aria-hidden="true">'+PATH+'</svg>';
+
+  let done = new Set();
+  try { const raw = localStorage.getItem(KEY); if (raw) done = new Set(JSON.parse(raw)); } catch(e){}
+
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify([...done])); status("збережено на цьому пристрої"); }
+    catch(e){ status("прогрес не зберігається — браузер блокує сховище"); }
+  }
+  let t;
+  function status(msg){
+    const el = document.getElementById("sync");
+    el.textContent = msg; clearTimeout(t);
+    t = setTimeout(()=>{ el.textContent = ""; }, 2600);
+  }
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+  /* ── route ── */
+  document.getElementById("route").innerHTML = ROUTE.map((s,i)=>`
+    <div class="stage" style="--tc:${TC[s.track]}">
+      <div class="rail"><div class="node" id="node-${s.id}">${s.n}</div></div>
+      <details class="card"${i===0?" open":""}>
+        <summary>
+          <div class="s-head">
+            <div class="s-title">
+              <h2>${esc(s.title)}</h2>
+              <div class="s-meta">
+                <span class="dur">${esc(s.dur)}</span>
+                <span id="meta-${s.id}">0 / ${s.steps.length} кроків</span>
+              </div>
+            </div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </summary>
+        <div class="body">
+          <p class="goal">${esc(s.goal)}</p>
+
+          <div class="blk"><h3>Що опановує</h3>
+            <div class="chips">${s.topics.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>
+          </div>
+
+          <div class="blk"><h3>Де тренуватись</h3>
+            <ul class="links">${s.links.map(l=>`<li><a href="${esc(l.u)}" target="_blank" rel="noopener noreferrer">${esc(l.t)}</a><em>${esc(l.n)}</em></li>`).join("")}</ul>
+          </div>
+
+          <div class="boss"><h3>Проєкт-бос</h3><p>${esc(s.boss)}</p></div>
+
+          <div class="blk"><h3>Кроки</h3>
+            <ul class="steps">${s.steps.map((step,j)=>{
+              const id = s.id+"-"+j;
+              return `<li><button class="chk" type="button" data-id="${id}" aria-pressed="false">
+                <span class="box">${TICK}</span><span class="txt">${esc(step)}</span></button></li>`;
+            }).join("")}</ul>
+          </div>
+
+          <p class="gate"><b>Далі, коли</b><span>${esc(s.gate)}</span></p>
+        </div>
+      </details>
+    </div>`).join("");
+
+  /* ── notes ── */
+  document.getElementById("notes").innerHTML = NOTES.map(n=>`
+    <div class="note">
+      <h2>${esc(n.h)}</h2>
+      ${n.week ? `<div class="week">${n.week.map(d=>`<div class="day"><b>${esc(d[0])}</b><span>${esc(d[1])}</span></div>`).join("")}</div>`
+               : `<ul>${n.ul.map(x=>`<li>${x}</li>`).join("")}</ul>`}
+    </div>`).join("");
+
+  /* ── progress bar segments ── */
+  const TRACKS = [["base","var(--base)","Фундамент"],["web","var(--web)","Веб"],["stack","var(--stack)","Фулстек"]];
+  document.getElementById("bar").innerHTML = TRACKS.map(([k,c,label])=>{
+    const total = ROUTE.filter(s=>s.track===k).reduce((a,s)=>a+s.steps.length,0);
+    return `<div class="bar-seg" style="flex:${total}" data-track="${k}" title="${label}">
+      <div class="bar-fill" style="background:${c}"></div></div>`;
+  }).join("");
+
+  const TOTAL = ROUTE.reduce((a,s)=>a+s.steps.length,0);
+
+  function render(){
+    document.querySelectorAll(".chk").forEach(b=>{
+      b.setAttribute("aria-pressed", done.has(b.dataset.id) ? "true" : "false");
+    });
+
+    let closed = 0;
+    ROUTE.forEach(s=>{
+      const n = s.steps.filter((_,j)=>done.has(s.id+"-"+j)).length;
+      document.getElementById("meta-"+s.id).textContent = `${n} / ${s.steps.length} кроків`;
+      const node = document.getElementById("node-"+s.id);
+      const full = n === s.steps.length;
+      node.classList.toggle("full", full);
+      node.innerHTML = full ? BIGTICK : s.n;
+      if (full) closed++;
+    });
+
+    TRACKS.forEach(([k])=>{
+      const list = ROUTE.filter(s=>s.track===k);
+      const total = list.reduce((a,s)=>a+s.steps.length,0);
+      const n = list.reduce((a,s)=>a+s.steps.filter((_,j)=>done.has(s.id+"-"+j)).length,0);
+      document.querySelector(`.bar-seg[data-track="${k}"] .bar-fill`).style.width = (n/total*100)+"%";
+    });
+
+    const xp = done.size*10, lvl = Math.floor(xp/100)+1;
+    document.getElementById("st-done").textContent = `${done.size}/${TOTAL}`;
+    document.getElementById("st-stages").textContent = `${closed}/${ROUTE.length}`;
+    document.getElementById("st-xp").textContent = xp;
+    document.getElementById("st-lvl").textContent = "Рівень " + lvl;
+    document.getElementById("st-next").textContent = done.size === TOTAL
+      ? "маршрут пройдено" : `до наступного: ${100 - xp%100} XP`;
+  }
+
+  document.addEventListener("click", e=>{
+    const b = e.target.closest(".chk");
+    if(!b) return;
+    const id = b.dataset.id;
+    done.has(id) ? done.delete(id) : done.add(id);
+    render(); save();
+  });
+
+  document.getElementById("expand").onclick  = () => document.querySelectorAll("details").forEach(d=>d.open=true);
+  document.getElementById("collapse").onclick = () => document.querySelectorAll("details").forEach(d=>d.open=false);
+  document.getElementById("reset").onclick = () => {
+    if(!done.size) return status("прогрес і так порожній");
+    if(confirm("Скинути всі відмічені кроки?")){ done.clear(); render(); save(); }
+  };
+
+  render();
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+})();
+
+(function(){
+  var KEY = 'route-fullstack-progress-v1', NAME = 'progres-marshrut.json';
+  var tools = document.querySelector(".tools");
+  if(!tools) return;
+  function mk(txt, fn){ var b=document.createElement("button"); b.className="btn"; b.type="button";
+    b.textContent=txt; b.addEventListener("click", fn); return b; }
+  var inp=document.createElement("input"); inp.type="file"; inp.accept="application/json,.json";
+  inp.style.display="none";
+  tools.appendChild(mk("Зберегти у файл", function(){
+    var raw; try{ raw = localStorage.getItem(KEY) || "[]"; }catch(e){ raw = "[]"; }
+    var payload = {key:KEY, saved:new Date().toISOString(), done:JSON.parse(raw)};
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href=url; a.download=NAME;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }));
+  tools.appendChild(mk("Відновити з файлу", function(){ inp.click(); }));
+  tools.appendChild(inp);
+  inp.addEventListener("change", function(){
+    var f = inp.files && inp.files[0]; if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var o = JSON.parse(r.result);
+        var arr = Array.isArray(o) ? o : o.done;
+        if(!Array.isArray(arr)) throw new Error("bad shape");
+        localStorage.setItem(KEY, JSON.stringify(arr));
+        location.reload();
+      }catch(e){ alert("Не вдалося прочитати файл прогресу — потрібен той, що зберігався кнопкою «Зберегти у файл»."); }
+    };
+    r.readAsText(f);
+  });
+})();
+</script>
+</body>
+</html>

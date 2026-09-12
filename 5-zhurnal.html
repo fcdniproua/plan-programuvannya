@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Журнал занять</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📓</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.row-ctl,textarea{display:none !important}
+  body{background:#fff !important}
+  .plan,.row,.hw,.watch,.how{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#0E7C7B; --accent-soft:#DDF0EF;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC;
+  --warn:#C2401E; --warn-bg:#FCEDE8; --skip:#8A8F9C;
+  --code-bg:#15181F; --code-ink:#E4E7EF; --code-c:#6E7788; --code-s:#8FD98A;
+  --code-v:#A6C0FF; --code-k:#E9A3D2; --code-n:#F0C071;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#4FD1C5; --accent-soft:#12262A;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+    --warn:#FF8A6B; --warn-bg:#2A1611; --skip:#6B7280;
+    --code-bg:#0A0C12; --code-ink:#DFE3EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#4FD1C5; --accent-soft:#12262A;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+  --warn:#FF8A6B; --warn-bg:#2A1611; --skip:#6B7280;
+  --code-bg:#0A0C12; --code-ink:#DFE3EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:900px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px}
+h1,h2,h3,h4{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+code:not(pre code){font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px; white-space:nowrap}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:63ch; margin-top:14px}
+
+.dash{margin-top:28px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow)}
+.stats{display:flex; gap:28px; flex-wrap:wrap}
+.stat b{display:block; font-family:"Unbounded",sans-serif; font-size:1.45rem; font-weight:700;
+  line-height:1.1; font-variant-numeric:tabular-nums}
+.stat span{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3)}
+.spark{display:flex; align-items:flex-end; gap:4px; height:38px; margin-top:16px;
+  padding-top:12px; border-top:1px solid var(--line)}
+.spark i{flex:1; max-width:22px; background:var(--accent-soft); border-radius:3px 3px 0 0;
+  position:relative; min-height:3px}
+.spark i b{position:absolute; inset:auto 0 0 0; background:var(--accent); border-radius:3px 3px 0 0;
+  display:block}
+.spark-label{font-family:"JetBrains Mono",monospace; font-size:.64rem; color:var(--ink-3);
+  letter-spacing:.08em; text-transform:uppercase; margin-top:6px}
+.tools{display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; align-items:center}
+.btn{font-family:"JetBrains Mono",monospace; font-size:.74rem; background:var(--surface);
+  color:var(--ink-2); border:1px solid var(--line); border-radius:9px; padding:7px 13px; cursor:pointer}
+.btn:hover{border-color:var(--ink-3); color:var(--ink)}
+.btn:focus-visible,summary:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px}
+#sync{font-family:"JetBrains Mono",monospace; font-size:.7rem; color:var(--ink-3)}
+
+.sect-title{margin:56px 0 6px; font-size:1.35rem; font-weight:700}
+.sect-sub{color:var(--ink-2); margin-bottom:20px; max-width:64ch}
+
+/* plan cards */
+.plan{background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow); margin-bottom:18px; overflow:hidden}
+.plan-head{padding:20px 22px; border-bottom:1px solid var(--line);
+  display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap}
+.plan-num{flex:none; width:40px; height:40px; border-radius:11px; display:grid; place-items:center;
+  background:var(--accent); color:var(--surface); font-family:"Unbounded",sans-serif;
+  font-weight:700; font-size:1rem}
+.plan-head div{flex:1; min-width:200px}
+.plan-head h3{font-size:1.1rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0}
+.plan-head .when{font-family:"JetBrains Mono",monospace; font-size:.71rem; color:var(--ink-3);
+  margin-top:5px}
+.plan-body{padding:18px 22px 22px; display:flex; flex-direction:column; gap:16px}
+.steps{display:grid; gap:2px}
+.step{display:grid; grid-template-columns:78px 1fr; gap:14px; padding:9px 0;
+  border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:0}
+.step time{font-family:"JetBrains Mono",monospace; font-size:.73rem; color:var(--accent);
+  font-weight:700; padding-top:2px}
+.step h4{font-size:.95rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  margin-bottom:3px}
+.step p{color:var(--ink-2); font-size:.92rem}
+pre{margin:8px 0 0; background:var(--code-bg); border-radius:10px; padding:13px 15px; overflow-x:auto;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.8rem; line-height:1.6;
+  color:var(--code-ink)}
+pre .c{color:var(--code-c); font-style:italic} pre .s{color:var(--code-s)}
+pre .v{color:var(--code-v)} pre .k{color:var(--code-k)} pre .n{color:var(--code-n)}
+.hw{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 35%, transparent);
+  border-radius:11px; padding:15px 17px}
+.hw h4{font-family:"JetBrains Mono",monospace; font-size:.67rem; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--amber); margin-bottom:8px}
+.hw ol{margin:0; padding-left:19px; display:grid; gap:7px; font-size:.93rem; color:var(--ink)}
+.hw .check{margin-top:12px; padding-top:11px; border-top:1px dashed color-mix(in srgb, var(--amber) 40%, transparent);
+  font-size:.9rem; color:var(--ink-2)}
+.hw .check b{color:var(--amber); font-family:"JetBrains Mono",monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:4px}
+.watch{background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 32%, transparent);
+  border-radius:11px; padding:14px 16px; font-size:.92rem; color:var(--ink-2)}
+.watch b{color:var(--warn); font-family:"JetBrains Mono",monospace; font-size:.66rem;
+  letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:5px}
+
+/* journal rows */
+.rows{display:grid; gap:8px}
+.row{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px;
+  box-shadow:var(--shadow)}
+.row[data-status="done"]{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+.row[data-status="skip"]{opacity:.6}
+.row-top{display:grid; grid-template-columns:34px 1fr auto; gap:12px; align-items:center}
+.rn{width:34px; height:34px; border-radius:9px; display:grid; place-items:center;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace; font-weight:700; font-size:.82rem}
+.row[data-status="done"] .rn{background:var(--ok); border-color:var(--ok); color:var(--surface)}
+.rt{min-width:0}
+.rt strong{display:block; font-size:.95rem; font-weight:600; line-height:1.3}
+.rt span{font-family:"JetBrains Mono",monospace; font-size:.68rem; color:var(--ink-3)}
+.row-ctl{display:flex; gap:7px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
+select,input[type="date"]{font-family:"JetBrains Mono",monospace; font-size:.72rem;
+  background:var(--surface-2); color:var(--ink); border:1px solid var(--line); border-radius:8px;
+  padding:5px 8px; cursor:pointer}
+input[type="date"]{cursor:text}
+.note-btn{background:none; border:0; cursor:pointer; color:var(--ink-3); font-size:.72rem;
+  font-family:"JetBrains Mono",monospace; padding:5px 7px; border-radius:7px}
+.note-btn:hover{color:var(--accent); background:var(--surface-2)}
+.note-btn.has{color:var(--accent)}
+textarea{width:100%; margin-top:10px; background:var(--surface-2); color:var(--ink);
+  border:1px solid var(--line); border-radius:9px; padding:10px 12px; font:inherit; font-size:.9rem;
+  resize:vertical; min-height:70px}
+.hidden{display:none}
+
+.how{margin-top:26px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.how h2{font-size:1.05rem; font-weight:700; margin-bottom:12px}
+.how ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2); font-size:.94rem}
+.how strong{color:var(--ink)}
+footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3);
+  font-size:.84rem}
+@media (max-width:600px){
+  .row-top{grid-template-columns:34px 1fr; }
+  .row-ctl{grid-column:1 / -1; justify-content:flex-start; margin-top:4px}
+  .step{grid-template-columns:1fr; gap:2px}
+  .step time{padding-top:0}
+}
+@media print{ .tools,.row-ctl,textarea{display:none !important} body{background:#fff} }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Два заняття на тиждень · 60–90 хвилин</p>
+    <h1>Журнал занять</h1>
+    <p class="lead">Розклад, плани найближчих занять і облік того, що реально відбулось. Один урок із плану основ = два заняття плюс домашка між ними. У такому темпі блок основ закривається приблизно за пів року.</p>
+
+    <div class="dash">
+      <div class="stats">
+        <div class="stat"><b id="st-done">0</b><span>занять проведено</span></div>
+        <div class="stat"><b id="st-hours">0</b><span>годин разом</span></div>
+        <div class="stat"><b id="st-hw">0</b><span>домашок здано</span></div>
+        <div class="stat"><b id="st-diff">—</b><span>середня складність</span></div>
+        <div class="stat"><b id="st-next">1</b><span>наступне заняття</span></div>
+      </div>
+      <div class="spark" id="spark"></div>
+      <div class="spark-label">складність останніх занять · 1 легко — 5 важко</div>
+    </div>
+
+    <div class="tools">
+      <button class="btn" id="reset">Очистити журнал</button>
+      <span id="sync"></span>
+    </div>
+  </header>
+
+  <div style="background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius:12px; padding:13px 16px; margin-top:22px; font-size:.92rem; color:var(--ink-2)">
+    <b style="display:block; font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+      text-transform:uppercase; color:var(--accent); margin-bottom:5px">Це офлайн-копія</b>
+    Записи цієї сторінки живуть тільки в цьому браузері. Основний журнал із синхронізацією між пристроями —
+    <a href="https://claude.ai/code/artifact/04960d0b-28ce-4aed-b75a-b3cf9134bf5b" style="color:var(--accent); font-weight:600">за цим посиланням</a>.
+    Ведіть записи в одному місці, щоб дані не розійшлись.
+  </div>
+
+  <h2 class="sect-title">Найближчі два заняття</h2>
+  <p class="sect-sub">Розписані по хвилинах. Таймінг орієнтовний — якщо якийсь блок іде довше, ріжте наступний, а не поспішайте.</p>
+  <section id="plans"></section>
+
+  <h2 class="sect-title">Розклад і облік</h2>
+  <p class="sect-sub">Перші девʼять уроків — це вісімнадцять занять, приблизно два з половиною місяці. Відмічайте статус одразу після заняття: за три місяці ці позначки покажуть, де було важко і що варто повторити.</p>
+  <section class="rows" id="rows"></section>
+
+  <section class="how">
+    <h2>Як користуватись журналом</h2>
+    <ul>
+      <li><strong>Дата</strong> ставиться на початку заняття, статус — у кінці. Пропущене заняття теж відмічайте: пропуски видно тільки в журналі, у голові вони забуваються.</li>
+      <li><strong>Складність оцінює син, не ви.</strong> Одне питання в кінці: «наскільки важко було від 1 до 5». Дві четвірки поспіль — сигнал сповільнитись, дві одиниці — можна прискоритись.</li>
+      <li><strong>Домашка</strong> має статус «здано» тільки коли ви подивились результат разом. Не здана двічі поспіль — завдання завелике, ріжте навпіл.</li>
+      <li><strong>Нотатка</strong> — один рядок: що не пішло, до чого повернутись. Перед наступним заняттям перечитуєте саме її.</li>
+      <li><strong>Резервна копія</strong> — кнопка «Зберегти у файл» у локальній версії. Журнал живе в браузері, тому раз на місяць варто вивантажити.</li>
+    </ul>
+  </section>
+
+  <footer>Вісімнадцять занять покривають уроки 1–9. Далі розклад продовжиться — до кінця блоку основ приблизно 48 занять.</footer>
+</div>
+
+<script>
+const PLANS = [
+{
+ n:1, title:"Термінал і перша програма", when:"Заняття 1 · 90 хв · урок 1, частина перша",
+ steps:[
+  {t:"0–8 хв", h:"Навіщо ми тут", x:"Відкрити будь-який улюблений сайт і показати код сторінки через праву кнопку. Сказати просту річ: усе це хтось написав руками, і через рік ти зможеш зробити таке саме. Домовитись про два правила — займаємось двічі на тиждень і перед тим як питати, п'ятнадцять хвилин розбираєшся сам."},
+  {t:"8–20 хв", h:"Термінал", x:"Відкрити Термінал (⌘ + Пробіл). Пояснити: це та сама папка з файлами, тільки текстом. Показати чотири команди й одразу дати повторити.",
+   code:"pwd                 # де я зараз\nls                  # що тут лежить\ncd ~/code/php       # перейти в папку\nmkdir lesson01      # створити нову\ncd lesson01\nopen .              # відкрити цю папку у Finder"},
+  {t:"20–35 хв", h:"Перший файл", x:"У VS Code: File → Open Folder → вибрати lesson01. Створити hello.php. Пояснити рівно три речі — відкриваючий тег, echo і крапку з комою. Запустити з вбудованого терміналу (Ctrl + ~).",
+   code:"<?php\n\necho \"Привіт! Мене звати Максим.\";"},
+  {t:"35–50 хв", h:"Ламаємо навмисно", x:"Найважливіші пʼятнадцять хвилин заняття. Три поломки по черзі, після кожної читаємо повідомлення вголос і повертаємо назад: прибрати крапку з комою, прибрати відкриваючий тег, написати eco замість echo. Головна думка: помилка — це записка від PHP з номером рядка, а не поломка компʼютера."},
+  {t:"50–70 хв", h:"Практика", x:"Пʼять рядків про себе: імʼя, вік, місто, улюблена гра, ким хоче стати. Показати \\n для переносу рядка. Далі — намалювати щось символами: смайлик, будиночок, меч. Тут можна не поспішати, це найприємніша частина."},
+  {t:"70–82 хв", h:"Виклик без підказок", x:"Вивести своє імʼя в рамці із зірочок. Циклів ще немає, тож усе руками — і це нормально. Дати спробувати самому, не втручатись перші пʼять хвилин.",
+   code:"<?php\n\necho \"*************\\n\";\necho \"*  МАКСИМ   *\\n\";\necho \"*************\\n\";"},
+  {t:"82–90 хв", h:"Підсумок", x:"Попросити назвати три речі, які навчився. Дати домашку, показати, де вона записана. Відмітити заняття в журналі й запитати оцінку складності від 1 до 5."}
+ ],
+ hw:{
+  title:"Домашнє завдання після заняття 1 · 30–40 хвилин",
+  items:[
+   "Створити папку <code>homework01</code> і в ній три файли: <code>about.php</code> — пʼять рядків про себе, <code>art.php</code> — малюнок символами, <code>game.php</code> — три речення про улюблену гру.",
+   "Запустити кожен файл із терміналу й переконатись, що виводиться те, що задумано.",
+   "Зламати один із файлів трьома різними способами і записати в нотатник точний текст кожної помилки — просто скопіювати рядок.",
+   "Записати, скільки часу зайняла домашка."
+  ],
+  check:"Три файли запускаються без помилок, у виводі є переноси рядків, а в нотатнику лежать три різні тексти помилок. Якщо всі три помилки однакові — завдання зроблено наполовину, попросіть знайти ще дві."
+ },
+ watch:"Якщо встановлення злетить прямо на занятті — не витрачайте на нього більше десяти хвилин. Перейдіть на <a href=\"https://3v4l.org\" target=\"_blank\" rel=\"noopener noreferrer\">3v4l.org</a>, там PHP працює просто в браузері, і проведіть заняття там. Полагодити середовище можна ввечері без дитини."
+},
+{
+ n:2, title:"PHP у браузері, Git і GitHub", when:"Заняття 2 · 90 хв · урок 1, частина друга",
+ steps:[
+  {t:"0–10 хв", h:"Розбір домашки", x:"Запустити його файли разом. Прочитати тексти помилок, які він записав, і розібрати, що означає кожна. Похвалити конкретно — не «молодець», а «ось тут ти сам здогадався поставити крапку з комою»."},
+  {t:"10–30 хв", h:"Той самий код у браузері", x:"Запустити вбудований сервер із папки проєкту й відкрити сторінку в браузері. Потім — головний момент: права кнопка, «Переглянути код сторінки». Там немає ані php, ані echo, тільки результат. Питання до нього: «а куди подівся наш код?»",
+   code:"php -S localhost:8000\n\n# у браузері відкрити:\n# http://localhost:8000/hello.php\n# зупинити сервер: Ctrl + C"},
+  {t:"30–45 хв", h:"HTML і PHP разом", x:"Показати, що в одному файлі можуть жити обидва. Пояснити різницю: HTML — це те, що видно завжди, PHP — те, що виконується на сервері й перетворюється на HTML.",
+   code:"<h1>Про мене</h1>\n\n<?php\necho \"<p>Мене звати Максим.</p>\";\necho \"<p>Мені 13 років.</p>\";\n?>\n\n<p>Цей абзац — звичайний HTML</p>"},
+  {t:"45–70 хв", h:"Git", x:"Пояснити коротко: машина часу для коду. Виконати команди по черзі, кожну коментуючи. Не заглиблюватись у теорію — зараз важливо, щоб спрацювало.",
+   code:"git init\ngit status\ngit add .\ngit commit -m \"перші програми\"\ngit log --oneline"},
+  {t:"70–82 хв", h:"Код в інтернеті", x:"Створити репозиторій на GitHub (New, назва php-basics, без галочок) і залити. Відкрити сторінку репозиторію в браузері й побачити свої файли онлайн — це головна емоція заняття. Потім змінити один рядок, зробити другий коміт і показати історію.",
+   code:"git remote add origin https://github.com/НІК/php-basics.git\ngit branch -M main\ngit push -u origin main"},
+  {t:"82–90 хв", h:"Підсумок", x:"Домашка, відмітка в журналі, оцінка складності. Показати посилання на його репозиторій — тепер його можна кинути другові."}
+ ],
+ hw:{
+  title:"Домашнє завдання після заняття 2 · 40–50 хвилин",
+  items:[
+   "Зробити сторінку <code>index.php</code>: заголовок, три абзаци через <code>echo</code> і список улюблених ігор звичайним HTML.",
+   "Перевірити сторінку в браузері через <code>php -S localhost:8000</code>.",
+   "Залити все на GitHub і надіслати посилання на репозиторій — просто в месенджер.",
+   "Зробити ще одну зміну і другий коміт, щоб в історії було мінімум два записи."
+  ],
+  check:"Посилання відкривається, у репозиторії є index.php, а в історії комітів — щонайменше два записи з осмисленими описами. Якщо опис коміту «asdf» — попросіть переписати: це теж частина роботи."
+ },
+ watch:"GitHub попросить пароль і не прийме звичайний — потрібен Personal Access Token: Settings → Developer settings → Personal access tokens → Generate new token (classic) → галочка repo. Токен показується один раз, збережіть одразу. На macOS Git запамʼятає його в Keychain. Це найчастіше місце, де дитина сама здається, тож будьте поруч саме на цьому кроці."
+}
+];
+
+const SESSIONS = [
+ {n:1,  l:"Урок 1", t:"Термінал і перша програма"},
+ {n:2,  l:"Урок 1", t:"PHP у браузері, Git і GitHub"},
+ {n:3,  l:"Урок 2", t:"Змінні, типи даних, var_dump"},
+ {n:4,  l:"Урок 2", t:"Математика, склеювання рядків, лапки"},
+ {n:5,  l:"Урок 3", t:"Введення з клавіатури, приведення типів"},
+ {n:6,  l:"Урок 3", t:"Математичні функції, випадковість, калькулятор"},
+ {n:7,  l:"Урок 4", t:"Умови: if, elseif, else"},
+ {n:8,  l:"Урок 4", t:"=== проти ==, логіка, камінь-ножиці-папір"},
+ {n:9,  l:"Урок 5", t:"Цикл while, лічильник, накопичувач"},
+ {n:10, l:"Урок 5", t:"do-while, break, «Вгадай число» з життями"},
+ {n:11, l:"Урок 6", t:"Цикл for, зворотний відлік"},
+ {n:12, l:"Урок 6", t:"Вкладені цикли, таблиця множення, FizzBuzz"},
+ {n:13, l:"Урок 7", t:"Масиви, foreach, нумерація з нуля"},
+ {n:14, l:"Урок 7", t:"Алгоритми на масиві, список покупок"},
+ {n:15, l:"Урок 8", t:"Асоціативні масиви, ключі"},
+ {n:16, l:"Урок 8", t:"Вкладені масиви, сортування, турнірна таблиця"},
+ {n:17, l:"Урок 9", t:"Готові функції для масивів"},
+ {n:18, l:"Урок 9", t:"map і filter, проєкт «Аналізатор класу»"}
+];
+</script>
+
+<script>
+(function(){
+  const KEY = "lesson-journal-v1";
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const RE = /(\/\/[^\n]*|#[^\n]*)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(<\?php|\?>)|(\$[A-Za-z_]\w*)|\b(echo|if|else|git|php|cd|ls|pwd|mkdir|open)\b|\b(\d+\.?\d*)\b/g;
+  function hl(code){
+    let out = "", last = 0;
+    code.replace(RE, (m,c,s,t,v,k,n,off)=>{
+      out += esc(code.slice(last, off));
+      const cls = c ? "c" : s ? "s" : t ? "k" : v ? "v" : k ? "k" : "n";
+      out += '<span class="'+cls+'">'+esc(m)+'</span>';
+      last = off + m.length;
+      return m;
+    });
+    return out + esc(code.slice(last));
+  }
+
+  let data = {};
+  try { const raw = localStorage.getItem(KEY); if (raw) data = JSON.parse(raw) || {}; } catch(e){}
+  let t;
+  function status(m){ const el=document.getElementById("sync"); el.textContent=m; clearTimeout(t);
+    t=setTimeout(()=>el.textContent="",2600); }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(data)); status("збережено"); }
+    catch(e){ status("браузер блокує збереження"); }
+  }
+  function rec(n){ return data[n] || (data[n] = {date:"", status:"", dur:"90", hw:"", diff:"", note:""}); }
+
+  /* ── plans ── */
+  document.getElementById("plans").innerHTML = PLANS.map(p=>`
+    <article class="plan">
+      <div class="plan-head">
+        <span class="plan-num">${p.n}</span>
+        <div><h3>${esc(p.title)}</h3><p class="when">${esc(p.when)}</p></div>
+      </div>
+      <div class="plan-body">
+        <div class="steps">${p.steps.map(s=>`
+          <div class="step">
+            <time>${esc(s.t)}</time>
+            <div><h4>${esc(s.h)}</h4><p>${esc(s.x)}</p>
+              ${s.code ? `<pre>${hl(s.code)}</pre>` : ""}
+            </div>
+          </div>`).join("")}
+        </div>
+        <div class="hw">
+          <h4>${esc(p.hw.title)}</h4>
+          <ol>${p.hw.items.map(i=>`<li>${i}</li>`).join("")}</ol>
+          <div class="check"><b>Як перевірити</b>${esc(p.hw.check)}</div>
+        </div>
+        <div class="watch"><b>За чим стежити</b>${p.watch}</div>
+      </div>
+    </article>`).join("");
+
+  /* ── journal rows ── */
+  document.getElementById("rows").innerHTML = SESSIONS.map(s=>{
+    const r = rec(s.n);
+    return `<div class="row" id="row-${s.n}" data-status="${r.status}">
+      <div class="row-top">
+        <span class="rn">${s.n}</span>
+        <span class="rt"><strong>${esc(s.t)}</strong><span>${esc(s.l)}</span></span>
+        <span class="row-ctl">
+          <input type="date" data-n="${s.n}" data-f="date" value="${r.date}" title="Дата заняття">
+          <select data-n="${s.n}" data-f="status" title="Статус">
+            <option value="">— статус —</option>
+            <option value="done">проведено</option>
+            <option value="skip">пропущено</option>
+          </select>
+          <select data-n="${s.n}" data-f="dur" title="Тривалість">
+            <option value="60">60 хв</option>
+            <option value="90">90 хв</option>
+            <option value="120">120 хв</option>
+          </select>
+          <select data-n="${s.n}" data-f="hw" title="Домашка">
+            <option value="">домашка —</option>
+            <option value="given">задано</option>
+            <option value="done">здано</option>
+          </select>
+          <select data-n="${s.n}" data-f="diff" title="Складність за оцінкою сина">
+            <option value="">складність —</option>
+            <option value="1">1 · легко</option>
+            <option value="2">2</option>
+            <option value="3">3 · нормально</option>
+            <option value="4">4</option>
+            <option value="5">5 · важко</option>
+          </select>
+          <button class="note-btn" type="button" data-note="${s.n}">нотатка</button>
+        </span>
+      </div>
+      <textarea class="hidden" data-n="${s.n}" data-f="note" placeholder="Що не пішло, до чого повернутись наступного разу">${esc(r.note)}</textarea>
+    </div>`;
+  }).join("");
+
+  document.querySelectorAll("select[data-f]").forEach(el=>{
+    el.value = rec(+el.dataset.n)[el.dataset.f] || (el.dataset.f === "dur" ? "90" : "");
+  });
+
+  function render(){
+    let done = 0, mins = 0, hw = 0, diffs = [];
+    SESSIONS.forEach(s=>{
+      const r = rec(s.n);
+      document.getElementById("row-"+s.n).dataset.status = r.status;
+      if (r.status === "done") { done++; mins += parseInt(r.dur || "90", 10); }
+      if (r.hw === "done") hw++;
+      if (r.status === "done" && r.diff) diffs.push(+r.diff);
+      const btn = document.querySelector(`[data-note="${s.n}"]`);
+      btn.classList.toggle("has", !!r.note);
+    });
+
+    document.getElementById("st-done").textContent = done;
+    document.getElementById("st-hours").textContent = (mins/60).toFixed(1).replace(".0","");
+    document.getElementById("st-hw").textContent = hw;
+    document.getElementById("st-diff").textContent = diffs.length
+      ? (diffs.reduce((a,b)=>a+b,0)/diffs.length).toFixed(1) : "—";
+
+    const next = SESSIONS.find(s=>rec(s.n).status !== "done" && rec(s.n).status !== "skip");
+    document.getElementById("st-next").textContent = next ? next.n : "✓";
+
+    const last = diffs.slice(-12);
+    document.getElementById("spark").innerHTML = (last.length ? last : [])
+      .map(d=>`<i title="складність ${d}"><b style="height:${d/5*100}%"></b></i>`).join("")
+      || '<i style="opacity:.4"><b style="height:6%"></b></i>';
+  }
+
+  document.addEventListener("change", e=>{
+    const el = e.target;
+    if (!el.dataset || !el.dataset.f) return;
+    rec(+el.dataset.n)[el.dataset.f] = el.value;
+    render(); save();
+  });
+
+  document.addEventListener("click", e=>{
+    const b = e.target.closest("[data-note]");
+    if (!b) return;
+    const ta = document.querySelector(`textarea[data-n="${b.dataset.note}"]`);
+    ta.classList.toggle("hidden");
+    if (!ta.classList.contains("hidden")) ta.focus();
+  });
+
+  document.getElementById("reset").onclick = () => {
+    if (confirm("Очистити весь журнал: дати, статуси й нотатки?")) {
+      data = {};
+      document.querySelectorAll("[data-f]").forEach(el=>{
+        el.value = el.dataset.f === "dur" ? "90" : "";
+      });
+      render(); save();
+    }
+  };
+
+  render();
+})();
+</script>
+<script>
+
+(function(){
+  var KEY = "lesson-journal-v1", NAME = "zhurnal-zanyat.json";
+  var tools = document.querySelector(".tools");
+  if(!tools) return;
+  function mk(txt, fn){ var b=document.createElement("button"); b.className="btn"; b.type="button";
+    b.textContent=txt; b.addEventListener("click", fn); return b; }
+  var inp=document.createElement("input"); inp.type="file"; inp.accept="application/json,.json";
+  inp.style.display="none";
+  tools.insertBefore(mk("Зберегти у файл", function(){
+    var raw; try{ raw = localStorage.getItem(KEY) || "{}"; }catch(e){ raw = "{}"; }
+    var payload = {key:KEY, saved:new Date().toISOString(), done:JSON.parse(raw)};
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href=url; a.download=NAME;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }), tools.firstChild);
+  tools.insertBefore(mk("Відновити з файлу", function(){ inp.click(); }), tools.firstChild);
+  tools.appendChild(inp);
+  inp.addEventListener("change", function(){
+    var f = inp.files && inp.files[0]; if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var o = JSON.parse(r.result);
+        var val = (o && typeof o === "object" && "done" in o) ? o.done : o;
+        if(!val || typeof val !== "object") throw new Error("bad");
+        localStorage.setItem(KEY, JSON.stringify(val));
+        location.reload();
+      }catch(e){ alert("Не вдалося прочитати файл — потрібен той, що зберігався кнопкою «Зберегти у файл»."); }
+    };
+    r.readAsText(f);
+  });
+})();
+</script>
+</body>
+</html>

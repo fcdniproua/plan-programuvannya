@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>План навчання програмуванню</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --base:#2F5BEA; --web:#E1541F; --stack:#7440D8; --ok:#0E8F49;
+  --amber:#B9760A; --amber-bg:#FDF3E0;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --base:#7B9BFF; --web:#FF8B57; --stack:#B18CFF; --ok:#3ECF8E;
+    --amber:#F0B44B; --amber-bg:#221C10;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:820px; margin:0 auto; padding:clamp(28px,6vw,64px) clamp(16px,4vw,30px) 80px}
+h1,h2,h3{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.9rem,5.4vw,2.9rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:60ch; margin-top:14px}
+code{font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+
+.docs{display:grid; gap:14px; margin-top:38px}
+.doc{display:grid; grid-template-columns:52px 1fr; gap:18px; align-items:start;
+  background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow); text-decoration:none; color:inherit;
+  transition:border-color .15s, transform .15s}
+.doc:hover{border-color:var(--c); transform:translateY(-1px)}
+.doc .num{width:52px; height:52px; border-radius:13px; display:grid; place-items:center;
+  background:color-mix(in srgb, var(--c) 12%, transparent); color:var(--c);
+  font-family:"Unbounded",sans-serif; font-weight:700; font-size:1.15rem}
+.doc h2{font-size:1.12rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0}
+.doc p{color:var(--ink-2); font-size:.94rem; margin-top:6px}
+.doc .meta{font-family:"JetBrains Mono",monospace; font-size:.71rem; color:var(--ink-3);
+  margin-top:10px; display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+.pill{background:var(--surface-2); border:1px solid var(--line); border-radius:99px; padding:2px 9px}
+.pill.on{background:color-mix(in srgb, var(--ok) 14%, transparent); border-color:transparent; color:var(--ok)}
+
+.how{margin-top:34px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.how h2{font-size:1.05rem; font-weight:700; margin-bottom:12px}
+.how ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2); font-size:.94rem}
+.how strong{color:var(--ink)}
+.warn{margin-top:16px; background:var(--amber-bg);
+  border:1px solid color-mix(in srgb, var(--amber) 35%, transparent); border-radius:11px;
+  padding:14px 16px; font-size:.92rem; color:var(--ink-2)}
+.warn b{color:var(--amber); font-family:"JetBrains Mono",monospace; font-size:.66rem;
+  letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:5px}
+footer{margin-top:40px; padding-top:20px; border-top:1px solid var(--line);
+  color:var(--ink-3); font-size:.84rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Локальна копія · відкривати з цієї папки</p>
+  <h1>План навчання програмуванню</h1>
+  <p class="lead">Журнал занять, карта на два роки, поурочний план основ і розписані заняття на перші девʼять уроків. Займаємось двічі на тиждень по 60–90 хвилин; усі інструкції — під macOS. Прогрес зберігається в браузері, і його можна вивантажити у файл.</p>
+
+  <div class="docs">
+    <a class="doc" href="5-zhurnal.html" style="--c:var(--ok)">
+      <span class="num">▶</span>
+      <span>
+        <h2>Журнал занять</h2>
+        <p>Головний робочий документ: розклад на 18 занять, плани найближчих двох по хвилинах із домашкою, облік проведеного — дати, статуси, складність, нотатки.</p>
+        <span class="meta"><span class="pill">2 заняття на тиждень</span><span class="pill">почніть звідси</span><span class="pill" id="p5">журнал порожній</span></span>
+      </span>
+    </a>
+
+    <a class="doc" href="1-marshrut.html" style="--c:var(--base)">
+      <span class="num">01</span>
+      <span>
+        <h2>Маршрут до фулстеку</h2>
+        <p>Загальна карта: одинадцять етапів від першого рядка коду до власного сервісу на Laravel і Vue. Тут видно, де ви зараз і що буде далі.</p>
+        <span class="meta"><span class="pill">11 етапів</span><span class="pill">~2 роки</span><span class="pill" id="p1">прогрес не почато</span></span>
+      </span>
+    </a>
+
+    <a class="doc" href="2-osnovy-php.html" style="--c:var(--web)">
+      <span class="num">02</span>
+      <span>
+        <h2>Основи PHP за 24 уроки</h2>
+        <p>Робочий документ першого етапу: шість модулів, у кожному уроці теорія, практика, проєкт і критерій зарахування. Саме тут відмічається щоденний прогрес.</p>
+        <span class="meta"><span class="pill">24 уроки</span><span class="pill">~5,5 місяця</span><span class="pill" id="p2">прогрес не почато</span></span>
+      </span>
+    </a>
+
+    <a class="doc" href="3-pershyi-misyats.html" style="--c:var(--stack)">
+      <span class="num">03</span>
+      <span>
+        <h2>Перший місяць коду</h2>
+        <p>Сценарії занять на уроки 1–4: запуск, змінні, введення даних, умови. Що казати, який код показувати, завдання з розвʼязками.</p>
+        <span class="meta"><span class="pill">уроки 1–4</span><span class="pill">12 занять</span><span class="pill">30 прикладів коду</span></span>
+      </span>
+    </a>
+
+    <a class="doc" href="4-tsykly-masyvy.html" style="--c:var(--amber)">
+      <span class="num">04</span>
+      <span>
+        <h2>Цикли і масиви</h2>
+        <p>Сценарії занять на уроки 5–9 — найважчий модуль блоку основ. Цикли, масиви, ключі, сортування і готові функції.</p>
+        <span class="meta"><span class="pill">уроки 5–9</span><span class="pill">15 занять</span><span class="pill">47 прикладів коду</span></span>
+      </span>
+    </a>
+  </div>
+
+  <section class="how">
+    <h2>Як цим користуватись</h2>
+    <ul>
+      <li><strong>Відмічати кроки</strong> — просто клікати по пунктах у документах 01 і 02. Зберігається автоматично, кнопка «Скинути прогрес» повертає все на початок.</li>
+      <li><strong>Резервна копія</strong> — кнопка «Зберегти у файл» вивантажує прогрес як JSON. «Відновити з файлу» повертає його назад: так прогрес переноситься на інший компʼютер або в інший браузер.</li>
+      <li><strong>Друк</strong> — <code>Ctrl + P</code> у будь-якому документі. Перед друком усі розділи розгортаються самі, кнопки ховаються.</li>
+      <li><strong>Оновлення</strong> — коли додаватимуться уроки 10–12 і далі, нові файли просто кладуться в цю ж папку.</li>
+    </ul>
+    <div class="warn">
+      <b>Одне обмеження</b>
+      Прогрес живе в тому браузері, у якому ви відмічали, і прив'язаний до цієї папки. Якщо перенести файли в інше місце або відкрити іншим браузером — галочки не переїдуть самі. Для перенесення використовуйте «Зберегти у файл» і «Відновити з файлу».
+    </div>
+  </section>
+
+  <footer>Онлайн-версії з тими самими документами лишаються доступними — локальні файли й вони живуть окремо, прогрес між ними не синхронізується.</footer>
+</div>
+
+<script>
+(function(){
+  var CARDS = [
+    {id:"p1", key:"route-fullstack-progress-v1", total:70, word:"кроків"},
+    {id:"p2", key:"php-basics-progress-v1",      total:97, word:"завдань"}
+  ];
+  try {
+    var j = JSON.parse(localStorage.getItem("lesson-journal-v1") || "{}");
+    var done = Object.keys(j).filter(function(k){ return j[k] && j[k].status === "done"; }).length;
+    var el5 = document.getElementById("p5");
+    if (done) { el5.textContent = done + " / 18 занять проведено"; el5.className = "pill on"; }
+  } catch(e) {}
+  CARDS.forEach(function(c){
+    var el = document.getElementById(c.id);
+    var n = 0;
+    try {
+      var raw = localStorage.getItem(c.key);
+      if (raw) { var arr = JSON.parse(raw); if (Array.isArray(arr)) n = arr.length; }
+    } catch(e){ el.textContent = "прогрес недоступний"; return; }
+    if (!n) { el.textContent = "ще не почато"; return; }
+    el.textContent = n + " / " + c.total + " " + c.word + " · " + Math.round(n / c.total * 100) + "%";
+    el.className = "pill on";
+  });
+})();
+</script>
+</body>
+</html>

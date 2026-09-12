@@ -1,0 +1,1676 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Цикли і масиви</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔁</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.nav,.dash,.track{display:none !important}
+  body{background:#fff !important}
+  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#6A3FD1; --accent-soft:#EDE7FB;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC;
+  --warn:#C2401E; --warn-bg:#FCEDE8;
+  --code-bg:#15181F; --code-ink:#E4E7EF; --code-c:#6E7788; --code-s:#8FD98A;
+  --code-v:#A6C0FF; --code-k:#E9A3D2; --code-n:#F0C071;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#B18CFF; --accent-soft:#211A33;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+    --warn:#FF8A6B; --warn-bg:#2A1611;
+    --code-bg:#0A0C12; --code-ink:#DFE3EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#B18CFF; --accent-soft:#211A33;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+  --warn:#FF8A6B; --warn-bg:#2A1611;
+  --code-bg:#0A0C12; --code-ink:#DFE3EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:880px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px}
+h1,h2,h3,h4{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:64ch; margin-top:14px; font-size:clamp(1rem,2.2vw,1.06rem)}
+code:not(pre code){font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px; white-space:nowrap}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:5; margin:26px -4px 0; padding:10px 4px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(8px);
+  display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--line)}
+.nav a{font-family:"JetBrains Mono",monospace; font-size:.73rem; text-decoration:none;
+  color:var(--ink-2); background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; padding:6px 11px}
+.nav a:hover{border-color:var(--accent); color:var(--accent)}
+
+/* setup */
+.setup{margin-top:30px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.setup h2{font-size:1.08rem; font-weight:700; margin-bottom:6px}
+.setup > p{color:var(--ink-2); font-size:.95rem; margin-bottom:16px}
+.os{display:grid; gap:18px 26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.os h3{font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.os ol{margin:0; padding-left:19px; display:grid; gap:6px; font-size:.91rem; color:var(--ink-2)}
+.os a{color:var(--accent); font-weight:600; text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--accent) 32%, transparent)}
+
+/* week */
+.week{margin-top:56px; scroll-margin-top:64px}
+.w-head{border-top:3px solid var(--accent); padding-top:18px}
+.w-tag{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent)}
+.w-head h2{font-size:clamp(1.3rem,3.4vw,1.75rem); font-weight:700; margin-top:8px}
+.w-goal{color:var(--ink-2); margin-top:10px; max-width:64ch}
+
+.ses{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  margin-top:16px; box-shadow:var(--shadow)}
+.ses-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  padding-bottom:12px; border-bottom:1px solid var(--line)}
+.ses-day{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:4px 9px;
+  border-radius:6px}
+.ses-head h3{font-size:1.06rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0; flex:1}
+.ses-time{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3)}
+.body{display:flex; flex-direction:column; gap:15px}
+.body p{color:var(--ink-2)}
+.body p strong{color:var(--ink)}
+.body ul{margin:0; padding-left:19px; display:grid; gap:7px; color:var(--ink-2)}
+.body ul strong{color:var(--ink)}
+.say{border-left:3px solid var(--accent); padding:2px 0 2px 15px; color:var(--ink);
+  font-size:.97rem}
+.say b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:4px}
+
+pre{margin:0; background:var(--code-bg); border-radius:11px; padding:15px 17px; overflow-x:auto;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.83rem; line-height:1.65;
+  color:var(--code-ink); tab-size:4}
+pre .c{color:var(--code-c); font-style:italic}
+pre .s{color:var(--code-s)}
+pre .v{color:var(--code-v)}
+pre .k{color:var(--code-k)}
+pre .n{color:var(--code-n)}
+.code-wrap{position:relative}
+.code-wrap .tag{position:absolute; top:0; right:12px; font-family:"JetBrains Mono",monospace;
+  font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--code-c);
+  background:var(--code-bg); padding:3px 6px; border-radius:0 0 5px 5px}
+.out{background:var(--surface-2); border:1px solid var(--line); border-left:3px solid var(--ink-3);
+  border-radius:0 8px 8px 0; padding:11px 14px; font-family:"JetBrains Mono",monospace;
+  font-size:.8rem; color:var(--ink-2); white-space:pre-wrap; overflow-x:auto}
+.out b{display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:5px; font-weight:700}
+
+.note{border-radius:11px; padding:13px 16px; font-size:.94rem}
+.note b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; display:block; margin-bottom:5px}
+.note.tip{background:var(--ok-bg); border:1px solid color-mix(in srgb, var(--ok) 30%, transparent)}
+.note.tip b{color:var(--ok)}
+.note.warn{background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 32%, transparent)}
+.note.warn b{color:var(--warn)}
+.note.idea{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 32%, transparent)}
+.note.idea b{color:var(--amber)}
+
+/* tasks */
+.tasks{margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow)}
+.tasks > h3{font-size:1.02rem; font-weight:700; margin-bottom:4px}
+.tasks > p{color:var(--ink-2); font-size:.92rem; margin-bottom:14px}
+.task{border-top:1px solid var(--line); padding:15px 0 3px}
+.task:first-of-type{border-top:0; padding-top:4px}
+.task h4{font-size:.97rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  display:flex; gap:10px; align-items:baseline}
+.task h4 i{font-family:"JetBrains Mono",monospace; font-style:normal; font-size:.75rem;
+  color:var(--accent); flex:none}
+.task > p{color:var(--ink-2); font-size:.93rem; margin:6px 0 10px; padding-left:26px}
+.task details{padding-left:26px}
+.task summary{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3);
+  cursor:pointer; list-style:none; display:inline-flex; gap:7px; align-items:center;
+  border:1px solid var(--line); border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.task summary::-webkit-details-marker{display:none}
+.task summary:hover{color:var(--accent); border-color:var(--accent)}
+.task details[open] summary{margin-bottom:11px}
+.task details > div{display:flex; flex-direction:column; gap:11px}
+
+/* checks */
+.checks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:18px}
+.chkbox{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+  box-shadow:var(--shadow)}
+.chkbox h3{font-size:.95rem; font-weight:700; margin-bottom:11px}
+.chkbox ul{margin:0; padding-left:18px; display:grid; gap:7px; font-size:.91rem; color:var(--ink-2)}
+.chkbox.traps{border-color:color-mix(in srgb, var(--warn) 40%, var(--line))}
+.chkbox.traps h3{color:var(--warn)}
+.chkbox.quiz{border-color:color-mix(in srgb, var(--ok) 40%, var(--line))}
+.chkbox.quiz h3{color:var(--ok)}
+.chkbox.quiz ul{list-style:none; padding-left:0}
+.chkbox.quiz li{padding-left:16px; position:relative}
+.chkbox.quiz li::before{content:"?"; position:absolute; left:0; color:var(--ok); font-weight:700;
+  font-family:"JetBrains Mono",monospace}
+
+.final{margin-top:64px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:24px 26px; box-shadow:var(--shadow)}
+.final h2{font-size:1.2rem; font-weight:700; margin-bottom:6px}
+.final > p{color:var(--ink-2); margin-bottom:16px}
+.final ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2)}
+.final strong{color:var(--ink)}
+footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3);
+  font-size:.84rem}
+@media (max-width:520px){ pre{font-size:.76rem} .task > p,.task details{padding-left:0} }
+</style>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Блок основ · уроки 5–9 · пʼять тижнів</p>
+    <h1>Цикли і масиви</h1>
+    <p class="lead">Найважча частина всього блоку основ і одночасно та, після якої зʼявляється справжнє програмування. До цього моменту програма виконувала кожну команду один раз; тепер вона повторює дії й працює зі списками даних. Формат той самий: три заняття на тиждень, розвʼязки сховані.</p>
+    <nav class="nav">
+      <a href="#start">Перед стартом</a>
+      <a href="#w5">5 · while</a>
+      <a href="#w6">6 · for</a>
+      <a href="#w7">7 · Масиви</a>
+      <a href="#w8">8 · Ключі</a>
+      <a href="#w9">9 · Функції масивів</a>
+      <a href="#final">Підсумок</a>
+    </nav>
+  </header>
+
+  <section class="setup" id="start">
+    <h2>Перед стартом</h2>
+    <p>Цей модуль спирається на перший місяць. Якщо якийсь із пунктів нижче дається важко — краще повернутись на тиждень назад, ніж тягнути прогалину далі: цикли без упевнених умов перетворюються на вгадування.</p>
+    <div class="os">
+      <div>
+        <h3>Має бути засвоєно</h3>
+        <ol>
+          <li>Створити файл, запустити <code>php file.php</code>, прочитати помилку</li>
+          <li>Змінні, типи, <code>var_dump</code></li>
+          <li>Читання з клавіатури через <code>fgets(STDIN)</code> і <code>trim</code></li>
+          <li>Умови <code>if / elseif / else</code> і чому <code>===</code>, а не <code>==</code></li>
+        </ol>
+      </div>
+      <div>
+        <h3>Скільки це триває</h3>
+        <ol>
+          <li>Пʼять тижнів за планом, шість-сім у реальності — це нормально</li>
+          <li>Тиждень 5 і 7 — ключові, на них не економити</li>
+          <li>Якщо забуксували на тиждень довше — не пропускаємо, а беремо ті самі завдання з меншими числами</li>
+          <li>Наприкінці — перший проєкт, який рахує реальні дані</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Що зміниться в голові</h3>
+        <ol>
+          <li>Зникне копіювання однакових рядків — зʼявиться цикл</li>
+          <li>Замість двадцяти змінних буде один масив</li>
+          <li>Зʼявиться звичка думати «а що буде на останньому кроці»</li>
+          <li>Помилки стануть логічними, а не синтаксичними — це складніше й цінніше</li>
+        </ol>
+      </div>
+    </div>
+    <div class="note warn" style="margin-top:18px">
+      <b>Головне попередження модуля</b>
+      Тут уперше зʼявляються помилки, яких PHP не покаже: програма запускається, нічого не падає, але відповідь неправильна. Тому в кожному занятті є прийом «скажи вголос, що виведе програма, і тільки потім запускай». Без цієї звички далі буде важко.
+    </div>
+  </section>
+
+  <main id="weeks"></main>
+
+  <section class="final" id="final">
+    <h2>Підсумок модуля</h2>
+    <p>Перевіряється демонстрацією: сідає за компʼютер і показує сам, без підказок і без гугла.</p>
+    <ul id="final-list"></ul>
+  </section>
+
+  <footer>Далі — уроки 10–12: власні функції й розбиття програми на файли. Це помітно легше за цей модуль, бо найважче вже позаду.</footer>
+</div>
+
+<script>
+const WEEKS = [
+{
+ id:"w5", tag:"Тиждень 5 · урок 5", title:"Цикл while: перше повторення",
+ goal:"Мета тижня — щоб зникло бажання копіювати однаковий рядок пʼять разів. Цикл — це не нова тема, а нова звичка: побачив повторення — витягнув його в цикл.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"Як влаштований while",
+  body:[
+   {t:"say", h:"З чого почати", x:"Уяви, що треба привітати сто людей. Писати сто рядків echo ніхто не буде. Замість цього ми кажемо компʼютеру: поки лічильник менший за сто — виводь привітання і додавай одиницю. Три рядки замість ста."},
+   {t:"code", tag:"first-loop.php", x:`<?php
+
+declare(strict_types=1);
+
+$i = 1;
+
+while ($i <= 5) {
+    echo "Крок номер $i\\n";
+    $i++;
+}
+
+echo "Цикл завершився, i зараз = $i\\n";`},
+   {t:"out", x:"Крок номер 1\nКрок номер 2\nКрок номер 3\nКрок номер 4\nКрок номер 5\nЦикл завершився, i зараз = 6"},
+   {t:"p", x:"<strong>У будь-якому циклі рівно три частини</strong> — і якщо забути хоч одну, він або не почнеться, або не закінчиться:"},
+   {t:"ul", x:["<strong>Початок:</strong> <code>$i = 1;</code> — з чого починаємо. Стоїть <em>до</em> циклу.","<strong>Умова:</strong> <code>$i &lt;= 5</code> — поки вона правдива, цикл крутиться.","<strong>Зміна:</strong> <code>$i++</code> — крок уперед. Найчастіша помилка новачка — забути саме її."]},
+   {t:"note", k:"idea", h:"Питання, яке варто поставити", x:"Чому після циклу <code>$i</code> дорівнює 6, а не 5? Бо цикл зупиняється не одразу після пʼятого кроку: він додає одиницю, отримує 6, перевіряє умову — і тільки тоді виходить. Це дрібниця, на якій згодом ламаються десятки задач із «на одиницю більше або менше»."},
+   {t:"p", x:"<code>$i++</code> — це скорочення для <code>$i = $i + 1</code>. Так само працюють <code>$i--</code>, <code>$i += 2</code> (крок два) і <code>$i *= 2</code> (подвоєння)."},
+   {t:"p", x:"<strong>Обовʼязково — нескінченний цикл, навмисно.</strong> Прибрати <code>$i++</code> і запустити. Термінал почне безкінечно виводити «Крок номер 1». Зупинити: <code>Ctrl + C</code>. Цю комбінацію треба знати ще до першої випадкової нескінченності — інакше буде паніка."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Накопичувач, do-while, break і continue",
+  body:[
+   {t:"p", x:"<strong>Накопичувач</strong> — головний прийом роботи з циклом. Заводимо змінну до циклу, а всередині складаємо в неї результат:"},
+   {t:"code", tag:"sum.php", x:`<?php
+
+declare(strict_types=1);
+
+$sum = 0;
+$i = 1;
+
+while ($i <= 100) {
+    $sum += $i;
+    $i++;
+}
+
+echo "Сума чисел від 1 до 100: $sum\\n";`},
+   {t:"out", x:"Сума чисел від 1 до 100: 5050"},
+   {t:"note", k:"idea", h:"Історія, яку варто розповісти", x:"Цю саму задачу дали класу восьмирічного Карла Гаусса, щоб діти надовго затихли. Він здав відповідь за хвилину: помітив, що 1+100, 2+99 і так далі — це завжди 101, а таких пар пʼятдесят. Компʼютер робить це тупо, у лоб, за сто кроків — і все одно швидше. Гарний привід поговорити про те, що правильний алгоритм буває цінніший за швидкий процесор."},
+   {t:"p", x:"<strong>do-while</strong> відрізняється однією річчю: тіло виконується хоча б раз, бо умова перевіряється в кінці. Саме те, що треба для меню — його ж треба показати мінімум один раз:"},
+   {t:"code", tag:"menu.php", x:`<?php
+
+declare(strict_types=1);
+
+do {
+    echo "\\n1) Привітатись\\n2) Кинути кубик\\n3) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Привіт!\\n";
+    } elseif ($choice === '2') {
+        echo "Випало: " . random_int(1, 6) . "\\n";
+    } elseif ($choice !== '3') {
+        echo "Немає такого пункту\\n";
+    }
+} while ($choice !== '3');
+
+echo "Бувай!\\n";`},
+   {t:"p", x:"<strong>break</strong> виходить із циклу негайно, <strong>continue</strong> пропускає решту поточного кроку й переходить до наступного:"},
+   {t:"code", tag:"break.php", x:`<?php
+
+$i = 0;
+
+while (true) {
+    $i++;
+
+    if ($i % 2 === 0) {
+        continue;          // парні пропускаємо
+    }
+
+    if ($i > 9) {
+        break;             // на десятці виходимо
+    }
+
+    echo "$i ";
+}
+
+echo "\\n";`},
+   {t:"out", x:"1 3 5 7 9"},
+   {t:"note", k:"tip", h:"while (true) — це нормально", x:"Виглядає як помилка, але це звичайний прийом: коли умову виходу складно записати заздалегідь, пишуть вічний цикл і виходять через <code>break</code> у потрібному місці. Головне — щоб цей break справді був досяжним."}
+  ]
+ },
+ {
+  day:"Субота", time:"90–120 хв", title:"«Вгадай число» стає грою",
+  body:[
+   {t:"p", x:"Програма з четвертого уроку мала одну спробу. Один цикл перетворює її на справжню гру — це найнаочніша демонстрація того, навіщо взагалі потрібні цикли."},
+   {t:"code", tag:"guess-game.php", x:`<?php
+
+declare(strict_types=1);
+
+$secret = random_int(1, 100);
+$lives = 7;
+$attempts = 0;
+
+echo "Я загадав число від 1 до 100. У тебе $lives спроб.\\n";
+
+while ($lives > 0) {
+    echo "\\nТвій варіант: ";
+    $guess = (int) trim(fgets(STDIN));
+    $attempts++;
+
+    if ($guess === $secret) {
+        echo "Вгадав за $attempts спроб!\\n";
+        exit;
+    }
+
+    $lives--;
+
+    if ($guess < $secret) {
+        echo "Більше.";
+    } else {
+        echo "Менше.";
+    }
+
+    echo " Залишилось спроб: $lives\\n";
+}
+
+echo "\\nСпроби скінчились. Я загадував $secret.\\n";`},
+   {t:"say", h:"Розмова після першого запуску", x:"Скільки спроб треба, щоб гарантовано вгадати число від 1 до 100? Якщо називати підряд — до ста. Якщо щоразу ділити діапазон навпіл — сім. Саме тому дано сім життів. Це називається бінарний пошук, і ми повернемось до нього на 21-му уроці — але спочатку ти сам це відчуєш, граючи."},
+   {t:"p", x:"Доробити разом: порахувати, скільки разів гравець вгадував швидше за сім спроб, і додати повторний запуск гри після завершення — через зовнішній <code>do-while</code>."},
+   {t:"p", x:"Коміт: <code>git commit -m \"урок 5: цикли while\"</code>."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Сума чисел від 1 до N", x:"Запитати число N і вивести суму всіх чисел від 1 до нього. Додатково вивести їхній добуток — і подивитись, на якому N він перестане поміщатись у звичайне число.",
+  sol:[{t:"code", tag:"sum-n.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Введи число: ";
+$n = (int) trim(fgets(STDIN));
+
+$sum = 0;
+$product = 1;
+$i = 1;
+
+while ($i <= $n) {
+    $sum += $i;
+    $product *= $i;
+    $i++;
+}
+
+echo "Сума: $sum\\n";
+echo "Добуток: $product\\n";`},
+       {t:"p", x:"На <code>$n = 21</code> добуток перетворюється на <code>float</code> з експонентою: ціле число такої довжини вже не поміщається. Це перше зіткнення з межами типів — пояснювати глибоко не треба, достатньо показати."}]
+ },
+ {
+  n:"2", t:"«Вгадай число» з підрахунком спроб", x:"Гра без обмеження життів: крутиться, поки не вгадає, і в кінці каже, за скільки спроб. Додати оцінку: до 7 спроб — «відмінно», до 12 — «нормально», більше — «пощастить наступного разу».",
+  sol:[{t:"code", tag:"guess.php", x:`<?php
+
+declare(strict_types=1);
+
+$secret = random_int(1, 100);
+$attempts = 0;
+
+while (true) {
+    echo "Твій варіант: ";
+    $guess = (int) trim(fgets(STDIN));
+    $attempts++;
+
+    if ($guess === $secret) {
+        break;
+    }
+
+    echo $guess < $secret ? "Більше\\n" : "Менше\\n";
+}
+
+echo "Вгадав за $attempts спроб. ";
+
+if ($attempts <= 7) {
+    echo "Відмінно!\\n";
+} elseif ($attempts <= 12) {
+    echo "Нормально.\\n";
+} else {
+    echo "Наступного разу спробуй ділити діапазон навпіл.\\n";
+}`},
+       {t:"p", x:"Тут <code>while (true)</code> з <code>break</code> читається краще за умову «поки не вгадав»: вихід стоїть саме там, де відбувається подія."}]
+ },
+ {
+  n:"3", t:"Меню, яке не закривається", x:"Консольне меню з чотирьох пунктів: привітатись, кинути кубик, показати випадкове число від 1 до 100, вийти. Після кожної дії меню зʼявляється знову.",
+  sol:[{t:"code", tag:"menu.php", x:`<?php
+
+declare(strict_types=1);
+
+do {
+    echo "\\n=== МЕНЮ ===\\n";
+    echo "1) Привітатись\\n";
+    echo "2) Кинути кубик\\n";
+    echo "3) Випадкове число 1-100\\n";
+    echo "4) Вихід\\n> ";
+
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Привіт! Гарного дня.\\n";
+    } elseif ($choice === '2') {
+        echo "Випало: " . random_int(1, 6) . "\\n";
+    } elseif ($choice === '3') {
+        echo "Число: " . random_int(1, 100) . "\\n";
+    } elseif ($choice === '4') {
+        echo "До зустрічі!\\n";
+    } else {
+        echo "Такого пункту немає, спробуй ще.\\n";
+    }
+} while ($choice !== '4');`},
+       {t:"note", k:"tip", h:"Чому порівнюємо з рядком '4', а не числом 4", x:"З клавіатури приходить рядок. Якщо написати <code>$choice === 4</code>, умова ніколи не спрацює — типи різні, а ми домовились завжди використовувати три знаки. Або порівнювати з <code>'4'</code>, або одразу приводити: <code>(int) trim(fgets(STDIN))</code>."}]
+ },
+ {
+  n:"4", t:"Коли сума перевищить тисячу", x:"Складати числа 1, 2, 3… доки сума не перевищить 1000. Вивести, на якому числі це сталось і якою вийшла сума.",
+  sol:[{t:"code", tag:"threshold.php", x:`<?php
+
+declare(strict_types=1);
+
+$sum = 0;
+$i = 0;
+
+while ($sum <= 1000) {
+    $i++;
+    $sum += $i;
+}
+
+echo "Сума перевищила 1000 на числі $i\\n";
+echo "Підсумкова сума: $sum\\n";`},
+       {t:"out", x:"Сума перевищила 1000 на числі 45\nПідсумкова сума: 1035"},
+       {t:"p", x:"Тут умова циклу залежить не від лічильника, а від накопичувача — важливий крок від «повтори N разів» до «повторюй, поки не станеться подія»."}]
+ }],
+ traps:[
+  "<strong>Забута зміна лічильника.</strong> Немає <code>$i++</code> — цикл вічний. Зупиняти через <code>Ctrl + C</code>.",
+  "<strong>Лічильник оголошений усередині циклу.</strong> <code>$i = 1</code> усередині тіла щоразу скидає його на одиницю — знову вічний цикл.",
+  "<strong>Помилка на одиницю.</strong> <code>&lt;</code> замість <code>&lt;=</code> — і останній крок губиться. Перевіряти на маленьких числах, де відповідь можна порахувати в голові.",
+  "<strong>Накопичувач оголошений усередині циклу.</strong> <code>$sum = 0</code> у тілі обнуляє суму на кожному кроці, і в результаті залишається тільки останнє число.",
+  "<strong>Крапка з комою після while.</strong> <code>while ($i &lt; 5);</code> — тіло стає порожнім, цикл вічний і без жодного виводу."
+ ],
+ quiz:[
+  "З яких трьох частин складається будь-який цикл і що станеться, якщо забути кожну з них?",
+  "Чим <code>while</code> відрізняється від <code>do-while</code> і коли потрібен другий?",
+  "Що робить <code>break</code>, а що <code>continue</code>?",
+  "Чому після циклу <code>while ($i &lt;= 5)</code> змінна дорівнює 6?"
+ ]
+},
+{
+ id:"w6", tag:"Тиждень 6 · урок 6", title:"Цикл for і малювання символами",
+ goal:"Той самий цикл, записаний компактніше — і вкладені цикли, на яких уперше доводиться тримати в голові дві речі одночасно. Тиждень навмисно зроблений візуальним: результат видно на екрані одразу, тому помилки помічаються без пояснень.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"for — три частини в одному рядку",
+  body:[
+   {t:"p", x:"У <code>while</code> три частини циклу розкидані по коду. <code>for</code> збирає їх в один рядок — і саме тому в ньому важче забути крок:"},
+   {t:"code", tag:"for.php", x:`<?php
+
+// те саме, що while
+for ($i = 1; $i <= 5; $i++) {
+    echo "Крок $i\\n";
+}
+
+// зворотний відлік
+for ($i = 10; $i >= 1; $i--) {
+    echo "$i... ";
+}
+echo "Пуск!\\n";
+
+// крок два
+for ($i = 0; $i <= 20; $i += 2) {
+    echo "$i ";
+}
+echo "\\n";`},
+   {t:"say", h:"Коли який цикл", x:"Правило просте: знаєш заздалегідь, скільки разів повторити — бери for. Не знаєш і чекаєш якоїсь події — бери while. «Вивести десять рядків» — for. «Питати, поки не введуть правильно» — while."},
+   {t:"p", x:"Переписати разом два будь-які цикли минулого тижня з <code>while</code> на <code>for</code> і навпаки — щоб стало видно, що це та сама конструкція в іншому записі."},
+   {t:"note", k:"tip", h:"Дрібниця, яка знадобиться", x:"<code>str_repeat('*', 5)</code> повторює рядок задану кількість разів і дає <code>*****</code>. Половина завдань цього тижня робиться саме нею — але спершу варто зробити те саме циклом, щоб зрозуміти, що функція нічого магічного не робить."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Вкладені цикли",
+  body:[
+   {t:"say", h:"Пояснення, яке працює", x:"Уяви таблицю. Зовнішній цикл — це рядки, він рухається згори вниз. Внутрішній — колонки, він пробігає весь рядок зліва направо. Поки внутрішній не закінчиться, зовнішній стоїть на місці. Тому внутрішній прокручується повністю стільки разів, скільки кроків у зовнішньому."},
+   {t:"code", tag:"table.php", x:`<?php
+
+for ($row = 1; $row <= 10; $row++) {
+
+    for ($col = 1; $col <= 10; $col++) {
+        echo str_pad((string) ($row * $col), 5, ' ', STR_PAD_LEFT);
+    }
+
+    echo "\\n";   // перенос рядка — у зовнішньому циклі!
+}`},
+   {t:"out", x:"    1    2    3    4    5    6    7    8    9   10\n    2    4    6    8   10   12   14   16   18   20\n    3    6    9   12   15   18   21   24   27   30"},
+   {t:"note", k:"warn", h:"Місце, де помиляються всі", x:"<code>echo \"\\n\"</code> має стояти в зовнішньому циклі, після внутрішнього. Якщо перенести його всередину — кожне число опиниться на своєму рядку. Обовʼязково показати обидва варіанти: різниця в одному рядку, а результат несхожий."},
+   {t:"p", x:"<code>str_pad</code> тут вирівнює числа по правому краю, щоб колонки не розʼїжджались. Без нього таблиця виглядає криво — це наочний привід поговорити про те, що вивід для людини теж частина роботи."},
+   {t:"p", x:"Далі — фігури. Кожен рядок довший за попередній:"},
+   {t:"code", tag:"triangle.php", x:`<?php
+
+for ($i = 1; $i <= 5; $i++) {
+    echo str_repeat('*', $i) . "\\n";
+}
+
+echo "\\n";
+
+// те саме, але вкладеним циклом — без str_repeat
+for ($i = 1; $i <= 5; $i++) {
+    for ($j = 1; $j <= $i; $j++) {
+        echo '*';
+    }
+    echo "\\n";
+}`},
+   {t:"p", x:"Головне в другому варіанті — умова внутрішнього циклу <code>$j &lt;= $i</code>: вона залежить від зовнішнього лічильника. Саме так будуються всі фігури."}
+  ]
+ },
+ {
+  day:"Субота", time:"90–120 хв", title:"FizzBuzz і піраміда",
+  body:[
+   {t:"p", x:"<strong>FizzBuzz</strong> — найвідоміше завдання на співбесідах для початківців. Вивести числа від 1 до 100, але замість кратних трьом — «Fizz», кратних пʼяти — «Buzz», кратних і трьом, і пʼяти — «FizzBuzz»."},
+   {t:"code", tag:"fizzbuzz.php", x:`<?php
+
+for ($i = 1; $i <= 100; $i++) {
+
+    if ($i % 15 === 0) {
+        echo "FizzBuzz\\n";
+    } elseif ($i % 3 === 0) {
+        echo "Fizz\\n";
+    } elseif ($i % 5 === 0) {
+        echo "Buzz\\n";
+    } else {
+        echo "$i\\n";
+    }
+}`},
+   {t:"say", h:"Про що тут насправді питають", x:"Половина дорослих кандидатів пише перевірку на 15 останньою — і тоді вона ніколи не спрацьовує, бо число, кратне 15, спочатку зловить перевірка на 3. Це не задача на знання, це задача на уважність до порядку умов. Спробуй навмисно поставити перевірки в неправильному порядку й подивись, що вийде."},
+   {t:"p", x:"<strong>Піраміда</strong> — складніша фігура, бо крім зірочок треба вивести пробіли:"},
+   {t:"code", tag:"pyramid.php", x:`<?php
+
+$height = 5;
+
+for ($i = 1; $i <= $height; $i++) {
+    echo str_repeat(' ', $height - $i);
+    echo str_repeat('*', $i * 2 - 1);
+    echo "\\n";
+}`},
+   {t:"out", x:"    *\n   ***\n  *****\n *******\n*********"},
+   {t:"p", x:"Тут корисно розібрати формули на папері: у рядку номер <code>$i</code> потрібно <code>$height - $i</code> пробілів і <code>$i * 2 - 1</code> зірочок. Виводити формулу самому — окрема навичка, і саме вона згодиться в іграх на канвасі."},
+   {t:"p", x:"Коміт: <code>git commit -m \"урок 6: цикл for\"</code>."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Таблиця множення", x:"Вивести таблицю 10×10 рівними колонками. Додати шапку з номерами колонок і розділювальний рядок.",
+  sol:[{t:"code", tag:"table.php", x:`<?php
+
+declare(strict_types=1);
+
+echo str_pad('', 5, ' ');
+for ($col = 1; $col <= 10; $col++) {
+    echo str_pad((string) $col, 5, ' ', STR_PAD_LEFT);
+}
+echo "\\n" . str_repeat('-', 55) . "\\n";
+
+for ($row = 1; $row <= 10; $row++) {
+    echo str_pad((string) $row, 3, ' ', STR_PAD_LEFT) . ' |';
+
+    for ($col = 1; $col <= 10; $col++) {
+        echo str_pad((string) ($row * $col), 5, ' ', STR_PAD_LEFT);
+    }
+
+    echo "\\n";
+}`}]
+ },
+ {
+  n:"2", t:"Ялинка", x:"Намалювати ялинку заданої висоти: піраміда із зірочок, а під нею стовбур із двох рядків по одному символу, вирівняний по центру.",
+  sol:[{t:"code", tag:"tree.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Висота ялинки: ";
+$height = (int) trim(fgets(STDIN));
+
+for ($i = 1; $i <= $height; $i++) {
+    echo str_repeat(' ', $height - $i);
+    echo str_repeat('*', $i * 2 - 1);
+    echo "\\n";
+}
+
+for ($i = 0; $i < 2; $i++) {
+    echo str_repeat(' ', $height - 1) . "|\\n";
+}`},
+       {t:"p", x:"Якщо ялинка «поїхала» — майже завжди справа в кількості пробілів. Найпростіший спосіб знайти помилку: тимчасово замінити пробіл на крапку, щоб його стало видно."}]
+ },
+ {
+  n:"3", t:"Шахова дошка", x:"Вивести дошку 8×8 із символів: чорні клітинки — <code>#</code>, білі — пробіл або крапка. Клітинки чергуються і в рядках, і в колонках.",
+  sol:[{t:"code", tag:"chess.php", x:`<?php
+
+for ($row = 0; $row < 8; $row++) {
+
+    for ($col = 0; $col < 8; $col++) {
+        echo ($row + $col) % 2 === 0 ? '##' : '..';
+    }
+
+    echo "\\n";
+}`},
+       {t:"note", k:"idea", h:"Вся суть — в одному виразі", x:"<code>($row + $col) % 2</code> — це і є шаховий порядок. Якщо сума координат парна — одна клітинка, непарна — інша. Варто дати здогадатись самому: намалювати на папері координати кількох клітинок і подивитись на суми. Такий прийом потім зустрінеться в іграх постійно."}]
+ },
+ {
+  n:"4", t:"FizzBuzz", x:"Класичне завдання: числа від 1 до 100 із заміною кратних. Зробити самому, без підглядання, а потім свідомо зламати порядок умов і подивитись на результат.",
+  sol:[{t:"code", tag:"fizzbuzz.php", x:`<?php
+
+for ($i = 1; $i <= 100; $i++) {
+
+    if ($i % 15 === 0) {
+        echo "FizzBuzz\\n";
+    } elseif ($i % 3 === 0) {
+        echo "Fizz\\n";
+    } elseif ($i % 5 === 0) {
+        echo "Buzz\\n";
+    } else {
+        echo "$i\\n";
+    }
+}`},
+       {t:"p", x:"Замість <code>% 15</code> можна написати <code>$i % 3 === 0 && $i % 5 === 0</code> — це те саме й читається зрозуміліше. Обидва варіанти правильні, і це гарний привід сказати: у програмуванні часто немає єдиного правильного рішення, є зрозуміліше й менш зрозуміле."}]
+ }],
+ traps:[
+  "<strong>Перенос рядка не в тому циклі.</strong> Таблиця перетворюється на один довгий стовпчик — класика вкладених циклів.",
+  "<strong>Однакове імʼя лічильника.</strong> Внутрішній цикл теж використовує <code>$i</code> — зовнішній збивається. Називати <code>$row</code> і <code>$col</code>, а не <code>$i</code> і <code>$j</code>.",
+  "<strong>Порядок умов у FizzBuzz.</strong> Перевірка на 15 має бути першою, інакше вона недосяжна.",
+  "<strong>Вкладений цикл усередині вкладеного всередині вкладеного.</strong> Три рівні на цьому етапі — майже завжди ознака того, що задачу можна спростити.",
+  "<strong>Числа розʼїжджаються в колонках.</strong> Не помилка, але вивід нечитабельний — <code>str_pad</code> вирішує."
+ ],
+ quiz:[
+  "Коли брати <code>for</code>, а коли <code>while</code>?",
+  "Чому в таблиці множення перенос рядка стоїть у зовнішньому циклі?",
+  "Що станеться, якщо у FizzBuzz поставити перевірку на 15 останньою?",
+  "Скільки разів усього виконається тіло внутрішнього циклу, якщо зовнішній робить 10 кроків, а внутрішній — 10?"
+ ]
+},
+{
+ id:"w7", tag:"Тиждень 7 · урок 7", title:"Масиви: багато значень в одній змінній",
+ goal:"Другий ключовий тиждень модуля. Досі кожне значення жило в окремій змінній — з двадцятьма оцінками так уже не вийде. Масив плюс цикл — це основна пара інструментів, якою робиться приблизно все.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"Що таке масив",
+  body:[
+   {t:"say", h:"З чого почати", x:"Змінна — це коробка на одну річ. Масив — це полиця з пронумерованими комірками: одна назва, багато значень. Замість двадцяти змінних для двадцяти оцінок — одна змінна grades, у якій лежать усі."},
+   {t:"code", tag:"array.php", x:`<?php
+
+declare(strict_types=1);
+
+$grades = [12, 9, 11, 8, 10];
+
+echo $grades[0];        // 12 — перший елемент
+echo "\\n";
+echo $grades[4];        // 10 — пʼятий
+echo "\\n";
+echo count($grades);    // 5 — скільки всього
+echo "\\n";
+
+$grades[] = 7;          // додати в кінець
+echo count($grades);    // 6
+echo "\\n";
+
+print_r($grades);       // подивитись увесь масив`},
+   {t:"out", x:"12\n10\n5\n6\nArray\n(\n    [0] => 12\n    [1] => 9\n    [2] => 11\n    [3] => 8\n    [4] => 10\n    [5] => 7\n)"},
+   {t:"note", k:"warn", h:"Нумерація з нуля — головна складність тижня", x:"Перший елемент має номер 0, останній — <code>count($grades) - 1</code>. Це не примха PHP, так майже в усіх мовах. Найчастіша помилка: звернутись до <code>$grades[5]</code> у масиві з пʼяти елементів і отримати попередження «Undefined array key». Обовʼязково зробити це навмисно і побачити текст помилки."},
+   {t:"p", x:"<strong>foreach</strong> — головний спосіб обійти масив. Він сам знає, скільки там елементів, і не дає помилитись з межами:"},
+   {t:"code", tag:"foreach.php", x:`<?php
+
+$grades = [12, 9, 11, 8, 10];
+
+foreach ($grades as $grade) {
+    echo "Оцінка: $grade\\n";
+}
+
+// те саме через for — довше і легше помилитись
+for ($i = 0; $i < count($grades); $i++) {
+    echo "Оцінка: {$grades[$i]}\\n";
+}`},
+   {t:"p", x:"Правило на все життя: якщо треба просто пройти по всіх елементах — <code>foreach</code>. <code>for</code> потрібен лише коли важливий сам номер елемента."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Обробка масиву циклом",
+  body:[
+   {t:"p", x:"Тепер найважливіше в тижні: класичні алгоритми на масиві. Їх треба написати руками, навіть знаючи, що в PHP є готові функції — інакше не зʼявиться розуміння, що ці функції роблять."},
+   {t:"code", tag:"stats.php", x:`<?php
+
+declare(strict_types=1);
+
+$grades = [12, 9, 11, 8, 10, 7, 12];
+
+// сума й середнє
+$sum = 0;
+foreach ($grades as $grade) {
+    $sum += $grade;
+}
+$average = $sum / count($grades);
+
+// максимум — беремо перший і шукаємо більший
+$max = $grades[0];
+foreach ($grades as $grade) {
+    if ($grade > $max) {
+        $max = $grade;
+    }
+}
+
+// мінімум — так само, тільки навпаки
+$min = $grades[0];
+foreach ($grades as $grade) {
+    if ($grade < $min) {
+        $min = $grade;
+    }
+}
+
+echo "Оцінок: " . count($grades) . "\\n";
+echo "Сума: $sum\\n";
+echo "Середній бал: " . round($average, 2) . "\\n";
+echo "Найкраща: $max, найгірша: $min\\n";`},
+   {t:"out", x:"Оцінок: 7\nСума: 69\nСередній бал: 9.86\nНайкраща: 12, найгірша: 7"},
+   {t:"note", k:"idea", h:"Чому максимум починається з першого елемента", x:"Спокуса — почати з нуля: <code>$max = 0</code>. Для оцінок спрацює, а для температур узимку — ні: усі значення відʼємні, і максимумом залишиться нуль, якого в масиві взагалі немає. Правильно завжди брати за початок перший реальний елемент. Це помилка, яку роблять і дорослі."},
+   {t:"p", x:"<strong>Підрахунок за умовою</strong> — ще один щоденний прийом:"},
+   {t:"code", tag:"count-if.php", x:`<?php
+
+$grades = [12, 9, 11, 8, 10, 7, 12];
+$good = 0;
+
+foreach ($grades as $grade) {
+    if ($grade >= 10) {
+        $good++;
+    }
+}
+
+echo "Оцінок 10 і вище: $good з " . count($grades) . "\\n";`},
+   {t:"p", x:"І функції для країв масиву: <code>array_push</code> (додати в кінець, те саме що <code>[]=</code>), <code>array_pop</code> (забрати останній), <code>array_shift</code> (забрати перший), <code>array_unshift</code> (додати на початок)."}
+  ]
+ },
+ {
+  day:"Субота", time:"120 хв", title:"Список покупок — цикли плюс масив",
+  body:[
+   {t:"p", x:"Перша програма, де цикл і масив працюють разом: меню крутиться, масив живе між кроками."},
+   {t:"code", tag:"shopping.php", x:`<?php
+
+declare(strict_types=1);
+
+$items = [];
+
+do {
+    echo "\\n=== СПИСОК ПОКУПОК ===\\n";
+
+    if (count($items) === 0) {
+        echo "(поки порожньо)\\n";
+    } else {
+        foreach ($items as $index => $item) {
+            echo ($index + 1) . ". $item\\n";
+        }
+    }
+
+    echo "\\n1) Додати  2) Видалити останнє  3) Очистити  4) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Що додати: ";
+        $items[] = trim(fgets(STDIN));
+    } elseif ($choice === '2') {
+        if (count($items) > 0) {
+            $removed = array_pop($items);
+            echo "Прибрали: $removed\\n";
+        } else {
+            echo "Нема чого видаляти\\n";
+        }
+    } elseif ($choice === '3') {
+        $items = [];
+        echo "Список очищено\\n";
+    }
+} while ($choice !== '4');
+
+echo "\\nУ списку залишилось " . count($items) . " позицій.\\n";`},
+   {t:"note", k:"tip", h:"Нова конструкція в коді", x:"<code>foreach ($items as $index => $item)</code> дає одразу і номер, і значення. Саме тому в списку виводиться <code>$index + 1</code> — щоб людина бачила нумерацію з одиниці, а не з нуля. Це маленький, але справжній приклад того, що всередині програми і на екрані дані можуть виглядати по-різному."},
+   {t:"p", x:"Доробити разом: видалення за номером (<code>array_splice</code>) і підрахунок, скільки разів у списку зустрічається однакова назва."},
+   {t:"p", x:"Коміт: <code>git commit -m \"урок 7: масиви\"</code>."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Середній бал", x:"Масив із десяти оцінок. Порахувати суму, середнє, кількість оцінок вище середнього. Середнє округлити до сотих.",
+  sol:[{t:"code", tag:"average.php", x:`<?php
+
+declare(strict_types=1);
+
+$grades = [12, 9, 11, 8, 10, 7, 12, 6, 11, 9];
+
+$sum = 0;
+foreach ($grades as $grade) {
+    $sum += $grade;
+}
+
+$average = $sum / count($grades);
+
+$aboveAverage = 0;
+foreach ($grades as $grade) {
+    if ($grade > $average) {
+        $aboveAverage++;
+    }
+}
+
+echo "Сума: $sum\\n";
+echo "Середній бал: " . round($average, 2) . "\\n";
+echo "Вище середнього: $aboveAverage оцінок\\n";`},
+       {t:"out", x:"Сума: 95\nСередній бал: 9.5\nВище середнього: 5 оцінок"},
+       {t:"p", x:"Зверніть увагу: потрібні два проходи по масиву. Спочатку рахуємо середнє, і тільки потім можемо порівнювати з ним — в одному циклі це не зробити, бо на початку середнє ще невідоме."}]
+ },
+ {
+  n:"2", t:"Максимум і мінімум без готових функцій", x:"Знайти найбільше й найменше значення в масиві, не використовуючи <code>max</code> і <code>min</code>. Додатково вивести їхні порядкові номери.",
+  sol:[{t:"code", tag:"minmax.php", x:`<?php
+
+declare(strict_types=1);
+
+$numbers = [45, -12, 78, 3, -56, 91, 20];
+
+$max = $numbers[0];
+$min = $numbers[0];
+$maxIndex = 0;
+$minIndex = 0;
+
+foreach ($numbers as $index => $number) {
+    if ($number > $max) {
+        $max = $number;
+        $maxIndex = $index;
+    }
+    if ($number < $min) {
+        $min = $number;
+        $minIndex = $index;
+    }
+}
+
+echo "Максимум: $max (позиція " . ($maxIndex + 1) . ")\\n";
+echo "Мінімум: $min (позиція " . ($minIndex + 1) . ")\\n";`},
+       {t:"out", x:"Максимум: 91 (позиція 6)\nМінімум: -56 (позиція 5)"},
+       {t:"p", x:"У масиві навмисно є відʼємні числа — саме на них ламається варіант із <code>$max = 0</code>. Варто спробувати обидва способи й побачити різницю."}]
+ },
+ {
+  n:"3", t:"Перевернути масив", x:"Отримати масив у зворотному порядку, не використовуючи <code>array_reverse</code>. Зробити двома способами: через новий масив і через обмін елементів на місці.",
+  sol:[{t:"code", tag:"reverse.php", x:`<?php
+
+declare(strict_types=1);
+
+$original = [1, 2, 3, 4, 5];
+
+// спосіб перший: новий масив, обхід з кінця
+$reversed = [];
+for ($i = count($original) - 1; $i >= 0; $i--) {
+    $reversed[] = $original[$i];
+}
+print_r($reversed);
+
+// спосіб другий: міняємо місцями краї, рухаючись до центру
+$numbers = [1, 2, 3, 4, 5];
+$left = 0;
+$right = count($numbers) - 1;
+
+while ($left < $right) {
+    $temp = $numbers[$left];
+    $numbers[$left] = $numbers[$right];
+    $numbers[$right] = $temp;
+    $left++;
+    $right--;
+}
+print_r($numbers);`},
+       {t:"note", k:"idea", h:"Про обмін через тимчасову змінну", x:"Записати <code>$a = $b; $b = $a;</code> не вийде — після першого рядка старе значення <code>$a</code> втрачене назавжди. Потрібна третя змінна, як третій стакан при переливанні. Це базовий прийом, який зустрінеться в сортуваннях на 21-му уроці."}]
+ },
+ {
+  n:"4", t:"Список покупок", x:"Доробити програму із заняття: додати видалення за номером і показ загальної кількості позицій у заголовку меню.",
+  sol:[{t:"code", tag:"shopping.php", x:`<?php
+
+declare(strict_types=1);
+
+$items = [];
+
+do {
+    echo "\\n=== СПИСОК (" . count($items) . ") ===\\n";
+
+    foreach ($items as $index => $item) {
+        echo ($index + 1) . ". $item\\n";
+    }
+
+    echo "\\n1) Додати  2) Видалити за номером  3) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Що додати: ";
+        $items[] = trim(fgets(STDIN));
+
+    } elseif ($choice === '2') {
+        echo "Номер: ";
+        $number = (int) trim(fgets(STDIN));
+
+        if ($number >= 1 && $number <= count($items)) {
+            array_splice($items, $number - 1, 1);
+            echo "Видалено\\n";
+        } else {
+            echo "Такого номера немає\\n";
+        }
+    }
+} while ($choice !== '3');`},
+       {t:"p", x:"<code>array_splice($items, $number - 1, 1)</code> видаляє один елемент починаючи з позиції <code>$number - 1</code> і, на відміну від <code>unset</code>, перенумеровує решту. Якщо використати <code>unset</code>, у масиві залишиться дірка в нумерації — це варто показати окремо, бо колись обовʼязково спантеличить."}]
+ }],
+ traps:[
+  "<strong>Звернення до неіснуючого індексу.</strong> <code>$grades[5]</code> у масиві з пʼятьма елементами — попередження «Undefined array key» і <code>null</code> замість значення.",
+  "<strong><code>$max = 0</code> замість першого елемента.</strong> На масиві з відʼємних чисел дасть неправильну відповідь без жодної помилки.",
+  "<strong>Масив оголошений усередині циклу.</strong> <code>$items = []</code> у тілі обнуляє його на кожному кроці.",
+  "<strong>Спроба порахувати середнє й порівняти з ним в одному циклі.</strong> На момент перших порівнянь середнє ще не готове.",
+  "<strong><code>unset</code> замість <code>array_splice</code>.</strong> Елемент зникає, а нумерація залишається з діркою: після видалення другого з трьох будуть індекси 0 і 2."
+ ],
+ quiz:[
+  "Який індекс у першого елемента масиву і який — в останнього?",
+  "Коли брати <code>foreach</code>, а коли <code>for</code>?",
+  "Чому пошук максимуму починається з першого елемента, а не з нуля?",
+  "Що робить <code>$items[] = 'хліб'</code> і чим це відрізняється від <code>$items[0] = 'хліб'</code>?"
+ ]
+},
+{
+ id:"w8", tag:"Тиждень 8 · урок 8", title:"Ключі, вкладеність, сортування",
+ goal:"Масив із номерами добре зберігає однакові речі. Але «гравець» — це не список, а набір різних властивостей: імʼя, рівень, здоровʼя. Тут зʼявляються ключі — і саме в такому вигляді дані приходять з баз і зовнішніх сервісів, тож це прямий місток до Laravel.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"Асоціативні масиви",
+  body:[
+   {t:"say", h:"Пояснення", x:"Уяви шафку з підписаними шухлядами замість пронумерованих. Ти не памʼятаєш, що лежить у третій — ти відкриваєш шухляду «шкарпетки». Тут те саме: замість номера — слово-ключ."},
+   {t:"code", tag:"assoc.php", x:`<?php
+
+declare(strict_types=1);
+
+$player = [
+    'name'  => 'Максим',
+    'level' => 5,
+    'hp'    => 100,
+    'alive' => true,
+];
+
+echo $player['name'];    // Максим
+echo "\\n";
+
+$player['level'] = 6;    // змінити
+$player['gold'] = 250;   // додати нове поле
+
+foreach ($player as $key => $value) {
+    echo "$key: $value\\n";
+}`},
+   {t:"out", x:"Максим\nname: Максим\nlevel: 6\nhp: 100\nalive: 1\ngold: 250"},
+   {t:"note", k:"idea", h:"Дрібниця, яку варто помітити", x:"<code>alive</code> вивелось як <code>1</code>, а не як <code>true</code>. При виводі <code>echo</code> перетворює <code>true</code> на одиницю, а <code>false</code> — на порожній рядок. Саме тому для перевірки типів ми користуємось <code>var_dump</code>, а не <code>echo</code>."},
+   {t:"p", x:"<strong>Перевірка наявності ключа</strong> — обовʼязкова звичка, бо звернення до неіснуючого ключа дає попередження:"},
+   {t:"code", tag:"isset.php", x:`<?php
+
+$player = ['name' => 'Максим', 'level' => 5];
+
+if (isset($player['gold'])) {
+    echo "Золото: {$player['gold']}\\n";
+} else {
+    echo "Золота немає\\n";
+}
+
+// коротший спосіб: значення за замовчуванням
+$gold = $player['gold'] ?? 0;
+echo "Золото: $gold\\n";
+
+unset($player['level']);   // видалити ключ
+print_r($player);`},
+   {t:"p", x:"Оператор <code>??</code> читається так: «взяти це значення, а якщо його немає — узяти те». У реальному коді він зустрічається постійно."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Масив масивів",
+  body:[
+   {t:"p", x:"Тепер поєднуємо: список, у якому кожен елемент — це набір властивостей. Так виглядають майже всі дані в реальних програмах."},
+   {t:"code", tag:"table.php", x:`<?php
+
+declare(strict_types=1);
+
+$clubs = [
+    ['name' => 'Динамо',  'wins' => 12, 'points' => 40],
+    ['name' => 'Шахтар',  'wins' => 15, 'points' => 48],
+    ['name' => 'Зоря',    'wins' => 8,  'points' => 29],
+    ['name' => 'Полісся', 'wins' => 10, 'points' => 34],
+];
+
+echo $clubs[1]['name'];        // Шахтар — спочатку номер, потім ключ
+echo "\\n\\n";
+
+foreach ($clubs as $club) {
+    echo mb_str_pad($club['name'], 12);
+    echo str_pad((string) $club['wins'], 5, ' ', STR_PAD_LEFT);
+    echo str_pad((string) $club['points'], 6, ' ', STR_PAD_LEFT);
+    echo "\\n";
+}`},
+   {t:"out", x:"Шахтар\n\nДинамо         12    40\nШахтар         15    48\nЗоря            8    29\nПолісся        10    34"},
+   {t:"note", k:"warn", h:"Чому mb_str_pad, а не str_pad", x:"Це та сама історія, що з <code>strlen</code> і <code>mb_strlen</code> на другому тижні. <code>str_pad</code> рахує байти, а українська літера важить два — тому «Зоря» він вважає восьмисимвольним словом і не дописує потрібні пробіли. Колонки розʼїжджаються, помилки при цьому немає. <code>mb_str_pad</code> (зʼявився у PHP 8.3) рахує саме символи. Обовʼязково спробувати обидва варіанти й побачити криву таблицю — це найнаочніший приклад помилки, про яку компʼютер мовчить."},
+   {t:"note", k:"warn", h:"Порядок звертання плутає всіх", x:"<code>$clubs[1]['name']</code> читається зліва направо: спочатку взяти клуб під номером 1, потім у ньому — поле name. Спробувати навпаки не вийде. Корисна вправа: попросити вголос прочитати <code>$clubs[2]['points']</code> як речення — «очки третього клубу»."},
+   {t:"p", x:"<strong>Обхід із обчисленням</strong> — те, заради чого все й будувалось:"},
+   {t:"code", tag:"total.php", x:`<?php
+
+$clubs = [
+    ['name' => 'Динамо', 'points' => 40],
+    ['name' => 'Шахтар', 'points' => 48],
+    ['name' => 'Зоря',   'points' => 29],
+];
+
+$total = 0;
+$best = $clubs[0];
+
+foreach ($clubs as $club) {
+    $total += $club['points'];
+
+    if ($club['points'] > $best['points']) {
+        $best = $club;
+    }
+}
+
+echo "Усього очок: $total\\n";
+echo "Лідер: {$best['name']} ({$best['points']})\\n";`},
+   {t:"p", x:"Той самий алгоритм пошуку максимуму, що й минулого тижня, — тільки порівнюємо поле, а зберігаємо весь елемент. Варто це проговорити: алгоритм не змінився, змінилась форма даних."}
+  ]
+ },
+ {
+  day:"Субота", time:"120 хв", title:"Сортування",
+  body:[
+   {t:"p", x:"PHP уміє сортувати сам. Для простих масивів усе очевидно:"},
+   {t:"code", tag:"sort.php", x:`<?php
+
+$numbers = [45, 12, 78, 3, 56];
+
+sort($numbers);      // за зростанням
+print_r($numbers);
+
+rsort($numbers);     // за спаданням
+print_r($numbers);
+
+$prices = ['хліб' => 32, 'молоко' => 45, 'сир' => 210];
+
+asort($prices);      // за значеннями, ключі зберігаються
+print_r($prices);
+
+ksort($prices);      // за ключами
+print_r($prices);`},
+   {t:"p", x:"А от таблицю клубів звичайним <code>sort</code> не відсортуєш — PHP не знає, за яким саме полем. Тут потрібен <code>usort</code>, якому пояснюють правило порівняння:"},
+   {t:"code", tag:"usort.php", x:`<?php
+
+declare(strict_types=1);
+
+$clubs = [
+    ['name' => 'Динамо',  'points' => 40],
+    ['name' => 'Шахтар',  'points' => 48],
+    ['name' => 'Зоря',    'points' => 29],
+    ['name' => 'Полісся', 'points' => 34],
+];
+
+usort($clubs, fn($a, $b) => $b['points'] <=> $a['points']);
+
+$place = 1;
+foreach ($clubs as $club) {
+    echo $place . ". " . mb_str_pad($club['name'], 12) . $club['points'] . "\\n";
+    $place++;
+}`},
+   {t:"out", x:"1. Шахтар      48\n2. Динамо      40\n3. Полісся     34\n4. Зоря        29"},
+   {t:"say", h:"Як пояснити цей рядок", x:"Оператор <=> порівнює дві речі й відповідає одним із трьох варіантів: −1 якщо перше менше, 0 якщо рівні, 1 якщо більше. Сортування ставить питання про кожну пару, а ми в цьому рядку відповідаємо. Якщо написати $a перед $b — вийде за зростанням, якщо $b перед $a — за спаданням. Поки достатньо запамʼятати як шаблон: усередині функцій ми розберемось на десятому уроці."},
+   {t:"note", k:"tip", h:"Що таке fn($a, $b) =>", x:"Це коротка форма запису функції прямо на місці. Повний вигляд — <code>function ($a, $b) { return ...; }</code>. На цьому тижні достатньо сприймати як заготовку, у яку підставляється назва потрібного поля."},
+   {t:"p", x:"Коміт: <code>git commit -m \"урок 8: асоціативні масиви\"</code>."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Турнірна таблиця", x:"Масив із пʼятьох команд: назва, перемоги, нічиї, поразки. Порахувати очки (перемога — 3, нічия — 1), відсортувати за спаданням і вивести таблицю з місцями.",
+  sol:[{t:"code", tag:"tournament.php", x:`<?php
+
+declare(strict_types=1);
+
+$clubs = [
+    ['name' => 'Динамо',  'w' => 12, 'd' => 4, 'l' => 6],
+    ['name' => 'Шахтар',  'w' => 15, 'd' => 3, 'l' => 4],
+    ['name' => 'Зоря',    'w' => 8,  'd' => 5, 'l' => 9],
+    ['name' => 'Полісся', 'w' => 10, 'd' => 4, 'l' => 8],
+    ['name' => 'Верес',   'w' => 6,  'd' => 7, 'l' => 9],
+];
+
+foreach ($clubs as $index => $club) {
+    $clubs[$index]['points'] = $club['w'] * 3 + $club['d'];
+}
+
+usort($clubs, fn($a, $b) => $b['points'] <=> $a['points']);
+
+echo mb_str_pad('#', 4) . mb_str_pad('Команда', 12) . mb_str_pad('В', 4)
+   . mb_str_pad('Н', 4) . mb_str_pad('П', 4) . "Очки\\n";
+echo str_repeat('-', 32) . "\\n";
+
+$place = 1;
+foreach ($clubs as $club) {
+    echo str_pad((string) $place, 4);
+    echo mb_str_pad($club['name'], 12);
+    echo str_pad((string) $club['w'], 4);
+    echo str_pad((string) $club['d'], 4);
+    echo str_pad((string) $club['l'], 4);
+    echo $club['points'] . "\\n";
+    $place++;
+}`},
+       {t:"note", k:"warn", h:"Чому $clubs[$index], а не $club", x:"Усередині <code>foreach</code> змінна <code>$club</code> — це копія елемента. Записати в неї нове поле можна, але в масиві воно не збережеться. Тому додаємо очки саме через <code>$clubs[$index]</code>. Це одна з найпідступніших помилок цього тижня — обовʼязково спробувати обидва варіанти й побачити різницю."}]
+ },
+ {
+  n:"2", t:"Телефонна книга", x:"Асоціативний масив «імʼя → телефон». Меню: показати всі, знайти за імʼям, додати запис, видалити. Пошук має працювати незалежно від регістру.",
+  sol:[{t:"code", tag:"phonebook.php", x:`<?php
+
+declare(strict_types=1);
+
+$book = [
+    'мама'  => '+380501112233',
+    'тато'  => '+380671112233',
+    'сергій' => '+380931112233',
+];
+
+do {
+    echo "\\n1) Усі  2) Знайти  3) Додати  4) Видалити  5) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        foreach ($book as $name => $phone) {
+            echo mb_str_pad($name, 12) . $phone . "\\n";
+        }
+
+    } elseif ($choice === '2') {
+        echo "Кого шукаємо: ";
+        $name = mb_strtolower(trim(fgets(STDIN)));
+        echo $book[$name] ?? "Такого контакту немає";
+        echo "\\n";
+
+    } elseif ($choice === '3') {
+        echo "Імʼя: ";
+        $name = mb_strtolower(trim(fgets(STDIN)));
+        echo "Телефон: ";
+        $book[$name] = trim(fgets(STDIN));
+        echo "Збережено\\n";
+
+    } elseif ($choice === '4') {
+        echo "Кого видалити: ";
+        $name = mb_strtolower(trim(fgets(STDIN)));
+
+        if (isset($book[$name])) {
+            unset($book[$name]);
+            echo "Видалено\\n";
+        } else {
+            echo "Немає такого\\n";
+        }
+    }
+} while ($choice !== '5');`},
+       {t:"p", x:"Тут <code>unset</code> доречний: у асоціативному масиві немає нумерації, яку можна зіпсувати. Це гарний контраст із минулим тижнем."}]
+ },
+ {
+  n:"3", t:"Оцінки класу", x:"Масив учнів, у кожного — імʼя і масив оцінок. Вивести середній бал кожного, знайти найкращого учня і порахувати середнє по класу.",
+  sol:[{t:"code", tag:"class.php", x:`<?php
+
+declare(strict_types=1);
+
+$students = [
+    ['name' => 'Максим', 'grades' => [12, 10, 11, 9]],
+    ['name' => 'Аня',    'grades' => [11, 12, 12, 10]],
+    ['name' => 'Олег',   'grades' => [7, 9, 8, 10]],
+];
+
+$classSum = 0;
+$classCount = 0;
+$best = null;
+
+foreach ($students as $index => $student) {
+    $sum = 0;
+
+    foreach ($student['grades'] as $grade) {
+        $sum += $grade;
+        $classSum += $grade;
+        $classCount++;
+    }
+
+    $average = round($sum / count($student['grades']), 2);
+    $students[$index]['average'] = $average;
+
+    echo mb_str_pad($student['name'], 10) . $average . "\\n";
+
+    if ($best === null || $average > $best['average']) {
+        $best = ['name' => $student['name'], 'average' => $average];
+    }
+}
+
+echo "\\nНайкращий: {$best['name']} ({$best['average']})\\n";
+echo "Середнє по класу: " . round($classSum / $classCount, 2) . "\\n";`},
+       {t:"out", x:"Максим    10.5\nАня       11.25\nОлег      8.5\n\nНайкращий: Аня (11.25)\nСереднє по класу: 10.08"},
+       {t:"p", x:"Тут уперше зʼявляється цикл усередині циклу по даних, а не по числах: зовнішній іде по учнях, внутрішній — по оцінках кожного. Це рівно та сама вкладеність, що й у таблиці множення."}]
+ },
+ {
+  n:"4", t:"Товари за ціною", x:"Список товарів з назвою, ціною і кількістю. Відсортувати за ціною за зростанням, порахувати загальну вартість складу і знайти найдорожчу позицію.",
+  sol:[{t:"code", tag:"products.php", x:`<?php
+
+declare(strict_types=1);
+
+$products = [
+    ['name' => 'Клавіатура', 'price' => 1200, 'qty' => 4],
+    ['name' => 'Мишка',      'price' => 450,  'qty' => 12],
+    ['name' => 'Монітор',    'price' => 7800, 'qty' => 2],
+    ['name' => 'Килимок',    'price' => 180,  'qty' => 25],
+];
+
+usort($products, fn($a, $b) => $a['price'] <=> $b['price']);
+
+$total = 0;
+
+foreach ($products as $product) {
+    $cost = $product['price'] * $product['qty'];
+    $total += $cost;
+
+    echo mb_str_pad($product['name'], 14);
+    echo str_pad((string) $product['price'], 7, ' ', STR_PAD_LEFT);
+    echo str_pad((string) $product['qty'], 5, ' ', STR_PAD_LEFT);
+    echo str_pad((string) $cost, 9, ' ', STR_PAD_LEFT);
+    echo "\\n";
+}
+
+echo str_repeat('-', 35) . "\\n";
+echo "Загальна вартість: " . number_format($total, 0, ',', ' ') . " грн\\n";`},
+       {t:"p", x:"Для сортування за спаданням достатньо поміняти місцями <code>$a</code> і <code>$b</code>. Варто дати спробувати — і переконатись, що правило справді працює."}]
+ }],
+ traps:[
+  "<strong>Зміна елемента всередині foreach.</strong> <code>$club['points'] = 40</code> змінює копію — у масиві нічого не зміниться. Писати через <code>$clubs[$index]['points']</code>.",
+  "<strong>Неіснуючий ключ.</strong> Попередження «Undefined array key» і <code>null</code> замість значення. Лікується <code>isset</code> або <code>??</code>.",
+  "<strong>Плутанина в порядку.</strong> <code>$clubs['name'][1]</code> замість <code>$clubs[1]['name']</code> — спершу номер у списку, потім поле.",
+  "<strong>Регістр у ключах.</strong> <code>'Мама'</code> і <code>'мама'</code> — різні ключі. Тому в телефонній книзі все приводиться до нижнього регістру.",
+  "<strong><code>sort</code> на масиві з ключами.</strong> Він викине ключі й перенумерує все з нуля. Для асоціативних потрібні <code>asort</code> і <code>ksort</code>.",
+  "<strong><code>str_pad</code> на українських назвах.</strong> Рахує байти замість символів — таблиця розʼїжджається без жодної помилки. Для тексту потрібен <code>mb_str_pad</code>."
+ ],
+ quiz:[
+  "Коли потрібен масив із ключами, а коли достатньо звичайного?",
+  "Як прочитати вголос вираз <code>$clubs[2]['points']</code>?",
+  "Чому зміна <code>$club['points']</code> усередині <code>foreach</code> не потрапляє в масив?",
+  "Що робить оператор <code>??</code> і де він зручніший за <code>isset</code>?"
+ ]
+},
+{
+ id:"w9", tag:"Тиждень 9 · урок 9", title:"Готові функції для масивів",
+ goal:"Останній тиждень модуля. Усе, що писалось циклами два тижні поспіль, у PHP уже є готовим — і тепер, коли зрозуміло, як воно влаштоване всередині, цим можна користуватись без шкоди. Завершується блок першим проєктом, який рахує справжні дані.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"Інструменти на кожен день",
+  body:[
+   {t:"say", h:"Важлива рамка", x:"Два тижні ми писали максимум і суму руками. Тепер виявиться, що для цього є однорядкові функції. Це не означає, що час був витрачений дарма — навпаки: тепер ти знаєш, що робить кожна з них, і не будеш використовувати їх навмання. Програміст, який не вміє написати пошук максимуму сам, безпорадний у момент, коли готової функції не існує."},
+   {t:"code", tag:"builtin.php", x:`<?php
+
+declare(strict_types=1);
+
+$numbers = [45, 12, 78, 3, 56, 12];
+
+echo count($numbers);        // 6   скільки елементів
+echo "\\n";
+echo array_sum($numbers);    // 206 сума
+echo "\\n";
+echo max($numbers);          // 78  максимум
+echo "\\n";
+echo min($numbers);          // 3   мінімум
+echo "\\n";
+echo round(array_sum($numbers) / count($numbers), 2);  // середнє
+echo "\\n";
+
+var_dump(in_array(78, $numbers, true));   // bool(true)  чи є значення
+var_dump(array_search(78, $numbers));     // int(2)      на якій позиції
+print_r(array_unique($numbers));          // без повторів`},
+   {t:"p", x:"<strong>Друга група — про структуру масиву:</strong>"},
+   {t:"code", tag:"structure.php", x:`<?php
+
+$player = ['name' => 'Максим', 'level' => 5, 'hp' => 100];
+
+print_r(array_keys($player));     // name, level, hp
+print_r(array_values($player));   // Максим, 5, 100
+
+$a = [1, 2, 3];
+$b = [4, 5];
+print_r(array_merge($a, $b));     // 1,2,3,4,5
+print_r(array_slice($a, 1, 2));   // 2,3 — шматок масиву`},
+   {t:"p", x:"<strong>Третя пара — між рядком і масивом.</strong> Використовується постійно, тож варто вивчити напамʼять:"},
+   {t:"code", tag:"implode.php", x:`<?php
+
+$items = ['хліб', 'молоко', 'сир'];
+
+echo implode(', ', $items);        // хліб, молоко, сир
+echo "\\n";
+
+$line = "12,9,11,8,10";
+$grades = explode(',', $line);
+print_r($grades);                  // масив із пʼяти рядків
+
+echo array_sum($grades);           // 50 — PHP сам приведе до чисел
+echo "\\n";`},
+   {t:"note", k:"tip", h:"Навіщо це знадобиться", x:"<code>explode</code> перетворює рядок на масив за роздільником — так розбирають CSV-файли, дані з форм і відповіді сервісів. <code>implode</code> робить зворотне — так виводять список через кому. На 14-му уроці, коли дійдемо до файлів, ця пара стане основним інструментом."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"map, filter і вибірка полів",
+  body:[
+   {t:"p", x:"Тепер найцікавіше. Замість «пройди по масиву й склади новий» можна описати саму дію:"},
+   {t:"code", tag:"map-filter.php", x:`<?php
+
+declare(strict_types=1);
+
+$prices = [100, 250, 80, 400, 150];
+
+// було: цикл із новим масивом
+$withVat = [];
+foreach ($prices as $price) {
+    $withVat[] = $price * 1.2;
+}
+
+// стало: одна дія для кожного елемента
+$withVat = array_map(fn($price) => $price * 1.2, $prices);
+print_r($withVat);
+
+// залишити тільки ті, що підходять під умову
+$expensive = array_filter($prices, fn($price) => $price > 150);
+print_r($expensive);`},
+   {t:"out", x:"Array\n(\n    [0] => 120\n    [1] => 300\n    [2] => 96\n    [3] => 480\n    [4] => 180\n)\nArray\n(\n    [1] => 250\n    [3] => 400\n)"},
+   {t:"note", k:"warn", h:"Помітити обовʼязково", x:"Після <code>array_filter</code> індекси залишились старі: 1 і 3, без 0 і 2. Функція викидає непотрібні елементи, але не перенумеровує решту. Якщо потрібна чиста нумерація — обгорнути результат у <code>array_values()</code>. Це рівно та сама «дірка в нумерації», що й з <code>unset</code> на сьомому уроці."},
+   {t:"p", x:"<strong>array_column</strong> витягує одне поле з масиву масивів — і економить цілий цикл:"},
+   {t:"code", tag:"column.php", x:`<?php
+
+$users = [
+    ['name' => 'Максим', 'email' => 'maks@example.com', 'age' => 13],
+    ['name' => 'Аня',    'email' => 'anya@example.com', 'age' => 14],
+    ['name' => 'Олег',   'email' => 'oleh@example.com', 'age' => 13],
+];
+
+print_r(array_column($users, 'email'));
+
+// імена, доступні за email як за ключем
+print_r(array_column($users, 'name', 'email'));
+
+// середній вік — у два кроки
+echo round(array_sum(array_column($users, 'age')) / count($users), 1);
+echo "\\n";`},
+   {t:"say", h:"Про читабельність", x:"Останній рядок робить те саме, що дванадцять рядків циклу з минулого тижня. Але якщо тобі важко його прочитати — пиши циклом. Код пишеться для людей: зрозумілі десять рядків краще за незрозумілий один. З часом такі рядки читатимуться легко, і тоді вони стануть кращим вибором."}
+  ]
+ },
+ {
+  day:"Субота", time:"120–150 хв", title:"Проєкт: аналізатор класу",
+  body:[
+   {t:"p", x:"Фінальний проєкт модуля. Він зводить разом усе: цикли, вкладені масиви, ключі, сортування, функції — і, головне, малює результат так, щоб на нього було приємно дивитись."},
+   {t:"code", tag:"analyzer.php", x:`<?php
+
+declare(strict_types=1);
+
+$students = [
+    ['name' => 'Максим', 'grades' => [12, 10, 11, 9, 12]],
+    ['name' => 'Аня',    'grades' => [11, 12, 12, 10, 11]],
+    ['name' => 'Олег',   'grades' => [7, 9, 8, 10, 6]],
+    ['name' => 'Ірина',  'grades' => [10, 10, 9, 11, 10]],
+];
+
+// рахуємо середні
+foreach ($students as $i => $student) {
+    $students[$i]['average'] = round(array_sum($student['grades']) / count($student['grades']), 2);
+}
+
+// сортуємо за середнім
+usort($students, fn($a, $b) => $b['average'] <=> $a['average']);
+
+echo "РЕЙТИНГ КЛАСУ\\n";
+echo str_repeat('=', 40) . "\\n\\n";
+
+$place = 1;
+foreach ($students as $student) {
+    $bar = str_repeat('#', (int) round($student['average']));
+
+    echo str_pad((string) $place . '.', 4);
+    echo mb_str_pad($student['name'], 10);
+    echo str_pad((string) $student['average'], 7);
+    echo $bar . "\\n";
+
+    $place++;
+}
+
+$allGrades = array_merge(...array_column($students, 'grades'));
+
+echo "\\n" . str_repeat('=', 40) . "\\n";
+echo "Учнів: " . count($students) . "\\n";
+echo "Оцінок усього: " . count($allGrades) . "\\n";
+echo "Середнє по класу: " . round(array_sum($allGrades) / count($allGrades), 2) . "\\n";
+echo "Найвища оцінка: " . max($allGrades) . "\\n";
+echo "Найнижча: " . min($allGrades) . "\\n";
+echo "Відмінних (11-12): " . count(array_filter($allGrades, fn($g) => $g >= 11)) . "\\n";`},
+   {t:"out", x:"РЕЙТИНГ КЛАСУ\n========================================\n\n1.  Аня       11.2   ###########\n2.  Максим    10.8   ###########\n3.  Ірина     10     ##########\n4.  Олег      8      ########\n\n========================================\nУчнів: 4\nОцінок усього: 20\nСереднє по класу: 10\nНайвища оцінка: 12\nНайнижча: 6\nВідмінних (11-12): 8"},
+   {t:"note", k:"idea", h:"Один хитрий рядок", x:"<code>array_merge(...array_column($students, 'grades'))</code> — три крапки розпаковують масив масивів у окремі аргументи, і <code>array_merge</code> зливає всі оцінки в один список. Конструкція складна, і пояснювати її до кінця зараз не обовʼязково — достатньо сказати, що вона робить, і показати простіший варіант через звичайний цикл."},
+   {t:"p", x:"Доробити разом: додати введення оцінок із клавіатури, зберігати результат у файл (це буде місток до 14-го уроку) і показувати, скільки учнів вище середнього по класу."},
+   {t:"p", x:"Фінальний коміт модуля: <code>git commit -m \"урок 9: функції масивів + аналізатор\"</code> і <code>git push</code>."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Парні числа однією функцією", x:"З масиву чисел від 1 до 30 залишити тільки парні, потім піднести кожне до квадрата і порахувати суму. Кожен крок — окремою функцією, без жодного циклу.",
+  sol:[{t:"code", tag:"evens.php", x:`<?php
+
+declare(strict_types=1);
+
+$numbers = range(1, 30);
+
+$even = array_values(array_filter($numbers, fn($n) => $n % 2 === 0));
+$squared = array_map(fn($n) => $n ** 2, $even);
+
+print_r($even);
+echo "Сума квадратів: " . array_sum($squared) . "\\n";`},
+       {t:"out", x:"Сума квадратів: 4960"},
+       {t:"p", x:"<code>range(1, 30)</code> створює масив чисел одним рядком — зручно для тренувань. <code>array_values</code> потрібен, щоб після фільтра нумерація знову стала суцільною."}]
+ },
+ {
+  n:"2", t:"Частота слів", x:"Узяти абзац тексту, розбити на слова і порахувати, скільки разів зустрічається кожне. Вивести десять найчастіших у порядку спадання.",
+  sol:[{t:"code", tag:"words.php", x:`<?php
+
+declare(strict_types=1);
+
+$text = "цикл це не нова тема це нова звичка побачив повторення витягнув
+його в цикл і код став коротший цикл економить час і робить код зрозумілішим";
+
+$words = explode(' ', mb_strtolower(trim(preg_replace('/\\s+/', ' ', $text))));
+
+$counts = [];
+
+foreach ($words as $word) {
+    $counts[$word] = ($counts[$word] ?? 0) + 1;
+}
+
+arsort($counts);
+
+$top = array_slice($counts, 0, 10, true);
+
+foreach ($top as $word => $count) {
+    echo mb_str_pad($word, 14) . str_repeat('#', $count) . " $count\\n";
+}`},
+       {t:"note", k:"idea", h:"Головний рядок задачі", x:"<code>$counts[$word] = ($counts[$word] ?? 0) + 1;</code> — якщо слово вже зустрічалось, беремо його лічильник, якщо ні — нуль. І додаємо одиницю. Один рядок замість перевірки через <code>isset</code> у три рядки. Цей прийом використовується всюди, де щось підраховують."},
+       {t:"p", x:"<code>arsort</code> сортує за значеннями за спаданням, зберігаючи ключі, а третій аргумент <code>true</code> в <code>array_slice</code> каже не викидати ключі."}]
+ },
+ {
+  n:"3", t:"Розсилка", x:"Масив користувачів із полями name, email і age. Витягнути email тільки тих, кому 13 і більше, і скласти один рядок для поля «Кому» через кому.",
+  sol:[{t:"code", tag:"mailing.php", x:`<?php
+
+declare(strict_types=1);
+
+$users = [
+    ['name' => 'Максим', 'email' => 'maks@example.com', 'age' => 13],
+    ['name' => 'Аня',    'email' => 'anya@example.com', 'age' => 14],
+    ['name' => 'Тимур',  'email' => 'tim@example.com',  'age' => 11],
+    ['name' => 'Ірина',  'email' => 'ira@example.com',  'age' => 15],
+];
+
+$adults = array_filter($users, fn($u) => $u['age'] >= 13);
+$emails = array_column($adults, 'email');
+
+echo "Отримувачів: " . count($emails) . "\\n";
+echo "Кому: " . implode(', ', $emails) . "\\n";`},
+       {t:"out", x:"Отримувачів: 3\nКому: maks@example.com, anya@example.com, ira@example.com"},
+       {t:"p", x:"Три рядки замість циклу з умовою й накопичувачем. Варто написати обидва варіанти поруч і порівняти — це і є суть цього уроку."}]
+ },
+ {
+  n:"4", t:"Розбір CSV-рядка", x:"Дано кілька рядків у форматі «імʼя;оцінка1,оцінка2,оцінка3». Розібрати їх у нормальну структуру, порахувати середній бал кожного і вивести таблицею.",
+  sol:[{t:"code", tag:"csv.php", x:`<?php
+
+declare(strict_types=1);
+
+$lines = [
+    'Максим;12,10,11,9',
+    'Аня;11,12,12,10',
+    'Олег;7,9,8,10',
+];
+
+$students = [];
+
+foreach ($lines as $line) {
+    [$name, $gradesRaw] = explode(';', $line);
+
+    $grades = array_map('intval', explode(',', $gradesRaw));
+
+    $students[] = [
+        'name'    => $name,
+        'grades'  => $grades,
+        'average' => round(array_sum($grades) / count($grades), 2),
+    ];
+}
+
+usort($students, fn($a, $b) => $b['average'] <=> $a['average']);
+
+foreach ($students as $student) {
+    echo mb_str_pad($student['name'], 10);
+    echo mb_str_pad(implode(' ', $student['grades']), 16);
+    echo $student['average'] . "\\n";
+}`},
+       {t:"out", x:"Аня       11 12 12 10    11.25\nМаксим    12 10 11 9      10.5\nОлег      7 9 8 10        8.5"},
+       {t:"note", k:"tip", h:"Дві нові дрібниці", x:"<code>[$name, $gradesRaw] = explode(...)</code> одразу розкладає масив із двох елементів по двох змінних — зручний скорочений запис. А <code>array_map('intval', ...)</code> передає назву вбудованої функції рядком: так теж можна, і це часто зустрічається в чужому коді."},
+       {t:"p", x:"Саме так виглядає реальна робота з даними: прийшов текст — розібрали, порахували, показали. На 14-му уроці ці рядки будуть братись із файлу, а не з масиву в коді."}]
+ }],
+ traps:[
+  "<strong>array_filter залишає старі індекси.</strong> Після нього нумерація з дірками — обгортати в <code>array_values</code>, якщо це важливо.",
+  "<strong>Використання функцій замість розуміння.</strong> Якщо не можеш написати <code>array_sum</code> сам циклом — повернись на тиждень назад, це не сором.",
+  "<strong>Однорядкові конструкції з пʼятьма вкладеними функціями.</strong> Виглядає розумно, читається жахливо. Розбивати на кроки з назвами.",
+  "<strong><code>in_array</code> без третього аргументу.</strong> Без <code>true</code> порівняння нестроге, і <code>in_array(0, ['текст'])</code> може дати несподіваний результат.",
+  "<strong>explode на порожньому рядку.</strong> Дасть масив з одним порожнім елементом, а не порожній масив — типове джерело дивних підрахунків."
+ ],
+ quiz:[
+  "Чим <code>array_map</code> відрізняється від <code>array_filter</code>?",
+  "Чому після <code>array_filter</code> індекси йдуть не підряд і як це виправити?",
+  "Що робить пара <code>explode</code> і <code>implode</code>?",
+  "Коли краще написати звичайний цикл, а не однорядкову конструкцію з функцій?"
+ ]
+}
+];
+
+const FINAL = [
+ "<strong>Пише цикл під задачу.</strong> Обирає <code>for</code> чи <code>while</code> свідомо, не забуває зміну лічильника і вміє зупинити нескінченний цикл через <code>Ctrl + C</code>.",
+ "<strong>Тримає в голові вкладені цикли.</strong> Розуміє, що зовнішній — рядки, внутрішній — колонки, і сам знаходить помилку з переносом рядка.",
+ "<strong>Працює з масивами.</strong> Індексовані, асоціативні, вкладені — обходить <code>foreach</code>, дістає значення за двома ключами, додає й видаляє елементи.",
+ "<strong>Пише класичні алгоритми руками.</strong> Сума, середнє, максимум, мінімум, підрахунок за умовою — без готових функцій і без підглядання.",
+ "<strong>Сортує дані.</strong> Знає різницю між <code>sort</code>, <code>asort</code> і <code>usort</code>, і може відсортувати таблицю за будь-яким полем.",
+ "<strong>Користується готовими функціями свідомо.</strong> <code>array_sum</code>, <code>array_map</code>, <code>array_filter</code>, <code>implode</code>, <code>explode</code> — і розуміє, що всередині них звичайний цикл.",
+ "<strong>Має чотири нові програми:</strong> гру «вгадай число» з життями, список покупок, турнірну таблицю і аналізатор класу з текстовою діаграмою.",
+ "<strong>Готовий до уроків 10–12:</strong> власні функції. Код, який зараз розповзається на сотні рядків, почне складатись у зрозумілі шматки з назвами."
+];
+</script>
+
+<script>
+(function(){
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const RE = /(\/\/[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(<\?php|\?>)|(\$[A-Za-z_]\w*)|\b(declare|strict_types|echo|print|if|elseif|else|match|function|return|true|false|null|exit|new|class|foreach|for|while)\b|\b(\d+\.?\d*)\b/g;
+
+  function hl(code){
+    let out = "", last = 0;
+    code.replace(RE, (m,c,s,t,v,k,n,off)=>{
+      out += esc(code.slice(last, off));
+      const cls = c ? "c" : s ? "s" : t ? "k" : v ? "v" : k ? "k" : "n";
+      out += '<span class="'+cls+'">'+esc(m)+'</span>';
+      last = off + m.length;
+      return m;
+    });
+    return out + esc(code.slice(last));
+  }
+
+  function blocks(list){
+    return list.map(b=>{
+      if (b.t === "p")    return `<p>${b.x}</p>`;
+      if (b.t === "ul")   return `<ul>${b.x.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+      if (b.t === "code") return `<div class="code-wrap"><pre>${hl(b.x)}</pre>${b.tag?`<span class="tag">${esc(b.tag)}</span>`:""}</div>`;
+      if (b.t === "out")  return `<div class="out"><b>Що виведе</b>${esc(b.x)}</div>`;
+      if (b.t === "note") return `<div class="note ${b.k}"><b>${esc(b.h)}</b>${b.x}</div>`;
+      if (b.t === "say")  return `<div class="say"><b>${esc(b.h)}</b>${b.x}</div>`;
+      return "";
+    }).join("");
+  }
+
+  document.getElementById("weeks").innerHTML = WEEKS.map(w=>`
+    <section class="week" id="${w.id}">
+      <div class="w-head">
+        <span class="w-tag">${esc(w.tag)}</span>
+        <h2>${esc(w.title)}</h2>
+        <p class="w-goal">${esc(w.goal)}</p>
+      </div>
+
+      ${w.sessions.map(s=>`
+      <article class="ses">
+        <div class="ses-head">
+          <span class="ses-day">${esc(s.day)}</span>
+          <h3>${esc(s.title)}</h3>
+          <span class="ses-time">${esc(s.time)}</span>
+        </div>
+        <div class="body">${blocks(s.body)}</div>
+      </article>`).join("")}
+
+      <div class="tasks">
+        <h3>Завдання тижня</h3>
+        <p>Робити самостійно. Розвʼязок відкривати тільки після власної спроби — або разом, якщо застряг більше ніж на 15 хвилин.</p>
+        ${w.tasks.map(t=>`
+        <div class="task">
+          <h4><i>№${esc(t.n)}</i>${esc(t.t)}</h4>
+          <p>${esc(t.x)}</p>
+          <details>
+            <summary>Показати розвʼязок</summary>
+            <div>${blocks(t.sol)}</div>
+          </details>
+        </div>`).join("")}
+      </div>
+
+      <div class="checks">
+        <div class="chkbox traps">
+          <h3>Типові пастки тижня</h3>
+          <ul>${w.traps.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="chkbox quiz">
+          <h3>Питання на перевірку</h3>
+          <ul>${w.quiz.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </section>`).join("");
+
+  document.getElementById("final-list").innerHTML = FINAL.map(x=>`<li>${x}</li>`).join("");
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+})();
+</script>
+</body>
+</html>

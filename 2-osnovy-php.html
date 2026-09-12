@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Основи PHP за 24 уроки</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.nav,.dash,.track{display:none !important}
+  body{background:#fff !important}
+  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#2F5BEA; --accent-soft:#E7ECFE;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC; --warn:#C2401E;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#7B9BFF; --accent-soft:#1B2138;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C; --warn:#FF8A6B;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#7B9BFF; --accent-soft:#1B2138;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C; --warn:#FF8A6B;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:900px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px;}
+h1,h2,h3{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance; letter-spacing:-.01em;}
+p{margin:0}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+code{font-family:"JetBrains Mono",monospace; font-size:.86em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px;}
+
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3);}
+h1{font-size:clamp(1.85rem,5vw,2.8rem); font-weight:700; line-height:1.1; margin:14px 0 0;}
+.lead{color:var(--ink-2); max-width:63ch; margin-top:14px; font-size:clamp(1rem,2.2vw,1.08rem);}
+
+.dash{margin-top:28px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:15px;}
+.stats{display:flex; gap:30px; flex-wrap:wrap;}
+.stat b{display:block; font-family:"Unbounded",sans-serif; font-size:1.45rem; font-weight:700;
+  line-height:1.1; font-variant-numeric:tabular-nums;}
+.stat span{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3);}
+.track{height:10px; background:var(--surface-2); border:1px solid var(--line); border-radius:99px; overflow:hidden;}
+.track div{height:100%; width:0; background:var(--accent); border-radius:99px; transition:width .45s cubic-bezier(.4,0,.2,1);}
+.tools{display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; align-items:center;}
+.btn{font-family:"JetBrains Mono",monospace; font-size:.74rem; background:var(--surface); color:var(--ink-2);
+  border:1px solid var(--line); border-radius:9px; padding:7px 13px; cursor:pointer;}
+.btn:hover{border-color:var(--ink-3); color:var(--ink)}
+.btn:focus-visible,summary:focus-visible,.chk:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+#sync{font-family:"JetBrains Mono",monospace; font-size:.7rem; color:var(--ink-3)}
+
+.setup{margin-top:34px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow);}
+.setup h2{font-size:1.05rem; font-weight:600; margin-bottom:14px}
+.setup-grid{display:grid; gap:20px 28px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+.setup-grid h3{font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-bottom:8px;}
+.setup-grid ul{margin:0; padding-left:17px; display:grid; gap:5px; font-size:.9rem; color:var(--ink-2);}
+.setup-grid a{color:var(--accent); font-weight:600; text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--accent) 32%, transparent);}
+.setup-grid a:hover{border-bottom-color:var(--accent)}
+
+/* modules */
+.mod{margin-top:52px}
+.mod-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:6px}
+.mod-num{font-family:"JetBrains Mono",monospace; font-weight:700; font-size:.72rem; letter-spacing:.1em;
+  color:var(--accent); background:var(--accent-soft); border-radius:6px; padding:4px 9px;}
+.mod-head h2{font-size:clamp(1.15rem,3vw,1.45rem); font-weight:700}
+.mod-sub{color:var(--ink-2); font-size:.94rem; margin:8px 0 18px; max-width:62ch}
+.mod-bar{height:4px; background:var(--surface-2); border-radius:99px; overflow:hidden; margin-bottom:18px}
+.mod-bar div{height:100%; width:0; background:var(--accent); transition:width .4s}
+
+.lesson{background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  margin-bottom:10px; box-shadow:var(--shadow); overflow:hidden;}
+.lesson[data-done="1"]{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+summary{list-style:none; cursor:pointer; padding:15px 18px; display:block}
+summary::-webkit-details-marker{display:none}
+.l-head{display:flex; align-items:center; gap:14px}
+.l-num{flex:none; width:34px; height:34px; border-radius:9px; display:grid; place-items:center;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-2);
+  font-family:"JetBrains Mono",monospace; font-weight:700; font-size:.88rem;}
+.lesson[data-done="1"] .l-num{background:var(--ok); border-color:var(--ok); color:var(--surface)}
+.l-title{flex:1; min-width:0}
+.l-title h3{font-size:1rem; font-weight:600; line-height:1.3; font-family:"Golos Text",sans-serif;
+  letter-spacing:0}
+.l-meta{font-family:"JetBrains Mono",monospace; font-size:.7rem; color:var(--ink-3); margin-top:4px}
+.chev{flex:none; color:var(--ink-3); transition:transform .25s}
+details[open] .chev{transform:rotate(90deg)}
+.l-body{padding:0 18px 20px; display:flex; flex-direction:column; gap:18px}
+.blk h4{font-family:"JetBrains Mono",monospace; font-size:.66rem; font-weight:700; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3); margin:0 0 9px}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{background:var(--surface-2); border:1px solid var(--line); border-radius:99px; padding:3px 10px;
+  font-size:.8rem; color:var(--ink-2); font-family:"JetBrains Mono",monospace;}
+.steps{list-style:none; margin:0; padding:0}
+.chk{display:flex; align-items:flex-start; gap:11px; width:100%; text-align:left; background:none;
+  border:0; padding:6px 8px; border-radius:8px; cursor:pointer; font:inherit; font-size:.93rem;
+  color:var(--ink); line-height:1.5;}
+.chk:hover{background:var(--surface-2)}
+.box{flex:none; width:18px; height:18px; margin-top:3px; border-radius:5px; border:2px solid var(--ink-3);
+  display:grid; place-items:center; transition:.15s}
+.chk[aria-pressed="true"] .box{background:var(--accent); border-color:var(--accent)}
+.box svg{opacity:0; width:10px; height:10px; color:var(--surface)}
+.chk[aria-pressed="true"] .box svg{opacity:1}
+.chk[aria-pressed="true"] .txt{color:var(--ink-3); text-decoration:line-through;
+  text-decoration-color:color-mix(in srgb, var(--ink-3) 55%, transparent)}
+.proj{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 35%, transparent);
+  border-radius:10px; padding:13px 15px}
+.proj h4{color:var(--amber); margin-bottom:5px}
+.proj p{font-size:.93rem}
+.gate{background:var(--ok-bg); border:1px solid color-mix(in srgb, var(--ok) 30%, transparent);
+  border-radius:10px; padding:13px 15px; font-size:.91rem; color:var(--ink-2)}
+.gate h4{color:var(--ok); margin-bottom:5px}
+
+.final{margin-top:56px; display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.note{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  box-shadow:var(--shadow)}
+.note h2{font-size:1rem; font-weight:600; margin-bottom:12px}
+.note ul{margin:0; padding-left:17px; display:grid; gap:8px; font-size:.91rem; color:var(--ink-2)}
+.note strong{color:var(--ink); font-weight:600}
+.note.danger{border-color:color-mix(in srgb, var(--warn) 40%, var(--line))}
+.note.danger h2{color:var(--warn)}
+.sect-title{margin:66px 0 20px; font-size:1.3rem; font-weight:700}
+footer{margin-top:52px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3); font-size:.84rem}
+@media (max-width:520px){
+  .l-num{width:30px;height:30px;font-size:.8rem}
+  .stats{gap:20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Блок 1 з маршруту · PHP 8 · ~5–6 місяців</p>
+    <h1>Основи PHP за 24 уроки</h1>
+    <p class="lead">Фундамент під Laravel: від першого <code>echo</code> до консольного застосунку на класах із Composer і README. Один урок — приблизно тиждень: три заняття по годині плюс практика. Порядок жорсткий, кожен урок спирається на попередній.</p>
+
+    <div class="dash">
+      <div class="stats">
+        <div class="stat"><b id="st-les">0/24</b><span>уроків зараховано</span></div>
+        <div class="stat"><b id="st-task">0/0</b><span>завдань зроблено</span></div>
+        <div class="stat"><b id="st-week">0/6</b><span>модулів закрито</span></div>
+        <div class="stat"><b id="st-pct">0%</b><span>блоку позаду</span></div>
+      </div>
+      <div class="track"><div id="fill"></div></div>
+    </div>
+
+    <div class="tools">
+      <button class="btn" id="expand">Розгорнути все</button>
+      <button class="btn" id="collapse">Згорнути все</button>
+      <button class="btn" id="next">До поточного уроку</button>
+      <button class="btn" id="reset">Скинути прогрес</button>
+      <span id="sync"></span>
+    </div>
+  </header>
+
+  <section class="setup">
+    <h2>Що поставити до першого уроку</h2>
+    <div class="setup-grid">
+      <div>
+        <h3>Інструменти</h3>
+        <ul>
+          <li><a href="https://herd.laravel.com" target="_blank" rel="noopener noreferrer">Laravel Herd</a> — на macOS ставить свіжий PHP 8.3+ одразу (вбудований у систему PHP не годиться)</li>
+          <li><a href="https://code.visualstudio.com" target="_blank" rel="noopener noreferrer">VS Code</a> + розширення PHP Intelephense</li>
+          <li><a href="https://git-scm.com" target="_blank" rel="noopener noreferrer">Git</a> і акаунт на <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="https://getcomposer.org" target="_blank" rel="noopener noreferrer">Composer</a> — знадобиться з 20-го уроку</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Основні джерела</h3>
+        <ul>
+          <li><a href="https://laracasts.com/series/php-for-beginners-2023-edition" target="_blank" rel="noopener noreferrer">Laracasts: PHP for Beginners</a> — безкоштовний курс від автора, чиї уроки вчать Laravel</li>
+          <li><a href="https://www.php.net/manual/uk/" target="_blank" rel="noopener noreferrer">Довідник php.net</a> — відкривати щоразу, коли зустрілась незнайома функція</li>
+          <li><a href="https://phptherightway.com" target="_blank" rel="noopener noreferrer">PHP: The Right Way</a> — як писати сучасно, а не як у старих туторіалах</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Розписані заняття</h3>
+        <ul>
+          <li><a href="3-pershyi-misyats.html" target="_blank" rel="noopener noreferrer">Уроки 1–4: перший місяць коду</a> — запуск, змінні, введення даних, умови</li>
+          <li><a href="4-tsykly-masyvy.html" target="_blank" rel="noopener noreferrer">Уроки 5–9: цикли і масиви</a> — найважчий модуль блоку</li>
+          <li>Далі уроки розписуються так само, блоками</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Тренажери</h3>
+        <ul>
+          <li><a href="https://exercism.org/tracks/php" target="_blank" rel="noopener noreferrer">Exercism PHP</a> — задачі з живим ревʼю</li>
+          <li><a href="https://www.codewars.com" target="_blank" rel="noopener noreferrer">Codewars</a> — по одній задачі 8 kyu на день</li>
+          <li><a href="https://3v4l.org" target="_blank" rel="noopener noreferrer">3v4l.org</a> — швидко перевірити шматок коду в браузері</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <main id="modules"></main>
+
+  <h2 class="sect-title">Поки йде цей блок</h2>
+  <section class="final" id="notes"></section>
+
+  <footer>Розрахунок: 24 уроки × 4–5 годин ≈ 110 годин практики. При 5 годинах на тиждень блок закривається приблизно за 5,5 місяця. Швидше — добре, повільніше — теж нормально, головне не пропускати уроки 16–20.</footer>
+</div>
+
+<script>
+const MODULES = [
+{
+ m:"M1", title:"Синтаксис і перші програми", weeks:"уроки 1–4 · ~4 тижні",
+ sub:"Мета — щоб код перестав бути магією: хлопець сам створює файл, запускає його і бачить результат у консолі та в браузері. Ці чотири уроки розписані по заняттях окремо — з кодом, розвʼязками і питаннями на перевірку.",
+ lessons:[
+ {
+  n:1, t:"Середовище, термінал і перший скрипт", h:"~4 год",
+  theory:["встановлення PHP 8","VS Code + Intelephense","термінал: cd, ls, mkdir","php -v","запуск php file.php","php -S localhost:8000","git init"],
+  tasks:["Поставити PHP і показати версію в терміналі","Написати hello.php з власним іменем","Відкрити той самий файл у браузері через вбудований сервер","Створити папку проєкту, зробити git init і перший коміт"],
+  gate:"Створює файл, запускає його в консолі й у браузері, не підглядаючи в інструкцію."
+ },
+ {
+  n:2, t:"Змінні, типи й вивід", h:"~4 год",
+  theory:["змінні та іменування","string, int, float, bool, null","var_dump","echo та інтерполяція","heredoc","константи","оператори + - * / % **","приведення типів","declare(strict_types=1)"],
+  tasks:["Порахувати площу й периметр кімнати","Вивести var_dump пʼяти різних типів і пояснити кожен","Візитка: імʼя, вік, місто — одним рядком через інтерполяцію","Порахувати, скільки хвилин він уже прожив"],
+  gate:"Пояснює різницю між \"5\" і 5 та передбачає, що покаже var_dump."
+ },
+ {
+  n:3, t:"Введення даних і математика", h:"~4 год",
+  theory:["readline() у консолі","$argv","перший дотик до форм і $_GET","round, floor, ceil","abs, min, max","rand і mt_rand","number_format","sqrt, pow"],
+  tasks:["Калькулятор у консолі: два числа й операція","Конвертер валют за фіксованим курсом","Кубик: випадкове число 1–6","Порахувати чайові й розділити рахунок на N людей"],
+  gate:"Програма приймає введення й не падає, якщо натиснули Enter з порожнім полем."
+ },
+ {
+  n:4, t:"Умови та логіка", h:"~5 год",
+  theory:["if / elseif / else","== проти === (головна пастка PHP)","!=, <=>","&&, ||, !","тернарний оператор","?? і ?->","match","switch","вкладені умови"],
+  tasks:["Оцінка за балами: пʼять діапазонів","«Вгадай число» — одна спроба з підказкою","Перевірка пароля: довжина, цифра, велика літера","Камінь-ножиці-папір проти компʼютера"],
+  proj:"Гра «Камінь-ножиці-папір» на 5 раундів із рахунком — перша програма, у яку хтось грає.",
+  gate:"Пояснює, чому \"0\" == false істина, а \"0\" === false — ні."
+ }]
+},
+{
+ m:"M2", title:"Цикли й масиви", weeks:"уроки 5–9 · ~5 тижнів",
+ sub:"Найважчий момент усього блоку. Тут або зʼявляється алгоритмічне мислення, або далі все буде даватись через силу — тому уроки не пропускаємо і не пришвидшуємо. Ці пʼять уроків теж розписані по заняттях окремо.",
+ lessons:[
+ {
+  n:5, t:"Цикли while", h:"~5 год",
+  theory:["while","do-while","лічильник і накопичувач","break та continue","нескінченний цикл і як його впіймати"],
+  tasks:["Сума всіх чисел від 1 до N","«Вгадай число» до перемоги з підрахунком спроб","Меню в консолі, що повторюється до команди «вихід»","Знайти, на якому кроці сума перевищить 1000"],
+  gate:"Сам знаходить причину нескінченного циклу — забутий лічильник."
+ },
+ {
+  n:6, t:"Цикл for і малювання символами", h:"~4 год",
+  theory:["for","крок і зворотний відлік","вкладені цикли","str_repeat","PHP_EOL"],
+  tasks:["Таблиця множення 10×10","Ялинка й піраміда із зірочок","Шахова дошка символами","FizzBuzz — класика співбесід"],
+  gate:"Робить вкладений цикл і розуміє, який із них зовнішній, а який внутрішній."
+ },
+ {
+  n:7, t:"Масиви", h:"~5 год",
+  theory:["створення []","індекси й count","додавання через []","обхід for і foreach","array_push, pop, shift, unshift","print_r","вкладені масиви"],
+  tasks:["Середній бал зі списку оцінок","Знайти максимум і мінімум без вбудованих функцій","Перевернути масив без array_reverse","Список покупок із додаванням і видаленням"],
+  gate:"Не плутає індекс і значення при обході масиву."
+ },
+ {
+  n:8, t:"Асоціативні й багатовимірні масиви", h:"~5 год",
+  theory:["ключ => значення","foreach ($a as $k => $v)","isset, array_key_exists, unset","багатовимірні масиви","sort, rsort, asort, ksort","usort із власним правилом"],
+  tasks:["Таблиця чемпіонату: команда → очки, вивести за спаданням","Телефонна книга з пошуком за іменем","Оцінки класу: середній бал кожного учня","Сортування товарів за ціною через usort"],
+  gate:"Дістає значення з масиву по двох ключах поспіль і не боїться вкладеності."
+ },
+ {
+  n:9, t:"Функції для роботи з масивами", h:"~5 год",
+  theory:["array_map","array_filter","array_sum, array_product","array_keys, array_values","in_array, array_search","array_slice","array_unique, array_merge","array_column","implode, explode"],
+  tasks:["Відфільтрувати парні числа однією функцією","Порахувати частоту слів у тексті","Зібрати з масиву користувачів лише їхні email","Розібрати CSV-рядок і вивести таблицею"],
+  proj:"«Аналізатор класу»: масив учнів з оцінками → середні бали, найкращий і найгірший предмет, текстова діаграма зі зірочок.",
+  gate:"Свідомо обирає між foreach і array_map, а не пише навмання."
+ }]
+},
+{
+ m:"M3", title:"Функції та структура коду", weeks:"уроки 10–12 · ~3 тижні",
+ sub:"Перехід від «скрипта на 200 рядків» до коду, у якому можна щось знайти. Саме звідси починається різниця між школярем і початківцем-розробником.",
+ lessons:[
+ {
+  n:10, t:"Власні функції", h:"~5 год",
+  theory:["function і return","параметри","типізація параметрів і повернення","?int та nullable","значення за замовчуванням","іменовані аргументи","void","...$args"],
+  tasks:["Розібрати калькулятор із уроку 3 на функції","Функція перевірки пароля, що повертає список проблем","Функція форматування ціни: 1234.5 → «1 234,50 грн»","Функція, що малює прогрес-бар у консолі"],
+  gate:"Функція повертає значення, а не друкує його всередині себе."
+ },
+ {
+  n:11, t:"Область видимості, замикання, рекурсія", h:"~5 год",
+  theory:["локальні та глобальні змінні","чому global — погана ідея","передача за посиланням &","замикання і use","стрілочні функції fn()","callback","рекурсія"],
+  tasks:["Факторіал і числа Фібоначчі рекурсивно","Обхід вкладеного масиву будь-якої глибини","Сортування через usort із власним callback","Лічильник на замиканні"],
+  gate:"Розуміє, чому зовнішня змінна не видима всередині функції, і не «лікує» це через global."
+ },
+ {
+  n:12, t:"Розбиття проєкту на файли", h:"~5 год",
+  theory:["include, require, require_once","папка src/","іменування файлів","рефакторинг","принцип DRY","одна функція — одна задача","коментарі-документація"],
+  tasks:["Винести всі функції в окремі файли","Прибрати дублювання коду у старому проєкті","Написати README з описом структури","Пройтись по своєму коду й перейменувати незрозумілі змінні"],
+  proj:"«Морський бій» або текстова RPG у консолі — розкладена мінімум на 5 файлів з функціями.",
+  gate:"Стороння людина відкриває проєкт і розуміє, у якому файлі що лежить."
+ }]
+},
+{
+ m:"M4", title:"Рядки, файли, помилки", weeks:"уроки 13–15 · ~3 тижні",
+ sub:"Практичний модуль: після нього програма вміє зберігати дані між запусками й не вмирає від першої ж помилки користувача.",
+ lessons:[
+ {
+  n:13, t:"Рядки й регулярні вирази", h:"~5 год",
+  theory:["strlen проти mb_strlen на кирилиці","str_replace, substr, strpos","str_contains","trim, str_pad","mb_strtolower, ucfirst","sprintf і printf","preg_match, preg_replace"],
+  tasks:["Порахувати слова й символи в українському тексті","Зробити slug: «Привіт світ» → pryvit-svit","Замаскувати email: i***n@gmail.com","Перевірити email і телефон регуляркою"],
+  gate:"Ніколи не рахує довжину українського рядка через strlen."
+ },
+ {
+  n:14, t:"Дати й файли", h:"~5 год",
+  theory:["DateTime і format()","diff() та DateInterval","strtotime, time()","file_get_contents / file_put_contents","fopen, fgets, fclose","file_exists, unlink","fgetcsv і fputcsv"],
+  tasks:["Порахувати, скільки днів до дня народження","Щоденник, що дописує запис із датою у файл","Прочитати CSV з оцінками й вивести таблицею","Логер: функція, що дописує подію в log.txt із часом"],
+  gate:"Записує й читає файл із кирилицею без «кракозябр»."
+ },
+ {
+  n:15, t:"JSON і обробка помилок", h:"~5 год",
+  theory:["json_encode / json_decode","JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT","масив ↔ JSON","try / catch / finally","throw і Exception","типи помилок PHP","читання повідомлень про помилку","дебаг через var_dump"],
+  tasks:["Зберегти список завдань у JSON і завантажити назад","Кинути власний виняток і зловити його","Обробити зіпсований JSON-файл так, щоб програма не впала","Розібрати три чужі помилки лише за текстом повідомлення"],
+  proj:"«Трекер звичок»: консольний, зберігає дані в JSON, рахує серію днів поспіль і не ламається від будь-якого введення.",
+  gate:"Читає повідомлення про помилку, знаходить рядок і причину сам — без гугла й без AI."
+ }]
+},
+{
+ m:"M5", title:"ООП — фундамент під Laravel", weeks:"уроки 16–20 · ~5–6 тижнів",
+ sub:"Ключовий модуль усього блоку. Laravel — це суцільне ООП: без цих пʼяти уроків фреймворк буде виглядати як незрозуміла магія, яку доводиться копіювати з туторіалів.",
+ lessons:[
+ {
+  n:16, t:"Класи й обʼєкти", h:"~5 год",
+  theory:["class, властивості, методи","$this","new","конструктор","типізовані властивості","readonly","чим обʼєкт кращий за масив"],
+  tasks:["Клас Student з оцінками й методом середнього балу","Клас Rectangle: площа й периметр","Клас BankAccount: поповнення і зняття","Переписати «трекер звичок» на обʼєкти"],
+  gate:"Пояснює різницю між класом і обʼєктом на власному прикладі, а не завченою фразою."
+ },
+ {
+  n:17, t:"Інкапсуляція й статика", h:"~5 год",
+  theory:["public, private, protected","геттери й сеттери","валідація всередині сеттера","static властивості й методи","self::","константи класу"],
+  tasks:["Закрити властивості BankAccount і заборонити відʼємний баланс","Лічильник створених обʼєктів через static","Клас Config зі статичними налаштуваннями","Клас Money з константами валют"],
+  gate:"Сам пояснює, навіщо private, — не «бо так у відео»."
+ },
+ {
+  n:18, t:"Наслідування", h:"~5 год",
+  theory:["extends","parent::","перевизначення методів","abstract класи й методи","final","відношення «є різновидом»"],
+  tasks:["Базовий User і спадкоємці Admin та Student","Абстрактний Shape із Circle і Rectangle","Ієрархія транспорту: Vehicle → Car, Bike","Переписати «морський бій»: базовий Ship і типи кораблів"],
+  gate:"Розуміє, коли наслідування зайве і достатньо окремого класу."
+ },
+ {
+  n:19, t:"Інтерфейси, трейти, поліморфізм", h:"~6 год",
+  theory:["interface та implements","кілька інтерфейсів","поліморфізм","trait і use","__toString, __get","instanceof","підказка типу класом та інтерфейсом"],
+  tasks:["Інтерфейс Storage з реалізаціями JsonStorage і FileStorage","Трейт Loggable, підключений у три класи","Функція, що приймає будь-який Shape і рахує сумарну площу","__toString для гарного виводу обʼєкта"],
+  gate:"Підміняє одну реалізацію інтерфейсу іншою, не переписуючи решту коду. Це і є принцип, на якому тримається Laravel."
+ },
+ {
+  n:20, t:"Namespace, Composer, стиль коду", h:"~5 год",
+  theory:["namespace і use","автозавантаження PSR-4","composer init, require, install","composer.json і vendor/",".gitignore","стандарт PSR-12","перший сторонній пакет"],
+  tasks:["Розкласти класи по App\\Models та App\\Services","Налаштувати автозавантаження в composer.json","Поставити monolog і залогувати подію","Поставити carbon і рахувати дати ним замість власного коду"],
+  proj:"«Бібліотека» або «Магазин»: 5+ класів, інтерфейс сховища, дані в JSON, запуск через composer-автозавантаження.",
+  gate:"Створює новий проєкт із composer і автозавантаженням за пʼять хвилин."
+ }]
+},
+{
+ m:"M6", title:"Алгоритми, Git і фінальний бос", weeks:"уроки 21–24 · ~4–5 тижнів",
+ sub:"Останній ривок блоку: трохи академічної бази, серйозний Git — і один проєкт, який не соромно показати як перший рядок портфоліо.",
+ lessons:[
+ {
+  n:21, t:"Алгоритми й складність", h:"~5 год",
+  theory:["лінійний і бінарний пошук","сортування бульбашкою й вибором вручну","чому вбудовані функції швидші","складність O(1), O(n), O(n²)","вимірювання часу через microtime"],
+  tasks:["Написати бінарний пошук і перевірити на 1000 елементах","Реалізувати бульбашку і порівняти час із sort()","Знайти дублікати двома способами й порівняти швидкість","Розвʼязати 5 задач 8 kyu на Codewars"],
+  gate:"Може прикинути, чи «затупить» його код на 100 000 елементах."
+ },
+ {
+  n:22, t:"Структури даних", h:"~5 год",
+  theory:["стек і черга на масивах","словник та хеш-таблиця","множина","дерево на прикладі коментарів","SplStack, SplQueue"],
+  tasks:["Стек для скасування дій (undo)","Черга завдань з обробкою по одному","Дерево категорій із рекурсивним виводом","Перевірка збалансованості дужок через стек"],
+  gate:"Обирає структуру під задачу, а не бере звичайний масив за звичкою."
+ },
+ {
+  n:23, t:"Git як робочий інструмент", h:"~4 год",
+  theory:["гілки й merge","конфлікти",".gitignore","git log, git diff","pull request на GitHub","README зі скриншотом","оформлення профілю"],
+  tasks:["Пройти Learn Git Branching до розділу про віддалені репозиторії","Вести фінальний проєкт у гілках через pull request","Написати README: опис, установка, скриншот","Закріпити проєкти в профілі GitHub"],
+  gate:"Робить фічу в окремій гілці й мержить через PR без нагадувань."
+ },
+ {
+  n:24, t:"Фінальний бос основ", h:"~12 год",
+  theory:["проєктування до написання коду","MVP замість «зроблю все одразу»","обробка будь-якого введення","демо для сторонньої людини"],
+  tasks:["Намалювати класи на папері до першого рядка коду","Зібрати мінімальну робочу версію","Додати обробку всіх помилок введення","Дати проєкт другові й полагодити те, що зламалось","Записати демо і покласти в репозиторій"],
+  proj:"«Менеджер завдань» або «Каса кавʼярні» у консолі: 5+ класів, інтерфейс, збереження в JSON, меню, обробка помилок, composer, README, охайна історія комітів.",
+  gate:"Проєкт запускається на чужому компʼютері за інструкцією з README — і код читається без пояснень автора."
+ }]
+}
+];
+
+const NOTES = [
+{
+ h:"Ритм тижня",
+ ul:["<strong>Пн, 60–90 хв.</strong> Теорія уроку: відео або розділ, конспект своїми словами.",
+     "<strong>Ср, 60–90 хв.</strong> Завдання уроку — руками, без підглядання в готові рішення.",
+     "<strong>Сб, 90–120 хв.</strong> Проєкт або добивання завдань, коміт у GitHub.",
+     "<strong>Нд, 15 хв.</strong> Показати, що вийшло, і відмітити пройдене тут."]
+},
+{
+ h:"Правила блоку",
+ ul:["<strong>Урок зараховано</strong> лише коли всі його завдання зроблені й критерій виконано.",
+     "<strong>Правило 15 хвилин.</strong> Спершу читаємо помилку самі, і тільки потім питаємо когось або AI.",
+     "<strong>Жодного копіпасту без розуміння.</strong> Кожен вставлений рядок треба вміти пояснити вголос.",
+     "<strong>Коміт після кожного заняття.</strong> Через півроку історія комітів — найкращий доказ прогресу.",
+     "<strong>Забуксували на уроці два тижні</strong> — не пропускаємо, а ріжемо завдання навпіл."]
+},
+{
+ h:"Пастки цього етапу", danger:true,
+ ul:["<strong>Старі туторіали.</strong> Якщо в коді <code>mysql_query</code> або немає типів — матеріалу 10 років, закриваємо.",
+     "<strong>Відео замість коду.</strong> Переглянуті уроки без власних завдань не рахуються взагалі.",
+     "<strong>global і копіпаст функцій.</strong> Виправляти одразу, потім у Laravel це вилізе боляче.",
+     "<strong>Стрибок у Laravel раніше уроку 20.</strong> Найпоширеніша помилка: фреймворк без ООП перетворюється на магію з чужих відео."]
+},
+{
+ h:"Що вміє на виході з блоку",
+ ul:["Пише консольну програму на 300–500 рядків із класами й не тоне у власному коді.",
+     "Читає чужий PHP-код і розуміє, що там відбувається.",
+     "Сам знаходить причину помилки за повідомленням.",
+     "Працює з Git, Composer і документацією.",
+     "<strong>Готовий до наступного блоку:</strong> HTML і CSS, далі JavaScript, ігри, а потім Laravel."]
+}
+];
+</script>
+
+<script>
+(function(){
+  const KEY = "php-basics-progress-v1";
+  const TICK = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6.4 4.6 9 10 3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+  let done = new Set();
+  try { const raw = localStorage.getItem(KEY); if (raw) done = new Set(JSON.parse(raw)); } catch(e){}
+  let t;
+  function status(m){ const el=document.getElementById("sync"); el.textContent=m; clearTimeout(t); t=setTimeout(()=>el.textContent="",2600); }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify([...done])); status("збережено на цьому пристрої"); }
+    catch(e){ status("браузер блокує збереження прогресу"); }
+  }
+
+  document.getElementById("modules").innerHTML = MODULES.map(mod=>`
+    <section class="mod" data-mod="${mod.m}">
+      <div class="mod-head"><span class="mod-num">${mod.m}</span><h2>${esc(mod.title)}</h2></div>
+      <p class="mod-sub">${esc(mod.sub)} <span class="mono" style="color:var(--ink-3)">${esc(mod.weeks)}</span></p>
+      <div class="mod-bar"><div></div></div>
+      ${mod.lessons.map(l=>`
+      <details class="lesson" id="lesson-${l.n}" data-lesson="${l.n}">
+        <summary>
+          <div class="l-head">
+            <span class="l-num">${l.n}</span>
+            <span class="l-title">
+              <h3>${esc(l.t)}</h3>
+              <span class="l-meta"><span id="lm-${l.n}">0 / ${l.tasks.length}</span> · ${esc(l.h)}</span>
+            </span>
+            <svg class="chev" width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </summary>
+        <div class="l-body">
+          <div class="blk"><h4>Теорія</h4>
+            <div class="chips">${l.theory.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>
+          </div>
+          <div class="blk"><h4>Практика</h4>
+            <ul class="steps">${l.tasks.map((task,j)=>`<li><button class="chk" type="button" data-id="l${l.n}-${j}" aria-pressed="false">
+              <span class="box">${TICK}</span><span class="txt">${esc(task)}</span></button></li>`).join("")}</ul>
+          </div>
+          ${l.proj ? `<div class="proj"><h4>Проєкт уроку</h4><p>${esc(l.proj)}</p></div>` : ""}
+          <div class="gate"><h4>Зараховано, коли</h4><p>${esc(l.gate)}</p></div>
+        </div>
+      </details>`).join("")}
+    </section>`).join("");
+
+  document.getElementById("notes").innerHTML = NOTES.map(n=>`
+    <div class="note${n.danger?" danger":""}"><h2>${esc(n.h)}</h2>
+      <ul>${n.ul.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+
+  const LESSONS = MODULES.flatMap(m=>m.lessons);
+  const TOTAL = LESSONS.reduce((a,l)=>a+l.tasks.length,0);
+
+  function count(l){ return l.tasks.filter((_,j)=>done.has("l"+l.n+"-"+j)).length; }
+
+  function render(){
+    document.querySelectorAll(".chk").forEach(b=>b.setAttribute("aria-pressed", done.has(b.dataset.id)?"true":"false"));
+
+    let full = 0;
+    LESSONS.forEach(l=>{
+      const n = count(l), all = n === l.tasks.length;
+      document.getElementById("lm-"+l.n).textContent = `${n} / ${l.tasks.length}`;
+      document.getElementById("lesson-"+l.n).dataset.done = all ? "1" : "0";
+      if (all) full++;
+    });
+
+    let modsDone = 0;
+    MODULES.forEach(mod=>{
+      const tot = mod.lessons.reduce((a,l)=>a+l.tasks.length,0);
+      const n = mod.lessons.reduce((a,l)=>a+count(l),0);
+      document.querySelector(`.mod[data-mod="${mod.m}"] .mod-bar div`).style.width = (n/tot*100)+"%";
+      if (n === tot) modsDone++;
+    });
+
+    const pct = Math.round(done.size/TOTAL*100);
+    document.getElementById("st-les").textContent  = `${full}/${LESSONS.length}`;
+    document.getElementById("st-task").textContent = `${done.size}/${TOTAL}`;
+    document.getElementById("st-week").textContent = `${modsDone}/${MODULES.length}`;
+    document.getElementById("st-pct").textContent  = pct+"%";
+    document.getElementById("fill").style.width = pct+"%";
+  }
+
+  document.addEventListener("click", e=>{
+    const b = e.target.closest(".chk"); if(!b) return;
+    const id = b.dataset.id;
+    done.has(id) ? done.delete(id) : done.add(id);
+    render(); save();
+  });
+
+  document.getElementById("expand").onclick   = () => document.querySelectorAll("details").forEach(d=>d.open=true);
+  document.getElementById("collapse").onclick = () => document.querySelectorAll("details").forEach(d=>d.open=false);
+  document.getElementById("next").onclick = () => {
+    const l = LESSONS.find(x=>count(x) < x.tasks.length) || LESSONS[LESSONS.length-1];
+    const el = document.getElementById("lesson-"+l.n);
+    el.open = true;
+    el.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"center"});
+  };
+  document.getElementById("reset").onclick = () => {
+    if(!done.size) return status("прогрес і так порожній");
+    if(confirm("Скинути всі відмічені завдання?")){ done.clear(); render(); save(); }
+  };
+
+  render();
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+})();
+
+(function(){
+  var KEY = 'php-basics-progress-v1', NAME = 'progres-osnovy.json';
+  var tools = document.querySelector(".tools");
+  if(!tools) return;
+  function mk(txt, fn){ var b=document.createElement("button"); b.className="btn"; b.type="button";
+    b.textContent=txt; b.addEventListener("click", fn); return b; }
+  var inp=document.createElement("input"); inp.type="file"; inp.accept="application/json,.json";
+  inp.style.display="none";
+  tools.appendChild(mk("Зберегти у файл", function(){
+    var raw; try{ raw = localStorage.getItem(KEY) || "[]"; }catch(e){ raw = "[]"; }
+    var payload = {key:KEY, saved:new Date().toISOString(), done:JSON.parse(raw)};
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href=url; a.download=NAME;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }));
+  tools.appendChild(mk("Відновити з файлу", function(){ inp.click(); }));
+  tools.appendChild(inp);
+  inp.addEventListener("change", function(){
+    var f = inp.files && inp.files[0]; if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var o = JSON.parse(r.result);
+        var arr = Array.isArray(o) ? o : o.done;
+        if(!Array.isArray(arr)) throw new Error("bad shape");
+        localStorage.setItem(KEY, JSON.stringify(arr));
+        location.reload();
+      }catch(e){ alert("Не вдалося прочитати файл прогресу — потрібен той, що зберігався кнопкою «Зберегти у файл»."); }
+    };
+    r.readAsText(f);
+  });
+})();
+</script>
+</body>
+</html>

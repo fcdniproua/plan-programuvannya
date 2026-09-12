@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Перший місяць коду</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⌨️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.nav,.dash,.track{display:none !important}
+  body{background:#fff !important}
+  .card,.lesson,.ses,.tasks,.note,.chkbox,.task,.stage{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#2F5BEA; --accent-soft:#E7ECFE;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC;
+  --warn:#C2401E; --warn-bg:#FCEDE8;
+  --code-bg:#15181F; --code-ink:#E4E7EF; --code-c:#6E7788; --code-s:#8FD98A;
+  --code-v:#8FB8FF; --code-k:#E9A3D2; --code-n:#F0C071;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#7B9BFF; --accent-soft:#1B2138;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+    --warn:#FF8A6B; --warn-bg:#2A1611;
+    --code-bg:#0A0C12; --code-ink:#DFE3EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#7B9BFF; --accent-soft:#1B2138;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+  --warn:#FF8A6B; --warn-bg:#2A1611;
+  --code-bg:#0A0C12; --code-ink:#DFE3EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:880px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px}
+h1,h2,h3,h4{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:64ch; margin-top:14px; font-size:clamp(1rem,2.2vw,1.06rem)}
+code:not(pre code){font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px; white-space:nowrap}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:5; margin:26px -4px 0; padding:10px 4px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(8px);
+  display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--line)}
+.nav a{font-family:"JetBrains Mono",monospace; font-size:.73rem; text-decoration:none;
+  color:var(--ink-2); background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; padding:6px 11px}
+.nav a:hover{border-color:var(--accent); color:var(--accent)}
+
+/* setup */
+.setup{margin-top:30px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.setup h2{font-size:1.08rem; font-weight:700; margin-bottom:6px}
+.setup > p{color:var(--ink-2); font-size:.95rem; margin-bottom:16px}
+.os{display:grid; gap:18px 26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.os h3{font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.os ol{margin:0; padding-left:19px; display:grid; gap:6px; font-size:.91rem; color:var(--ink-2)}
+.os a{color:var(--accent); font-weight:600; text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--accent) 32%, transparent)}
+
+/* week */
+.week{margin-top:56px; scroll-margin-top:64px}
+.w-head{border-top:3px solid var(--accent); padding-top:18px}
+.w-tag{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent)}
+.w-head h2{font-size:clamp(1.3rem,3.4vw,1.75rem); font-weight:700; margin-top:8px}
+.w-goal{color:var(--ink-2); margin-top:10px; max-width:64ch}
+
+.ses{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  margin-top:16px; box-shadow:var(--shadow)}
+.ses-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  padding-bottom:12px; border-bottom:1px solid var(--line)}
+.ses-day{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:4px 9px;
+  border-radius:6px}
+.ses-head h3{font-size:1.06rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0; flex:1}
+.ses-time{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3)}
+.body{display:flex; flex-direction:column; gap:15px}
+.body p{color:var(--ink-2)}
+.body p strong{color:var(--ink)}
+.body ul{margin:0; padding-left:19px; display:grid; gap:7px; color:var(--ink-2)}
+.body ul strong{color:var(--ink)}
+.say{border-left:3px solid var(--accent); padding:2px 0 2px 15px; color:var(--ink);
+  font-size:.97rem}
+.say b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:4px}
+
+pre{margin:0; background:var(--code-bg); border-radius:11px; padding:15px 17px; overflow-x:auto;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.83rem; line-height:1.65;
+  color:var(--code-ink); tab-size:4}
+pre .c{color:var(--code-c); font-style:italic}
+pre .s{color:var(--code-s)}
+pre .v{color:var(--code-v)}
+pre .k{color:var(--code-k)}
+pre .n{color:var(--code-n)}
+.code-wrap{position:relative}
+.code-wrap .tag{position:absolute; top:0; right:12px; font-family:"JetBrains Mono",monospace;
+  font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--code-c);
+  background:var(--code-bg); padding:3px 6px; border-radius:0 0 5px 5px}
+.out{background:var(--surface-2); border:1px solid var(--line); border-left:3px solid var(--ink-3);
+  border-radius:0 8px 8px 0; padding:11px 14px; font-family:"JetBrains Mono",monospace;
+  font-size:.8rem; color:var(--ink-2); white-space:pre-wrap; overflow-x:auto}
+.out b{display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:5px; font-weight:700}
+
+.note{border-radius:11px; padding:13px 16px; font-size:.94rem}
+.note b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; display:block; margin-bottom:5px}
+.note.tip{background:var(--ok-bg); border:1px solid color-mix(in srgb, var(--ok) 30%, transparent)}
+.note.tip b{color:var(--ok)}
+.note.warn{background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 32%, transparent)}
+.note.warn b{color:var(--warn)}
+.note.idea{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 32%, transparent)}
+.note.idea b{color:var(--amber)}
+
+/* tasks */
+.tasks{margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow)}
+.tasks > h3{font-size:1.02rem; font-weight:700; margin-bottom:4px}
+.tasks > p{color:var(--ink-2); font-size:.92rem; margin-bottom:14px}
+.task{border-top:1px solid var(--line); padding:15px 0 3px}
+.task:first-of-type{border-top:0; padding-top:4px}
+.task h4{font-size:.97rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  display:flex; gap:10px; align-items:baseline}
+.task h4 i{font-family:"JetBrains Mono",monospace; font-style:normal; font-size:.75rem;
+  color:var(--accent); flex:none}
+.task > p{color:var(--ink-2); font-size:.93rem; margin:6px 0 10px; padding-left:26px}
+.task details{padding-left:26px}
+.task summary{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3);
+  cursor:pointer; list-style:none; display:inline-flex; gap:7px; align-items:center;
+  border:1px solid var(--line); border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.task summary::-webkit-details-marker{display:none}
+.task summary:hover{color:var(--accent); border-color:var(--accent)}
+.task details[open] summary{margin-bottom:11px}
+.task details > div{display:flex; flex-direction:column; gap:11px}
+
+/* checks */
+.checks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:18px}
+.chkbox{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+  box-shadow:var(--shadow)}
+.chkbox h3{font-size:.95rem; font-weight:700; margin-bottom:11px}
+.chkbox ul{margin:0; padding-left:18px; display:grid; gap:7px; font-size:.91rem; color:var(--ink-2)}
+.chkbox.traps{border-color:color-mix(in srgb, var(--warn) 40%, var(--line))}
+.chkbox.traps h3{color:var(--warn)}
+.chkbox.quiz{border-color:color-mix(in srgb, var(--ok) 40%, var(--line))}
+.chkbox.quiz h3{color:var(--ok)}
+.chkbox.quiz ul{list-style:none; padding-left:0}
+.chkbox.quiz li{padding-left:16px; position:relative}
+.chkbox.quiz li::before{content:"?"; position:absolute; left:0; color:var(--ok); font-weight:700;
+  font-family:"JetBrains Mono",monospace}
+
+.final{margin-top:64px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:24px 26px; box-shadow:var(--shadow)}
+.final h2{font-size:1.2rem; font-weight:700; margin-bottom:6px}
+.final > p{color:var(--ink-2); margin-bottom:16px}
+.final ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2)}
+.final strong{color:var(--ink)}
+footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3);
+  font-size:.84rem}
+@media (max-width:520px){ pre{font-size:.76rem} .task > p,.task details{padding-left:0} }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Блок основ · уроки 1–4 · перші чотири тижні</p>
+    <h1>Перший місяць коду</h1>
+    <p class="lead">Готові заняття: що казати, який код показувати, які завдання давати і як перевірити, що дитина зрозуміла. Три заняття на тиждень, кожне з таймінгом. Розвʼязки завдань сховані — відкривати тільки після спроби.</p>
+    <nav class="nav">
+      <a href="#setup">Підготовка</a>
+      <a href="#w1">Тиждень 1 · Запуск</a>
+      <a href="#w2">Тиждень 2 · Змінні</a>
+      <a href="#w3">Тиждень 3 · Введення</a>
+      <a href="#w4">Тиждень 4 · Умови</a>
+      <a href="#final">Підсумок місяця</a>
+    </nav>
+  </header>
+
+  <section class="setup" id="setup">
+    <h2>Підготовка: один вечір з дорослим</h2>
+    <p>Робиться разом і один раз, на macOS. Мета — щоб на першому занятті команда <code>php -v</code> уже працювала: боротьба зі встановленням убиває мотивацію швидше за будь-яку складну тему.</p>
+    <div class="os">
+      <div>
+        <h3>Що поставити</h3>
+        <ol>
+          <li>Поставити <a href="https://herd.laravel.com" target="_blank" rel="noopener noreferrer">Laravel Herd</a> — безкоштовний, ставить свіжий PHP і сам прописує його в систему</li>
+          <li>Відкрити Термінал (<code>⌘ + Пробіл</code> → «Термінал») і перевірити: <code>php -v</code>. Має бути 8.3 або новіше</li>
+          <li>Поставити <a href="https://code.visualstudio.com" target="_blank" rel="noopener noreferrer">VS Code</a>, у ньому — розширення PHP Intelephense</li>
+          <li>У VS Code: File → Auto Save увімкнути</li>
+          <li>Створити папку <code>~/code/php</code> — латиницею, без пробілів</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Термінал на Mac</h3>
+        <ol>
+          <li>Зручніше працювати у вбудованому терміналі VS Code: <code>Ctrl + ~</code> — він одразу відкритий у папці проєкту</li>
+          <li><code>pwd</code> — де я, <code>ls</code> — що тут лежить, <code>cd</code> — перейти</li>
+          <li><code>open .</code> відкриває поточну папку у Finder</li>
+          <li>Перетягування папки з Finder у термінал вставляє її повний шлях</li>
+          <li><code>Ctrl + C</code> зупиняє будь-яку запущену програму</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Git і GitHub</h3>
+        <ol>
+          <li>Git на Mac уже є: <code>git --version</code>. Якщо система запропонує поставити Command Line Tools — погодитись</li>
+          <li><code>git config --global user.name "Імʼя"</code></li>
+          <li><code>git config --global user.email "пошта"</code></li>
+          <li>Акаунт на <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a> — нік обрати нормальний, він залишиться надовго</li>
+        </ol>
+      </div>
+    </div>
+    <div class="note warn" style="margin-top:18px">
+      <b>Головна пастка macOS</b>
+      З версії Monterey Apple прибрала вбудований PHP, а на старіших системах він залишився дуже давній. Якщо <code>php -v</code> показує 7.x або 8.0 — це системний залишок, і частина прикладів курсу на ньому не запуститься. Потрібен свіжий PHP від Herd або <code>brew install php</code>; після встановлення обовʼязково закрити й відкрити термінал заново.
+    </div>
+  </section>
+
+  <main id="weeks"></main>
+
+  <section class="final" id="final">
+    <h2>Підсумок першого місяця</h2>
+    <p>Перевіряється не тестом, а демонстрацією: хлопець сідає за компʼютер і показує це сам, без підказок.</p>
+    <ul id="final-list"></ul>
+  </section>
+
+  <footer>Якщо тиждень зайняв півтора — це нормально і краще, ніж пробігти далі з дірками. Якщо тиждень зайняв три дні — не гальмуйте, беріть наступний і додавайте задачі з Codewars.</footer>
+</div>
+
+<script>
+const WEEKS = [
+{
+ id:"w1", tag:"Тиждень 1 · урок 1", title:"Як узагалі запускається код",
+ goal:"Мета тижня — зняти страх перед чорним вікном терміналу. Ніякого програмування по суті ще немає: є файл, є команда, є результат. І перша помилка, зроблена навмисно.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"Термінал і перший файл",
+  body:[
+   {t:"say", h:"З цього почати розмову", x:"Компʼютер не розуміє «зроби мені сайт». Він розуміє дуже прості команди й виконує їх одну за одною, згори вниз. Мова програмування — це спосіб записати ці команди так, щоб зрозуміли і машина, і людина."},
+   {t:"p", x:"<strong>Перше — термінал.</strong> Це та сама папка з файлами, тільки замість клацання мишкою ти пишеш текстом, куди йти й що робити. Відкрити: <code>⌘ + Пробіл</code> → «Термінал». Або прямо у VS Code: <code>Ctrl + ~</code> — так зручніше, бо він одразу стоїть у папці проєкту."},
+   {t:"ul", x:["<code>pwd</code> — у якій я папці зараз","<code>ls</code> — що лежить у цій папці","<code>cd назва</code> — зайти в папку, <code>cd ..</code> — на рівень вище","<code>mkdir lesson01</code> — створити папку"]},
+   {t:"p", x:"<strong>Завдання на місці:</strong> зайти в свою папку <code>code/php</code>, створити всередині <code>lesson01</code> і зайти в неї. Далі створюємо файл у VS Code: File → New File → зберегти як <code>hello.php</code> саме в цю папку."},
+   {t:"code", tag:"hello.php", x:`<?php
+
+echo "Привіт! Мене звати Максим.";`},
+   {t:"p", x:"Запуск — у терміналі, з тієї ж папки:"},
+   {t:"code", tag:"термінал", x:`php hello.php`},
+   {t:"out", x:"Привіт! Мене звати Максим."},
+   {t:"p", x:"<strong>Розібрати три речі, і тільки їх:</strong>"},
+   {t:"ul", x:["<code>&lt;?php</code> — звідси починається код. Без цього рядка PHP вважає весь файл звичайним текстом і просто виведе його як є.","<code>echo</code> — команда «покажи на екрані».","<code>;</code> — крапка в кінці речення. Кожна команда закінчується нею."]},
+   {t:"note", k:"idea", h:"Обовʼязково: зламати навмисно", x:"Прибрати крапку з комою і запустити ще раз. Побачити <code>PHP Parse error: syntax error</code> і номер рядка. Пояснити: помилка — це не поломка компʼютера і не привід кликати дорослого. Це записка від PHP, у якій написано, у якому рядку він не зрозумів. Перша помилка має статись під наглядом — тоді до сотої вже не буде страху."},
+   {t:"p", x:"Далі — ще два експерименти: прибрати <code>&lt;?php</code> і подивитись, що станеться. Написати <code>eco</code> замість <code>echo</code> і прочитати нову помилку."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Той самий файл — у браузері",
+  body:[
+   {t:"p", x:"<strong>Головна ідея заняття:</strong> PHP працює на сервері. Браузер отримує вже готовий результат і ніколи не бачить самого коду. Це те, чим PHP відрізняється від JavaScript, і це фундамент усього, що буде далі."},
+   {t:"p", x:"У PHP є вбудований сервер — окрема програма не потрібна. Запускаємо з папки проєкту:"},
+   {t:"code", tag:"термінал", x:`php -S localhost:8000`},
+   {t:"p", x:"Тепер відкриваємо в браузері <code>http://localhost:8000/hello.php</code>. Той самий файл, але вже як сторінка. Термінал при цьому не закривати — поки він працює, працює і сервер. Зупинити: <code>Ctrl + C</code>."},
+   {t:"p", x:"Створюємо новий файл і показуємо, що PHP і HTML живуть разом:"},
+   {t:"code", tag:"page.php", x:`<h1>Моя перша сторінка</h1>
+
+<?php
+echo "<p>Цей абзац згенерував PHP</p>";
+?>
+
+<p>А цей абзац — просто HTML</p>`},
+   {t:"note", k:"tip", h:"Момент, заради якого це заняття", x:"У браузері натиснути праву кнопку → «Переглянути код сторінки». Там немає ані <code>&lt;?php</code>, ані <code>echo</code> — тільки готовий HTML. Запитати: «А куди подівся наш код?» Відповідь: він виконався на сервері, а браузеру поїхав лише результат. Саме тому пароль, захований у PHP-коді, користувач не побачить, а в JavaScript — побачить."},
+   {t:"p", x:"Закріпити: зробити сторінку, де PHP виводить три різні абзаци, а між ними стоїть звичайний HTML із заголовком і списком."}
+  ]
+ },
+ {
+  day:"Субота", time:"90 хв", title:"Git: код більше не живе на одному компʼютері",
+  body:[
+   {t:"say", h:"Пояснити навіщо", x:"Git — це машина часу для коду. Ти можеш зіпсувати все що завгодно і повернутись до версії, яка працювала. А GitHub — це місце, де твій код бачать інші люди. Через рік у тебе там буде історія, яка сама показує, скільки ти зробив."},
+   {t:"p", x:"У папці з проєктом виконуємо по черзі, пояснюючи кожну команду:"},
+   {t:"code", tag:"термінал", x:`git init                       # завести машину часу в цій папці
+git status                     # що змінилось з минулого разу
+git add .                      # відібрати всі зміни для збереження
+git commit -m "перші програми" # зберегти точку в історії
+git log --oneline              # подивитись історію`},
+   {t:"p", x:"Далі створюємо репозиторій на GitHub (кнопка New, назва <code>php-basics</code>, без галочок) і привʼязуємо:"},
+   {t:"code", tag:"термінал", x:`git remote add origin https://github.com/НІК/php-basics.git
+git branch -M main
+git push -u origin main`},
+   {t:"note", k:"warn", h:"Що піде не так", x:"GitHub попросить логін — і звичайний пароль не підійде. Потрібен Personal Access Token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → поставити галочку repo. Токен показується один раз, тому одразу зберегти. На macOS Git запамʼятає його в Keychain і більше не питатиме. Це найчастіша точка, де новачок здається без дорослого поруч."},
+   {t:"p", x:"Наприкінці — оновити сторінку репозиторію в браузері й побачити свої файли в інтернеті. Це перший момент «я справді щось зробив», і на ньому варто зупинитись."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Показати версію PHP", x:"Відкрити термінал і вивести версію. Записати її в блокнот — знадобиться, коли щось не працюватиме.",
+  sol:[{t:"code", tag:"термінал", x:`php -v`},
+       {t:"out", x:"PHP 8.3.6 (cli) (built: ...)\nCopyright (c) The PHP Group"},
+       {t:"p", x:"Якщо пише <code>command not found</code> — PHP не потрапив у PATH. Найпростіше: перезапустити термінал, а якщо не допомогло — переставити через Laravel Herd."}]
+ },
+ {
+  n:"2", t:"Файл hello.php з власним іменем", x:"Вивести три рядки: привітання, вік і улюблену гру. Кожен — окремою командою echo.",
+  sol:[{t:"code", tag:"hello.php", x:`<?php
+
+echo "Привіт! Мене звати Максим.";
+echo "\\n";
+echo "Мені 13 років.";
+echo "\\n";
+echo "Улюблена гра — Minecraft.";
+echo "\\n";`},
+       {t:"p", x:"<code>\\n</code> — це перенос рядка. Без нього все зіллється в один рядок. Робочий варіант коротше: <code>echo \"Привіт!\\n\";</code> — переніс усередині самого рядка."}]
+ },
+ {
+  n:"3", t:"Той самий файл у браузері", x:"Запустити вбудований сервер і відкрити файл як сторінку. Потім додати HTML-заголовок так, щоб він був видимий у браузері.",
+  sol:[{t:"code", tag:"термінал", x:`php -S localhost:8000`},
+       {t:"code", tag:"hello.php", x:`<h1>Про мене</h1>
+
+<?php
+echo "<p>Привіт! Мене звати Максим.</p>";
+echo "<p>Мені 13 років.</p>";`},
+       {t:"note", k:"tip", h:"Питання на розуміння", x:"Чому в браузері <code>\\n</code> більше не переносить рядок? Бо браузер читає HTML, а там перенос — це <code>&lt;br&gt;</code> або новий абзац. Перенос <code>\\n</code> видно тільки в терміналі й у вихідному коді сторінки."}]
+ },
+ {
+  n:"4", t:"Git init і перший коміт", x:"Зробити папку репозиторієм, закомітити всі файли тижня і залити на GitHub.",
+  sol:[{t:"code", tag:"термінал", x:`git init
+git add .
+git commit -m "урок 1: перші програми"
+git remote add origin https://github.com/НІК/php-basics.git
+git branch -M main
+git push -u origin main`},
+       {t:"p", x:"Перевірка: відкрити свій репозиторій у браузері й побачити файли. Якщо їх немає — <code>git status</code> покаже, що саме не додалось."}]
+ }],
+ traps:[
+  "<strong>Термінал відкритий не в тій папці.</strong> <code>php hello.php</code> шукає файл поруч із собою. Найпростіше — відкрити папку проєкту у VS Code і працювати в його вбудованому терміналі.",
+  "<strong><code>php: command not found</code>.</strong> Термінал відкритий ще з часів до встановлення PHP — закрити вікно і відкрити нове.",
+  "<strong>Стара версія PHP.</strong> <code>php -v</code> показує 7.x або 8.0 — це системний залишок macOS. Потрібен свіжий від Herd, інакше частина прикладів не запуститься.",
+  "<strong>Забутий <code>&lt;?php</code>.</strong> Код виводиться як звичайний текст замість того, щоб виконатись.",
+  "<strong>Сервер запущений, а термінал закрили.</strong> Сторінка перестає відкриватись — <code>php -S</code> живе рівно стільки, скільки відкрите вікно терміналу.",
+  "<strong>Кирилиця або пробіли в шляху.</strong> Папка на кшталт <code>~/Документи/мій проєкт</code> рано чи пізно зламає якусь команду. Тільки латиниця й без пробілів."
+ ],
+ quiz:[
+  "Що робить <code>echo</code> і навіщо в кінці крапка з комою?",
+  "Чому в браузері не видно нашого PHP-коду, а видно тільки результат?",
+  "Що каже PHP, коли забути крапку з комою, і як зрозуміти, у якому рядку помилка?",
+  "Навіщо потрібен коміт, якщо файли й так збережені на диску?"
+ ]
+},
+{
+ id:"w2", tag:"Тиждень 2 · урок 2", title:"Змінні, типи й вивід",
+ goal:"Мета тижня — навчитись зберігати дані. Змінна тут не абстракція, а підписана коробка: поклав значення, дістав його в іншому місці. І одразу знайомство з var_dump — інструментом, яким він користуватиметься наступні десять років.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"Змінні й типи даних",
+  body:[
+   {t:"say", h:"Пояснення, яке працює", x:"Уяви коробки з підписами. На одній написано name, у ній лежить слово «Максим». На другій написано age, у ній число 13. Коли тобі потрібне значення — ти не згадуєш його, а просто називаєш підпис коробки. Знак долара перед назвою означає: «я маю на увазі те, що лежить у коробці, а не саме слово»."},
+   {t:"code", tag:"vars.php", x:`<?php
+
+declare(strict_types=1);
+
+$name = "Максим";
+$age = 13;
+$height = 1.62;
+$isStudent = true;
+
+echo "Мене звати $name, мені $age років.\\n";
+echo "Зріст: {$height} м\\n";`},
+   {t:"out", x:"Мене звати Максим, мені 13 років.\nЗріст: 1.62 м"},
+   {t:"p", x:"<strong>Правила імен:</strong> тільки латиниця й цифри, починається з літери, без пробілів, обовʼязково <code>$</code>. Стиль PHP — <code>camelCase</code>: <code>$userName</code>, <code>$totalPrice</code>. І головне правило: назва має пояснювати, що всередині. <code>$a</code> — погана назва, <code>$daysLeft</code> — хороша."},
+   {t:"p", x:"<strong>Чотири типи, яких вистачить надовго:</strong>"},
+   {t:"ul", x:["<code>string</code> — текст у лапках: <code>\"Привіт\"</code>","<code>int</code> — ціле число: <code>13</code>","<code>float</code> — дробове: <code>1.62</code> (крапка, не кома!)","<code>bool</code> — правда або брехня: <code>true</code> / <code>false</code>"]},
+   {t:"p", x:"Тепер найважливіший інструмент тижня — <code>var_dump()</code>. Він показує не тільки значення, а й тип:"},
+   {t:"code", tag:"types.php", x:`<?php
+
+var_dump($name);      // string(12) "Максим"
+var_dump($age);       // int(13)
+var_dump($height);    // float(1.62)
+var_dump($isStudent); // bool(true)`},
+   {t:"note", k:"idea", h:"Питання, яке варто поставити", x:"«Максим» — це 6 літер, чому <code>string(12)</code>? Тому що PHP рахує байти, а кожна українська літера займає два. Для англійського тексту було б 6. Це перше зіткнення з кодуванням — деталей поки не треба, достатньо факту, що кирилиця «важча»."},
+   {t:"p", x:"Рядок <code>declare(strict_types=1);</code> ставимо в кожному файлі з першого дня. Він вмикає сувору перевірку типів — PHP перестане мовчки перетворювати одне в інше. Пояснювати поки не треба, просто звичка."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Математика й склеювання рядків",
+  body:[
+   {t:"code", tag:"math.php", x:`<?php
+
+$a = 7;
+$b = 3;
+
+echo $a + $b;   // 10   додавання
+echo $a - $b;   // 4    віднімання
+echo $a * $b;   // 21   множення
+echo $a / $b;   // 2.3333333333333  ділення
+echo $a % $b;   // 1    остача від ділення
+echo $a ** $b;  // 343  сьомий у кубі`},
+   {t:"note", k:"tip", h:"Остача — не марна екзотика", x:"<code>%</code> знадобиться постійно: перевірити, чи число парне (<code>$n % 2 === 0</code>), чи рік високосний, чи кожен третій елемент. На третьому тижні це вже буде робочий інструмент."},
+   {t:"p", x:"<strong>Ключовий момент заняття:</strong> у PHP рядки склеюються крапкою, а не плюсом. Це відрізняється майже від усіх інших мов і плутає всіх новачків."},
+   {t:"code", tag:"concat.php", x:`<?php
+
+$first = "Максим";
+$last = "Коваль";
+
+$full = $first . " " . $last;   // склеювання — крапкою
+echo $full;                      // Максим Коваль
+
+$greeting = "Привіт, ";
+$greeting .= $full;              // дописати в кінець
+$greeting .= "!";
+echo $greeting;                  // Привіт, Максим Коваль!`},
+   {t:"p", x:"<strong>Одинарні й подвійні лапки — різні речі:</strong>"},
+   {t:"code", tag:"quotes.php", x:`<?php
+
+$name = "Максим";
+
+echo "Привіт, $name";   // Привіт, Максим  — підставляє значення
+echo 'Привіт, $name';   // Привіт, $name   — виводить буквально`},
+   {t:"p", x:"Правило просте: потрібна підстановка змінної — подвійні лапки. Немає змінних — можна одинарні, вони трохи швидші, але різниці на цьому етапі ніякої."}
+  ]
+ },
+ {
+  day:"Субота", time:"90–120 хв", title:"Практика і коміт",
+  body:[
+   {t:"p", x:"Заняття цілком на завдання нижче. Перед стартом — правило, яке варто ввести саме зараз, поки задачі легкі:"},
+   {t:"say", h:"Правило 15 хвилин", x:"Застряг — 15 хвилин розбираєшся сам: читаєш повідомлення про помилку, дивишся у свій код рядок за рядком, гуглиш текст помилки. І тільки потім питаєш мене або AI. Не тому що я не хочу допомогти, а тому що вміння відкопати помилку самому — це і є професія."},
+   {t:"note", k:"idea", h:"Прийом для перевірки розуміння", x:"Перед запуском кожного завдання попросити сказати вголос, що виведе програма. Потім запустити й порівняти. Якщо передбачення регулярно збігається — матеріал засвоєний. Якщо ні — код пишеться навмання, і краще повернутись на крок назад."},
+   {t:"p", x:"Наприкінці — обовʼязковий коміт: <code>git add .</code> і <code>git commit -m \"урок 2: змінні й типи\"</code>. Це має стати ритуалом кожної суботи."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Площа й периметр кімнати", x:"Два числа — довжина й ширина — в змінних. Вивести площу, периметр і скільки рулонів шпалер треба, якщо один покриває 5 м² стін при висоті 2,7 м.",
+  sol:[{t:"code", tag:"room.php", x:`<?php
+
+declare(strict_types=1);
+
+$length = 4.2;
+$width = 3.5;
+$wallHeight = 2.7;
+
+$area = $length * $width;
+$perimeter = ($length + $width) * 2;
+$wallArea = $perimeter * $wallHeight;
+$rolls = ceil($wallArea / 5);
+
+echo "Площа підлоги: $area м²\\n";
+echo "Периметр: $perimeter м\\n";
+echo "Площа стін: $wallArea м²\\n";
+echo "Потрібно рулонів: $rolls\\n";`},
+       {t:"out", x:"Площа підлоги: 14.7 м²\nПериметр: 15.4 м\nПлоща стін: 41.58 м²\nПотрібно рулонів: 9"},
+       {t:"p", x:"<code>ceil()</code> округлює вгору — 8,3 рулона купити неможливо. Якщо він цього не знав і написав звичайне ділення, це гарний привід поговорити про те, що правильна математика й правильна відповідь — не завжди те саме."}]
+ },
+ {
+  n:"2", t:"var_dump пʼяти типів", x:"Створити пʼять змінних різних типів, вивести кожну через var_dump і письмово пояснити в коментарі, що показав PHP.",
+  sol:[{t:"code", tag:"dump.php", x:`<?php
+
+$text = "Привіт";
+$number = 42;
+$price = 19.99;
+$isReady = false;
+$nothing = null;
+
+var_dump($text);    // string(12) "Привіт" — 12 байтів, бо кирилиця
+var_dump($number);  // int(42)
+var_dump($price);   // float(19.99)
+var_dump($isReady); // bool(false)
+var_dump($nothing); // NULL — коробка є, але порожня`},
+       {t:"p", x:"Додатково варто показати: <code>var_dump(\"42\")</code> дає <code>string(2) \"42\"</code>, а <code>var_dump(42)</code> — <code>int(42)</code>. Різниця між числом і текстом, що виглядає як число, — тема, яка вистрілить на четвертому тижні."}]
+ },
+ {
+  n:"3", t:"Візитка одним рядком", x:"Змінні з іменем, віком, містом і улюбленою грою. Вивести один зв'язний рядок через підстановку змінних, а потім той самий рядок — через склеювання крапкою.",
+  sol:[{t:"code", tag:"card.php", x:`<?php
+
+$name = "Максим";
+$age = 13;
+$city = "Дніпро";
+$game = "Minecraft";
+
+// спосіб перший — підстановка
+echo "Мене звати $name, мені $age. Я з міста $city, граю в $game.\\n";
+
+// спосіб другий — склеювання
+echo "Мене звати " . $name . ", мені " . $age . ". Я з міста " . $city . ", граю в " . $game . ".\\n";`},
+       {t:"p", x:"Обидва рядки дають однаковий результат. Питання до обговорення: який читається легше? Перший — і саме тому в реальному коді використовують здебільшого його."}]
+ },
+ {
+  n:"4", t:"Скільки хвилин він уже прожив", x:"Порахувати приблизну кількість хвилин життя і вивести число так, щоб його можна було прочитати — з розділювачами розрядів.",
+  sol:[{t:"code", tag:"minutes.php", x:`<?php
+
+declare(strict_types=1);
+
+$years = 13;
+
+$days = $years * 365;
+$hours = $days * 24;
+$minutes = $hours * 60;
+
+echo "Днів: " . number_format($days, 0, ',', ' ') . "\\n";
+echo "Годин: " . number_format($hours, 0, ',', ' ') . "\\n";
+echo "Хвилин: " . number_format($minutes, 0, ',', ' ') . "\\n";`},
+       {t:"out", x:"Днів: 4 745\nГодин: 113 880\nХвилин: 6 832 800"},
+       {t:"p", x:"<code>number_format</code> має чотири аргументи: число, скільки знаків після коми, чим відділяти дробову частину, чим розділяти тисячі. Це перша функція з кількома налаштуваннями — гарний момент показати, як шукати її опис на php.net."}]
+ }],
+ traps:[
+  "<strong>Забутий долар.</strong> <code>name = \"Максим\"</code> — PHP скаже про несподіваний токен. Долар обовʼязковий і при створенні, і при використанні.",
+  "<strong>Регістр має значення.</strong> <code>$Name</code> і <code>$name</code> — дві різні змінні, і PHP про це не попередить.",
+  "<strong>Кома замість крапки в дробових.</strong> <code>1,62</code> — це не число, а два значення через кому.",
+  "<strong>Склеювання плюсом.</strong> <code>\"Привіт\" + $name</code> у PHP 8 дає помилку. Тільки крапка.",
+  "<strong>Одинарні лапки там, де потрібна підстановка.</strong> Виведеться буквально <code>$name</code> — і це не помилка PHP, а помилка задуму."
+ ],
+ quiz:[
+  "Чим відрізняються одинарні лапки від подвійних?",
+  "Що покаже <code>var_dump(\"13\")</code> і чим це відрізняється від <code>var_dump(13)</code>?",
+  "Чому <code>string(12)</code>, якщо в слові «Максим» шість літер?",
+  "Як склеїти два рядки і чому не плюсом?"
+ ]
+},
+{
+ id:"w3", tag:"Тиждень 3 · урок 3", title:"Введення даних і математика",
+ goal:"Мета тижня — програма перестає бути монологом. До цього моменту всі числа були вписані в код руками; тепер їх вводить людина, і програма щоразу поводиться інакше. Саме тут зазвичай зʼявляється відчуття «воно живе».",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"Читання з клавіатури",
+  body:[
+   {t:"p", x:"У консолі дані читаються з потоку введення. Конструкція виглядає громіздко, але записується один раз і потім просто копіюється:"},
+   {t:"code", tag:"input.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Як тебе звати? ";
+$name = trim(fgets(STDIN));
+
+echo "Привіт, $name! Радий знайомству.\\n";`},
+   {t:"p", x:"<strong>Розібрати по частинах:</strong>"},
+   {t:"ul", x:["<code>STDIN</code> — потік того, що набирають на клавіатурі","<code>fgets()</code> — прочитати один рядок звідти","<code>trim()</code> — обрізати пробіли й невидимий символ переносу, який залишається від натискання Enter"]},
+   {t:"note", k:"warn", h:"Без trim буде дивна поведінка", x:"Спробувати навмисно без нього: <code>$name = fgets(STDIN);</code> і потім <code>echo \"Привіт, $name!\";</code>. Знак оклику опиниться на наступному рядку — бо в змінній залишився невидимий перенос. Це чудова ілюстрація того, що в даних буває більше, ніж видно очима."},
+   {t:"p", x:"<strong>Друге ключове правило тижня:</strong> все, що прийшло з клавіатури, — це рядок. Навіть якщо набрали 25. Щоб рахувати, треба явно перетворити:"},
+   {t:"code", tag:"numbers.php", x:`<?php
+
+echo "Введи число: ";
+$raw = trim(fgets(STDIN));
+
+var_dump($raw);         // string(2) "25" — це текст!
+
+$number = (int) $raw;   // перетворюємо на ціле
+var_dump($number);      // int(25)
+
+$price = (float) $raw;  // або на дробове
+var_dump($price);       // float(25)`},
+   {t:"p", x:"Показати межу: <code>(int) \"12abc\"</code> дасть <code>12</code> без жодної скарги, а <code>(int) \"abc\"</code> дасть <code>0</code>. PHP бере стільки, скільки зміг розпізнати. Перевіряти введення ми навчимось на четвертому тижні."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Математичні функції й випадковість",
+  body:[
+   {t:"p", x:"Готові функції на кожен день. Не заучувати — просто побачити й знати, що вони існують:"},
+   {t:"code", tag:"functions.php", x:`<?php
+
+echo round(3.7);        // 4     округлення за правилами
+echo round(3.14159, 2); // 3.14  до двох знаків
+echo floor(3.9);        // 3     завжди вниз
+echo ceil(3.1);         // 4     завжди вгору
+echo abs(-15);          // 15    модуль, знак прибрали
+
+echo min(4, 9, 2);      // 2
+echo max(4, 9, 2);      // 9
+echo sqrt(144);         // 12    корінь
+echo pow(2, 10);        // 1024  двійка в десятому`},
+   {t:"p", x:"Тепер випадковість — те, без чого не буває ігор:"},
+   {t:"code", tag:"dice.php", x:`<?php
+
+$dice = random_int(1, 6);
+
+echo "Випало: $dice\\n";`},
+   {t:"note", k:"tip", h:"Чому random_int, а не rand", x:"<code>rand()</code> теж працює, але його послідовність передбачувана — для гри байдуже, а для пароля чи коду підтвердження це діра в безпеці. Звикати одразу до правильного варіанта дешевше, ніж переучуватись. Це перша розмова про безпеку, і поки цього рівня цілком достатньо."},
+   {t:"p", x:"Закріплення на місці: кинути два кубики й вивести суму. Потім згенерувати випадкове число від 1 до 100 і не показувати його — це вже заготовка для гри «вгадай число» з наступного тижня."}
+  ]
+ },
+ {
+  day:"Субота", time:"90–120 хв", title:"Чотири маленькі програми",
+  body:[
+   {t:"p", x:"Заняття повністю на завдання. Вони вперше схожі на справжні програми: щось питають, щось рахують, щось відповідають."},
+   {t:"note", k:"idea", h:"Що зробити наприкінці", x:"Дати комусь із родини попрацювати з калькулятором і конвертером — не пояснюючи, як ними користуватись. Це перший досвід того, що користувач вводить не те, що очікував програміст: слово замість числа, порожній Enter, кому замість крапки. Список того, що зламалось, стане матеріалом четвертого тижня."},
+   {t:"p", x:"І коміт: <code>git commit -m \"урок 3: введення даних\"</code>."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Калькулятор у консолі", x:"Запитати два числа й знак операції, вивести результат. Ділення на нуль поки можна не обробляти — просто подивитись, що станеться.",
+  sol:[{t:"code", tag:"calc.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Перше число: ";
+$a = (float) trim(fgets(STDIN));
+
+echo "Друге число: ";
+$b = (float) trim(fgets(STDIN));
+
+echo "Операція (+ - * /): ";
+$op = trim(fgets(STDIN));
+
+$result = match ($op) {
+    '+' => $a + $b,
+    '-' => $a - $b,
+    '*' => $a * $b,
+    '/' => $a / $b,
+};
+
+echo "Результат: $result\\n";`},
+       {t:"note", k:"tip", h:"Якщо match ще не пояснювали", x:"На цьому тижні його можна дати як готовий шаблон «вибір з варіантів» — детально розберемо на четвертому. Або чесно написати чотири <code>if</code> і на наступному тижні порівняти два варіанти: це буде наочна демонстрація, навіщо потрібні нові конструкції."},
+       {t:"p", x:"Обовʼязково спробувати поділити на нуль і прочитати <code>DivisionByZeroError</code>. Обробляти поки не треба — але побачити варто."}]
+ },
+ {
+  n:"2", t:"Конвертер валют", x:"Запитати суму в гривнях і вивести її в доларах та євро за курсом, записаним у змінних зверху. Результат — з двома знаками після коми.",
+  sol:[{t:"code", tag:"currency.php", x:`<?php
+
+declare(strict_types=1);
+
+$usdRate = 41.50;
+$eurRate = 45.20;
+
+echo "Скільки гривень? ";
+$uah = (float) trim(fgets(STDIN));
+
+$usd = round($uah / $usdRate, 2);
+$eur = round($uah / $eurRate, 2);
+
+echo "$uah грн = $usd USD\\n";
+echo "$uah грн = $eur EUR\\n";`},
+       {t:"p", x:"Курси винесені в змінні зверху — це перший, дуже маленький, але важливий крок до чистого коду: значення, які змінюються, не розкидані по всій програмі."}]
+ },
+ {
+  n:"3", t:"Кубик з красивим виводом", x:"Кинути два кубики, показати кожен і суму. Додати: якщо випав дубль — сказати про це окремо (умову можна написати навмання, розберемо наступного тижня).",
+  sol:[{t:"code", tag:"dice.php", x:`<?php
+
+declare(strict_types=1);
+
+$first = random_int(1, 6);
+$second = random_int(1, 6);
+$total = $first + $second;
+
+echo "Перший кубик: $first\\n";
+echo "Другий кубик: $second\\n";
+echo "Сума: $total\\n";
+
+if ($first === $second) {
+    echo "Дубль! Кидай ще раз.\\n";
+}`},
+       {t:"p", x:"Запустити 10 разів поспіль і подивитись, наскільки рідко випадає дубль. Це заодно перше практичне знайомство з тим, що випадковість — не рівномірний розподіл результатів."}]
+ },
+ {
+  n:"4", t:"Розділити рахунок і чайові", x:"Запитати суму рахунку, відсоток чайових і кількість людей. Вивести суму з чайовими і скільки платить кожен, округливши вгору до гривні.",
+  sol:[{t:"code", tag:"bill.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Сума рахунку: ";
+$bill = (float) trim(fgets(STDIN));
+
+echo "Чайові у відсотках: ";
+$tipPercent = (float) trim(fgets(STDIN));
+
+echo "Скільки людей: ";
+$people = (int) trim(fgets(STDIN));
+
+$tip = $bill * $tipPercent / 100;
+$total = $bill + $tip;
+$perPerson = ceil($total / $people);
+
+echo "Чайові: " . round($tip, 2) . " грн\\n";
+echo "Разом: " . round($total, 2) . " грн\\n";
+echo "З кожного: $perPerson грн\\n";`},
+       {t:"out", x:"Сума рахунку: 850\nЧайові у відсотках: 10\nСкільки людей: 3\nЧайові: 85 грн\nРазом: 935 грн\nЗ кожного: 312 грн"},
+       {t:"p", x:"Питання на подумати: чому 312 × 3 = 936, а не 935? Бо кожен округлення вгору дає зайву гривню. Це справжня задача, з якою стикаються в реальних застосунках, і чесна відповідь тут — «залишок платить той, хто замовляв»."}]
+ }],
+ traps:[
+  "<strong>Забутий trim.</strong> Порівняння з введеним рядком не працює, бо в ньому невидимий перенос.",
+  "<strong>Забуте приведення типу.</strong> <code>\"5\" * 2</code> у PHP спрацює, а от порівняння й строгі функції поводитимуться дивно.",
+  "<strong>Кома замість крапки при введенні дробового.</strong> <code>(float) \"3,5\"</code> дасть <code>3</code> — усе після коми відкидається мовчки.",
+  "<strong>Ділення на нуль.</strong> У PHP 8 це помилка, яка зупиняє програму. Це нормально — навчимось ловити пізніше.",
+  "<strong>Порожній Enter.</strong> Порожній рядок перетворюється на <code>0</code>, і програма вважає це відповіддю."
+ ],
+ quiz:[
+  "Чому все, що ввели з клавіатури, — це рядок?",
+  "Що робить <code>trim()</code> і що станеться без нього?",
+  "Чим <code>floor()</code> відрізняється від <code>round()</code>?",
+  "Чому для гри годиться <code>rand()</code>, а для коду підтвердження — ні?"
+ ]
+},
+{
+ id:"w4", tag:"Тиждень 4 · урок 4", title:"Умови: програма починає вирішувати",
+ goal:"Головний тиждень місяця. До цього програма робила одне й те саме; тепер вона обирає шлях залежно від даних. Тут же — класична пастка PHP з двома видами рівності, на якій спотикаються навіть дорослі розробники.",
+ sessions:[
+ {
+  day:"Понеділок", time:"60–90 хв", title:"if, elseif, else",
+  body:[
+   {t:"say", h:"Пояснення", x:"Умова — це розвилка. Якщо правда, йдемо цією дорогою, якщо ні — іншою. Компʼютер перевіряє умови згори вниз і зупиняється на першій, яка спрацювала. Решту навіть не дивиться."},
+   {t:"code", tag:"grade.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Скільки балів? ";
+$score = (int) trim(fgets(STDIN));
+
+if ($score >= 90) {
+    echo "Відмінно!\\n";
+} elseif ($score >= 75) {
+    echo "Добре\\n";
+} elseif ($score >= 60) {
+    echo "Задовільно\\n";
+} elseif ($score >= 1) {
+    echo "Треба підтягнути\\n";
+} else {
+    echo "Це взагалі не бали\\n";
+}`},
+   {t:"note", k:"warn", h:"Порядок умов вирішує все", x:"Переставити перевірки навпаки — почати з <code>$score >= 60</code> — і запустити з числом 95. Виведе «Задовільно», бо перша ж умова спрацювала. Це помилка, яку компʼютер не покаже: код робочий, логіка зламана. Обовʼязково показати наочно, а не розповісти."},
+   {t:"p", x:"<strong>Оператори порівняння:</strong> <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>===</code> (дорівнює), <code>!==</code> (не дорівнює). Фігурні дужки ставимо завжди, навіть коли всередині один рядок — за рік це врятує від годин пошуку помилки."}
+  ]
+ },
+ {
+  day:"Середа", time:"60–90 хв", title:"Два види рівності й логічні оператори",
+  body:[
+   {t:"p", x:"Центральна тема всього місяця. У PHP є два знаки рівності, і різниця між ними — причина сотень реальних багів."},
+   {t:"code", tag:"equality.php", x:`<?php
+
+var_dump(5 == "5");     // true  — порівняв тільки значення
+var_dump(5 === "5");    // false — порівняв ще й тип
+
+var_dump(0 == false);   // true
+var_dump("" == false);  // true
+var_dump(null == false);// true
+
+var_dump(0 === false);  // false — різні типи`},
+   {t:"say", h:"Правило, яке треба завчити", x:"Завжди пиши три знаки. Два знаки — це коли PHP намагається здогадатись, що ти мав на увазі, і іноді здогадується неправильно. Три знаки — це «порівняй чесно, і значення, і тип». Якщо колись зустрінеш два знаки в чужому коді — це або старий код, або помилка."},
+   {t:"p", x:"<strong>Логічні оператори</strong> — коли умов кілька:"},
+   {t:"code", tag:"logic.php", x:`<?php
+
+$age = 13;
+$hasPermission = true;
+
+// && — потрібні обидві умови
+if ($age >= 12 && $hasPermission) {
+    echo "Можна\\n";
+}
+
+// || — достатньо однієї
+if ($age < 6 || $age > 65) {
+    echo "Знижка\\n";
+}
+
+// ! — заперечення
+if (!$hasPermission) {
+    echo "Немає дозволу\\n";
+}`},
+   {t:"p", x:"І два скорочення, які трапляються всюди — показати, але не вимагати використання:"},
+   {t:"code", tag:"short.php", x:`<?php
+
+$age = 13;
+
+// тернарний оператор: коротке if-else
+$status = $age >= 18 ? "дорослий" : "неповнолітній";
+echo $status . "\\n";
+
+// match — вибір з багатьох варіантів
+$day = 3;
+$name = match ($day) {
+    1, 7 => "вихідний",
+    2, 3, 4, 5, 6 => "робочий день",
+};
+echo $name . "\\n";`}
+  ]
+ },
+ {
+  day:"Субота", time:"120 хв", title:"Перша гра, у яку грають",
+  body:[
+   {t:"p", x:"Фінальне заняття місяця — «Камінь-ножиці-папір» проти компʼютера. Це перша програма, яку можна показати і в яку хтось справді пограє."},
+   {t:"code", tag:"rps.php", x:`<?php
+
+declare(strict_types=1);
+
+$moves = ['камінь', 'ножиці', 'папір'];
+
+echo "Твій хід (камінь / ножиці / папір): ";
+$player = trim(fgets(STDIN));
+
+$computer = $moves[random_int(0, 2)];
+
+echo "Компʼютер: $computer\\n";
+
+if ($player === $computer) {
+    echo "Нічия!\\n";
+} elseif (
+    ($player === 'камінь' && $computer === 'ножиці') ||
+    ($player === 'ножиці' && $computer === 'папір') ||
+    ($player === 'папір' && $computer === 'камінь')
+) {
+    echo "Ти виграв!\\n";
+} else {
+    echo "Компʼютер виграв.\\n";
+}`},
+   {t:"note", k:"idea", h:"Що тут нового і варте уваги", x:"<code>$moves[random_int(0, 2)]</code> — це перший дотик до масивів: список варіантів, з якого беруть один за номером. Нумерація починається з нуля, тому три елементи — це 0, 1 і 2. Повноцінно масиви розберемо на сьомому уроці, а поки достатньо цієї однієї конструкції."},
+   {t:"p", x:"Коли базова версія працює — доопрацювати разом: перевірити, чи гравець узагалі ввів існуючий хід, і додати рахунок за пʼять раундів (це вже буде місток до циклів наступного тижня)."},
+   {t:"p", x:"Фінальний коміт місяця й <code>git push</code>. Далі — показати комусь із родини й дати пограти."}
+  ]
+ }],
+ tasks:[
+ {
+  n:"1", t:"Оцінка за балами", x:"Запитати бали від 0 до 100 і вивести оцінку за пʼятьма діапазонами. Окремо обробити випадок, коли ввели число більше 100 або відʼємне.",
+  sol:[{t:"code", tag:"grade.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Бали (0-100): ";
+$score = (int) trim(fgets(STDIN));
+
+if ($score < 0 || $score > 100) {
+    echo "Таких балів не буває\\n";
+} elseif ($score >= 90) {
+    echo "Відмінно\\n";
+} elseif ($score >= 75) {
+    echo "Добре\\n";
+} elseif ($score >= 60) {
+    echo "Задовільно\\n";
+} else {
+    echo "Треба підтягнути\\n";
+}`},
+       {t:"p", x:"Перевірка коректності введення стоїть <strong>першою</strong> — це важлива звичка: спершу відсіюємо неможливе, потім працюємо з нормальними даними."}]
+ },
+ {
+  n:"2", t:"Вгадай число — одна спроба", x:"Компʼютер загадує число від 1 до 10, гравець називає своє. Вивести: вгадав, більше чи менше загаданого.",
+  sol:[{t:"code", tag:"guess.php", x:`<?php
+
+declare(strict_types=1);
+
+$secret = random_int(1, 10);
+
+echo "Вгадай число від 1 до 10: ";
+$guess = (int) trim(fgets(STDIN));
+
+if ($guess === $secret) {
+    echo "Точно в ціль!\\n";
+} elseif ($guess < $secret) {
+    echo "Загадане більше. Було: $secret\\n";
+} else {
+    echo "Загадане менше. Було: $secret\\n";
+}`},
+       {t:"p", x:"Наступного тижня, з циклами, ця програма перетвориться на повноцінну гру з кількома спробами. Файл варто зберегти — приємно буде побачити, наскільки маленька зміна робить її цікавою."}]
+ },
+ {
+  n:"3", t:"Перевірка пароля", x:"Запитати пароль і перевірити три умови: довжина не менше 8 символів, є хоча б одна цифра, є хоча б одна велика літера. Вивести всі проблеми, а не тільки першу.",
+  sol:[{t:"code", tag:"password.php", x:`<?php
+
+declare(strict_types=1);
+
+echo "Придумай пароль: ";
+$password = trim(fgets(STDIN));
+
+$isOk = true;
+
+if (strlen($password) < 8) {
+    echo "- закороткий, треба мінімум 8 символів\\n";
+    $isOk = false;
+}
+
+if (!preg_match('/[0-9]/', $password)) {
+    echo "- немає жодної цифри\\n";
+    $isOk = false;
+}
+
+if (!preg_match('/[A-Z]/', $password)) {
+    echo "- немає великої літери\\n";
+    $isOk = false;
+}
+
+if ($isOk) {
+    echo "Пароль надійний!\\n";
+}`},
+       {t:"note", k:"tip", h:"Про preg_match на цьому етапі", x:"Регулярні вирази повноцінно будуть на 13-му уроці. Поки достатньо пояснення: <code>'/[0-9]/'</code> означає «чи є тут хоч один символ від 0 до 9». Приймати як готовий інструмент — нормально, головне розуміти, що саме він перевіряє."},
+       {t:"p", x:"Прийом зі змінною <code>$isOk</code> — важливий: три окремі перевірки, а не один довгий <code>if</code> через <code>&&</code>. Тільки так можна показати користувачу всі проблеми одразу."}]
+ },
+ {
+  n:"4", t:"Камінь-ножиці-папір", x:"Доробити гру із заняття: перевіряти, чи гравець увів існуючий хід, і на невідомий варіант чемно відповідати.",
+  sol:[{t:"code", tag:"rps.php", x:`<?php
+
+declare(strict_types=1);
+
+$moves = ['камінь', 'ножиці', 'папір'];
+
+echo "Твій хід (камінь / ножиці / папір): ";
+$player = mb_strtolower(trim(fgets(STDIN)));
+
+if (!in_array($player, $moves, true)) {
+    echo "Такого ходу немає. Спробуй ще раз.\\n";
+    exit;
+}
+
+$computer = $moves[random_int(0, 2)];
+echo "Компʼютер обрав: $computer\\n";
+
+if ($player === $computer) {
+    echo "Нічия!\\n";
+} elseif (
+    ($player === 'камінь' && $computer === 'ножиці') ||
+    ($player === 'ножиці' && $computer === 'папір') ||
+    ($player === 'папір' && $computer === 'камінь')
+) {
+    echo "Ти виграв!\\n";
+} else {
+    echo "Цього разу компʼютер.\\n";
+}`},
+       {t:"p", x:"<code>mb_strtolower</code> переводить у нижній регістр з підтримкою кирилиці — щоб «Камінь» і «камінь» вважались одним ходом. <code>in_array</code> перевіряє, чи є значення у списку, а третій аргумент <code>true</code> вмикає ту саму сувору перевірку типів, що й <code>===</code>."}]
+ }],
+ traps:[
+  "<strong>Один знак рівності в умові.</strong> <code>if ($score = 90)</code> не порівнює, а присвоює — і умова завжди правдива.",
+  "<strong>Крапка з комою одразу після if.</strong> <code>if ($a > 5);</code> — тіло ніколи не виконається, а PHP не поскаржиться.",
+  "<strong>Порівняння через ==.</strong> <code>\"0\" == false</code> дає true і ламає логіку там, де цього ніхто не чекає.",
+  "<strong>Неправильний порядок умов.</strong> Код працює, помилок немає, відповіді неправильні — найважчий тип багів.",
+  "<strong>Порівняння рядків без урахування регістру.</strong> «Камінь» і «камінь» — різні рядки, поки не привести до одного вигляду."
+ ],
+ quiz:[
+  "У чому різниця між <code>==</code> і <code>===</code> і який з них треба писати?",
+  "Що станеться, якщо переставити умови в перевірці оцінок місцями?",
+  "Коли потрібен <code>&&</code>, а коли <code>||</code>?",
+  "Чому в грі три окремі перевірки на перемогу обʼєднані через <code>||</code>, а не написані трьома if?"
+ ]
+}
+];
+
+const FINAL = [
+ "<strong>Запускає код двома способами.</strong> Створює файл, запускає його в терміналі і відкриває як сторінку через <code>php -S</code> — без підказок.",
+ "<strong>Читає помилки.</strong> Бачить <code>Parse error</code> з номером рядка і йде саме туди, а не кличе на допомогу одразу.",
+ "<strong>Працює зі змінними й типами.</strong> Розуміє, чим <code>13</code> відрізняється від <code>\"13\"</code>, і перевіряє себе через <code>var_dump</code>.",
+ "<strong>Приймає дані від користувача.</strong> Знає, що з клавіатури приходить рядок, і не забуває <code>trim</code> та приведення типу.",
+ "<strong>Пише умови.</strong> Використовує <code>===</code> за замовчуванням і може пояснити, чому не <code>==</code>.",
+ "<strong>Має чотири робочі програми:</strong> калькулятор, конвертер валют, розділення рахунку і гру «камінь-ножиці-папір».",
+ "<strong>Веде репозиторій.</strong> На GitHub лежить проєкт із чотирма комітами — по одному на тиждень.",
+ "<strong>Готовий до уроку 5:</strong> цикли. Гра «вгадай число» нарешті отримає кілька спроб, а програми навчаться повторювати дії."
+];
+</script>
+
+<script>
+(function(){
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const RE = /(\/\/[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(<\?php|\?>)|(\$[A-Za-z_]\w*)|\b(declare|strict_types|echo|print|if|elseif|else|match|function|return|true|false|null|exit|new|class|foreach|for|while)\b|\b(\d+\.?\d*)\b/g;
+
+  function hl(code){
+    let out = "", last = 0;
+    code.replace(RE, (m,c,s,t,v,k,n,off)=>{
+      out += esc(code.slice(last, off));
+      const cls = c ? "c" : s ? "s" : t ? "k" : v ? "v" : k ? "k" : "n";
+      out += '<span class="'+cls+'">'+esc(m)+'</span>';
+      last = off + m.length;
+      return m;
+    });
+    return out + esc(code.slice(last));
+  }
+
+  function blocks(list){
+    return list.map(b=>{
+      if (b.t === "p")    return `<p>${b.x}</p>`;
+      if (b.t === "ul")   return `<ul>${b.x.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+      if (b.t === "code") return `<div class="code-wrap"><pre>${hl(b.x)}</pre>${b.tag?`<span class="tag">${esc(b.tag)}</span>`:""}</div>`;
+      if (b.t === "out")  return `<div class="out"><b>Що виведе</b>${esc(b.x)}</div>`;
+      if (b.t === "note") return `<div class="note ${b.k}"><b>${esc(b.h)}</b>${b.x}</div>`;
+      if (b.t === "say")  return `<div class="say"><b>${esc(b.h)}</b>${b.x}</div>`;
+      return "";
+    }).join("");
+  }
+
+  document.getElementById("weeks").innerHTML = WEEKS.map(w=>`
+    <section class="week" id="${w.id}">
+      <div class="w-head">
+        <span class="w-tag">${esc(w.tag)}</span>
+        <h2>${esc(w.title)}</h2>
+        <p class="w-goal">${esc(w.goal)}</p>
+      </div>
+
+      ${w.sessions.map(s=>`
+      <article class="ses">
+        <div class="ses-head">
+          <span class="ses-day">${esc(s.day)}</span>
+          <h3>${esc(s.title)}</h3>
+          <span class="ses-time">${esc(s.time)}</span>
+        </div>
+        <div class="body">${blocks(s.body)}</div>
+      </article>`).join("")}
+
+      <div class="tasks">
+        <h3>Завдання тижня</h3>
+        <p>Робити самостійно. Розвʼязок відкривати тільки після власної спроби — або разом, якщо застряг більше ніж на 15 хвилин.</p>
+        ${w.tasks.map(t=>`
+        <div class="task">
+          <h4><i>№${esc(t.n)}</i>${esc(t.t)}</h4>
+          <p>${esc(t.x)}</p>
+          <details>
+            <summary>Показати розвʼязок</summary>
+            <div>${blocks(t.sol)}</div>
+          </details>
+        </div>`).join("")}
+      </div>
+
+      <div class="checks">
+        <div class="chkbox traps">
+          <h3>Типові пастки тижня</h3>
+          <ul>${w.traps.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+        <div class="chkbox quiz">
+          <h3>Питання на перевірку</h3>
+          <ul>${w.quiz.map(x=>`<li>${x}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </section>`).join("");
+
+  document.getElementById("final-list").innerHTML = FINAL.map(x=>`<li>${x}</li>`).join("");
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+})();
+</script>
+</body>
+</html>

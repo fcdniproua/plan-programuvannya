@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Розминки перед заняттям</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.filters,.dash{display:none !important}
+  body{background:#fff !important}
+  .w,.note,.hint,.how{break-inside:avoid; box-shadow:none !important}
+  .hidden{display:block !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#C2410C; --accent-soft:#FDE8DC;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC;
+  --warn:#C2401E; --warn-bg:#FCEDE8;
+  --code-bg:#15181F; --code-ink:#E4E7EF; --code-c:#6E7788; --code-s:#8FD98A;
+  --code-v:#A6C0FF; --code-k:#E9A3D2; --code-n:#F0C071;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#FB923C; --accent-soft:#2A1A10;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+    --warn:#FF8A6B; --warn-bg:#2A1611;
+    --code-bg:#0A0C12; --code-ink:#DFE3EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#FB923C; --accent-soft:#2A1A10;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+  --warn:#FF8A6B; --warn-bg:#2A1611;
+  --code-bg:#0A0C12; --code-ink:#DFE3EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:880px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px}
+h1,h2,h3,h4{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:64ch; margin-top:14px; font-size:clamp(1rem,2.2vw,1.06rem)}
+code:not(pre code){font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px; white-space:nowrap}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:5; margin:26px -4px 0; padding:10px 4px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(8px);
+  display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--line)}
+.nav a{font-family:"JetBrains Mono",monospace; font-size:.73rem; text-decoration:none;
+  color:var(--ink-2); background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; padding:6px 11px}
+.nav a:hover{border-color:var(--accent); color:var(--accent)}
+
+/* setup */
+.setup{margin-top:30px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.setup h2{font-size:1.08rem; font-weight:700; margin-bottom:6px}
+.setup > p{color:var(--ink-2); font-size:.95rem; margin-bottom:16px}
+.os{display:grid; gap:18px 26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.os h3{font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.os ol{margin:0; padding-left:19px; display:grid; gap:6px; font-size:.91rem; color:var(--ink-2)}
+.os a{color:var(--accent); font-weight:600; text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--accent) 32%, transparent)}
+
+/* week */
+.week{margin-top:56px; scroll-margin-top:64px}
+.w-head{border-top:3px solid var(--accent); padding-top:18px}
+.w-tag{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent)}
+.w-head h2{font-size:clamp(1.3rem,3.4vw,1.75rem); font-weight:700; margin-top:8px}
+.w-goal{color:var(--ink-2); margin-top:10px; max-width:64ch}
+
+.ses{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  margin-top:16px; box-shadow:var(--shadow)}
+.ses-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  padding-bottom:12px; border-bottom:1px solid var(--line)}
+.ses-day{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:4px 9px;
+  border-radius:6px}
+.ses-head h3{font-size:1.06rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0; flex:1}
+.ses-time{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3)}
+.body{display:flex; flex-direction:column; gap:15px}
+.body p{color:var(--ink-2)}
+.body p strong{color:var(--ink)}
+.body ul{margin:0; padding-left:19px; display:grid; gap:7px; color:var(--ink-2)}
+.body ul strong{color:var(--ink)}
+.say{border-left:3px solid var(--accent); padding:2px 0 2px 15px; color:var(--ink);
+  font-size:.97rem}
+.say b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:4px}
+
+pre{margin:0; background:var(--code-bg); border-radius:11px; padding:15px 17px; overflow-x:auto;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.83rem; line-height:1.65;
+  color:var(--code-ink); tab-size:4}
+pre .c{color:var(--code-c); font-style:italic}
+pre .s{color:var(--code-s)}
+pre .v{color:var(--code-v)}
+pre .k{color:var(--code-k)}
+pre .n{color:var(--code-n)}
+.code-wrap{position:relative}
+.code-wrap .tag{position:absolute; top:0; right:12px; font-family:"JetBrains Mono",monospace;
+  font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--code-c);
+  background:var(--code-bg); padding:3px 6px; border-radius:0 0 5px 5px}
+.out{background:var(--surface-2); border:1px solid var(--line); border-left:3px solid var(--ink-3);
+  border-radius:0 8px 8px 0; padding:11px 14px; font-family:"JetBrains Mono",monospace;
+  font-size:.8rem; color:var(--ink-2); white-space:pre-wrap; overflow-x:auto}
+.out b{display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:5px; font-weight:700}
+
+.note{border-radius:11px; padding:13px 16px; font-size:.94rem}
+.note b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; display:block; margin-bottom:5px}
+.note.tip{background:var(--ok-bg); border:1px solid color-mix(in srgb, var(--ok) 30%, transparent)}
+.note.tip b{color:var(--ok)}
+.note.warn{background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 32%, transparent)}
+.note.warn b{color:var(--warn)}
+.note.idea{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 32%, transparent)}
+.note.idea b{color:var(--amber)}
+
+/* tasks */
+.tasks{margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow)}
+.tasks > h3{font-size:1.02rem; font-weight:700; margin-bottom:4px}
+.tasks > p{color:var(--ink-2); font-size:.92rem; margin-bottom:14px}
+.task{border-top:1px solid var(--line); padding:15px 0 3px}
+.task:first-of-type{border-top:0; padding-top:4px}
+.task h4{font-size:.97rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  display:flex; gap:10px; align-items:baseline}
+.task h4 i{font-family:"JetBrains Mono",monospace; font-style:normal; font-size:.75rem;
+  color:var(--accent); flex:none}
+.task > p{color:var(--ink-2); font-size:.93rem; margin:6px 0 10px; padding-left:26px}
+.task details{padding-left:26px}
+.task summary{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3);
+  cursor:pointer; list-style:none; display:inline-flex; gap:7px; align-items:center;
+  border:1px solid var(--line); border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.task summary::-webkit-details-marker{display:none}
+.task summary:hover{color:var(--accent); border-color:var(--accent)}
+.task details[open] summary{margin-bottom:11px}
+.task details > div{display:flex; flex-direction:column; gap:11px}
+
+/* checks */
+.checks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:18px}
+.chkbox{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+  box-shadow:var(--shadow)}
+.chkbox h3{font-size:.95rem; font-weight:700; margin-bottom:11px}
+.chkbox ul{margin:0; padding-left:18px; display:grid; gap:7px; font-size:.91rem; color:var(--ink-2)}
+.chkbox.traps{border-color:color-mix(in srgb, var(--warn) 40%, var(--line))}
+.chkbox.traps h3{color:var(--warn)}
+.chkbox.quiz{border-color:color-mix(in srgb, var(--ok) 40%, var(--line))}
+.chkbox.quiz h3{color:var(--ok)}
+.chkbox.quiz ul{list-style:none; padding-left:0}
+.chkbox.quiz li{padding-left:16px; position:relative}
+.chkbox.quiz li::before{content:"?"; position:absolute; left:0; color:var(--ok); font-weight:700;
+  font-family:"JetBrains Mono",monospace}
+
+.final{margin-top:64px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:24px 26px; box-shadow:var(--shadow)}
+.final h2{font-size:1.2rem; font-weight:700; margin-bottom:6px}
+.final > p{color:var(--ink-2); margin-bottom:16px}
+.final ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2)}
+.final strong{color:var(--ink)}
+footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3);
+  font-size:.84rem}
+@media (max-width:520px){ pre{font-size:.76rem} .task > p,.task details{padding-left:0} }
+</style><style>
+.filters{display:flex; gap:7px; flex-wrap:wrap; margin:18px 0 22px}
+.filter{font-family:"JetBrains Mono",monospace; font-size:.72rem; background:var(--surface);
+  color:var(--ink-2); border:1px solid var(--line); border-radius:99px; padding:6px 13px; cursor:pointer}
+.filter:hover{border-color:var(--ink-3); color:var(--ink)}
+.filter.on{background:var(--accent); border-color:var(--accent); color:var(--surface)}
+.w{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:15px 17px;
+  margin-bottom:9px; box-shadow:var(--shadow)}
+.w[data-done="1"]{border-color:color-mix(in srgb, var(--ok) 45%, var(--line)); opacity:.72}
+.w-head{display:flex; gap:13px; align-items:flex-start}
+.w-num{flex:none; width:30px; height:30px; border-radius:8px; display:grid; place-items:center;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace; font-weight:700; font-size:.78rem; cursor:pointer}
+.w[data-done="1"] .w-num{background:var(--ok); border-color:var(--ok); color:var(--surface)}
+.w-body{flex:1; min-width:0}
+.w-body > p{font-size:.96rem}
+.w-meta{font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); margin-top:6px}
+.w-meta i{font-style:normal; color:var(--accent)}
+.w details{margin-top:10px; display:inline-block; margin-right:8px}
+.w summary{font-family:"JetBrains Mono",monospace; font-size:.71rem; color:var(--ink-3); cursor:pointer;
+  list-style:none; display:inline-flex; gap:7px; align-items:center; border:1px solid var(--line);
+  border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.w summary::-webkit-details-marker{display:none}
+.w summary:hover{color:var(--accent); border-color:var(--accent)}
+.w details[open]{display:block; margin-top:10px}
+.w details[open] summary{margin-bottom:10px}
+.hint{background:var(--amber-bg); border:1px solid color-mix(in srgb,var(--amber) 32%,transparent);
+  border-radius:10px; padding:12px 14px; font-size:.92rem; color:var(--ink-2)}
+.hidden{display:none !important}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Після контрольної · 24 завдання по 5–10 хвилин</p>
+    <h1>Розминки перед заняттям</h1>
+    <p class="lead">Короткі задачі на теми занять 1–13. Беріть по одній на початок кожного заняття: десять хвилин самостійного коду, поки голова свіжа. Це прямі ліки від того, що показала контрольна — теорія знається краще, ніж пишеться.</p>
+
+    <div class="dash">
+      <div class="stats">
+        <div class="stat"><b id="s-done">0</b><span>зроблено з 24</span></div>
+        <div class="stat"><b id="s-left">24</b><span>залишилось</span></div>
+      </div>
+      <div class="track"><div id="s-bar"></div></div>
+    </div>
+
+    <div class="tools">
+      <button class="btn" id="random">Випадкова розминка</button>
+      <button class="btn" id="closeall">Згорнути все</button>
+      <button class="btn" id="reset">Скинути позначки</button>
+      <span id="sync"></span>
+    </div>
+  </header>
+
+  <section class="setup" id="how">
+    <h2>Чому саме так</h2>
+    <p>Контрольна дала 24 з 30 за усну частину й 13 з 20 за практику. Пояснює він краще, ніж пише — а це означає, що часу на слухання було більше, ніж часу на самостійний код. Три зміни в режимі занять закривають цей розрив.</p>
+    <div class="os">
+      <div>
+        <h3>Нова пропорція заняття</h3>
+        <ol>
+          <li><strong>10 хв</strong> — розминка з цього списку, самостійно, з таймером</li>
+          <li><strong>15 хв</strong> — нова тема, коротко й по суті</li>
+          <li><strong>50 хв</strong> — код руками, ви поруч, але мовчите</li>
+          <li><strong>10 хв</strong> — підсумок і домашка</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Три правила на місяць</h3>
+        <ol>
+          <li><strong>Ви не торкаєтесь клавіатури.</strong> Взагалі. Підказка тільки словами.</li>
+          <li><strong>Перші 15 хвилин завдання — без підказок.</strong> Навіть якщо видно, де помилка.</li>
+          <li><strong>Питання замість відповіді:</strong> «а що каже помилка?», «а що буде на останньому кроці?»</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Як користуватись списком</h3>
+        <ol>
+          <li>Одна розминка на початок заняття, не більше</li>
+          <li>Не виходить за 10 хвилин — відкладаємо, беремо наступну</li>
+          <li>Підказку відкриває він сам, якщо застряг на п'ятій хвилині</li>
+          <li>Розв'язок дивитесь разом після спроби, не замість неї</li>
+        </ol>
+      </div>
+    </div>
+    <div class="note tip" style="margin-top:18px">
+      <b>Чого робити не треба</b>
+      Не повертатись до занять 9–12 і не влаштовувати тиждень повторення: 37 із 50 — нормальний результат, а теорію він знає. Проблема не в прогалинах, а в тому, що пальці відстають від голови. Лікується тільки кількістю написаного коду.
+    </div>
+  </section>
+
+  <h2 class="sect-title">Двадцять чотири розминки</h2>
+  <p class="sect-sub">Відсортовані за темами в порядку складності. Натисніть на номер, щоб відмітити зроблену.</p>
+  <div class="filters" id="filters"></div>
+  <section id="list"></section>
+
+  <footer>Цього набору вистачить приблизно на два місяці занять. Коли закінчиться — беріть задачі з <a href="https://www.codewars.com" target="_blank" rel="noopener noreferrer">Codewars</a> рівня 8 kyu з фільтром PHP: формат той самий, маленька задача на десять хвилин.</footer>
+</div>
+
+<script>
+const WARMUPS = [
+{n:1, topic:"Змінні й типи", time:"5 хв",
+ text:"Створи пʼять змінних різних типів. Перш ніж запускати — напиши в коментарі, що саме покаже <code>var_dump</code> для кожної. Потім запусти й порівняй зі своїм передбаченням.",
+ hint:"Типи: рядок, ціле, дробове, true/false і null. Для рядка з кирилицею памʼятай про байти.",
+ sol:`<?php
+
+$text = "Привіт";      // string(12) "Привіт"
+$number = 42;          // int(42)
+$price = 19.90;        // float(19.9)
+$ready = false;        // bool(false)
+$nothing = null;       // NULL
+
+var_dump($text, $number, $price, $ready, $nothing);`},
+
+{n:2, topic:"Змінні й типи", time:"7 хв",
+ text:"Порахуй, скільки секунд у добі, у тижні й у році. Виведи всі три числа з розділювачами тисяч.",
+ hint:"Доба — 24 години, година — 60 хвилин, хвилина — 60 секунд. Розділювачі робить <code>number_format</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+$day = 24 * 60 * 60;
+$week = $day * 7;
+$year = $day * 365;
+
+echo "Доба: " . number_format($day, 0, ',', ' ') . " с\\n";
+echo "Тиждень: " . number_format($week, 0, ',', ' ') . " с\\n";
+echo "Рік: " . number_format($year, 0, ',', ' ') . " с\\n";`},
+
+{n:3, topic:"Рядки", time:"5 хв",
+ text:"Три змінні: імʼя, місто, улюблена гра. Склади з них одне речення двома способами — через підстановку в подвійних лапках і через склеювання крапкою. Виведи обидва.",
+ hint:"У подвійних лапках змінна підставляється сама, в одинарних — ні.",
+ sol:`<?php
+
+$name = "Максим";
+$city = "Дніпро";
+$game = "Minecraft";
+
+echo "Мене звати $name, я з міста $city і граю в $game.\\n";
+echo 'Мене звати ' . $name . ', я з міста ' . $city . ' і граю в ' . $game . ".\\n";`},
+
+{n:4, topic:"Рядки", time:"7 хв",
+ text:"Виведи три різні ціни у форматі «1 234,50 грн»: 1234.5, 99, 1000000. Зроби це функцією, щоб не повторювати код тричі.",
+ hint:"<code>number_format</code> приймає чотири аргументи: число, скільки знаків, чим відділяти дробову частину, чим тисячі.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+function price(float $value): string
+{
+    return number_format($value, 2, ',', ' ') . ' грн';
+}
+
+echo price(1234.5) . "\\n";
+echo price(99) . "\\n";
+echo price(1000000) . "\\n";`},
+
+{n:5, topic:"Введення", time:"7 хв",
+ text:"Запитай два числа. Виведи їхню суму, різницю, добуток і частку — кожне окремим рядком. Якщо друге число нуль, замість частки напиши «ділити не можна».",
+ hint:"Не забудь <code>trim</code> і приведення до <code>(float)</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Перше число: ";
+$a = (float) trim(fgets(STDIN));
+
+echo "Друге число: ";
+$b = (float) trim(fgets(STDIN));
+
+echo "Сума: " . ($a + $b) . "\\n";
+echo "Різниця: " . ($a - $b) . "\\n";
+echo "Добуток: " . ($a * $b) . "\\n";
+
+if ($b === 0.0) {
+    echo "Частка: ділити не можна\\n";
+} else {
+    echo "Частка: " . round($a / $b, 2) . "\\n";
+}`},
+
+{n:6, topic:"Введення", time:"7 хв",
+ text:"Запитай температуру в градусах Цельсія. Виведи її у Фаренгейтах і в Кельвінах. Формули: F = C × 9/5 + 32, K = C + 273.15.",
+ hint:"Результат округли до одного знака через <code>round($x, 1)</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Температура в Цельсіях: ";
+$c = (float) trim(fgets(STDIN));
+
+$f = $c * 9 / 5 + 32;
+$k = $c + 273.15;
+
+echo "Фаренгейти: " . round($f, 1) . "\\n";
+echo "Кельвіни: " . round($k, 2) . "\\n";`},
+
+{n:7, topic:"Умови", time:"5 хв",
+ text:"Запитай число й скажи, парне воно чи непарне. Нуль вважаємо парним.",
+ hint:"Остача від ділення на два: <code>%</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Число: ";
+$n = (int) trim(fgets(STDIN));
+
+if ($n % 2 === 0) {
+    echo "Парне\\n";
+} else {
+    echo "Непарне\\n";
+}`},
+
+{n:8, topic:"Умови", time:"8 хв",
+ text:"Запитай три числа й виведи найбільше. Функцією <code>max</code> користуватись не можна.",
+ hint:"Візьми перше число за найбільше, потім порівняй із другим і третім.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Перше: ";
+$a = (float) trim(fgets(STDIN));
+echo "Друге: ";
+$b = (float) trim(fgets(STDIN));
+echo "Третє: ";
+$c = (float) trim(fgets(STDIN));
+
+$biggest = $a;
+
+if ($b > $biggest) {
+    $biggest = $b;
+}
+
+if ($c > $biggest) {
+    $biggest = $c;
+}
+
+echo "Найбільше: $biggest\\n";`},
+
+{n:9, topic:"Умови", time:"8 хв",
+ text:"Запитай рік і скажи, високосний він чи ні. Правило: ділиться на 4 — високосний, але якщо ділиться на 100 — не високосний, а якщо на 400 — все ж високосний.",
+ hint:"Перевіряй у такому порядку: спершу 400, потім 100, потім 4. Або одна умова через <code>&&</code> і <code>||</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Рік: ";
+$year = (int) trim(fgets(STDIN));
+
+if ($year % 400 === 0) {
+    $leap = true;
+} elseif ($year % 100 === 0) {
+    $leap = false;
+} elseif ($year % 4 === 0) {
+    $leap = true;
+} else {
+    $leap = false;
+}
+
+echo $leap ? "Високосний\\n" : "Звичайний\\n";`},
+
+{n:10, topic:"Логіка", time:"7 хв",
+ text:"Атракціон пускає, якщо зріст більший за 120 см І вік не менший за 8 років. Але якщо є супровід дорослого — достатньо лише зросту. Запитай три значення й скажи, пускати чи ні.",
+ hint:"Супровід — це відповідь «так» або «ні», яку треба перетворити на <code>bool</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Зріст у см: ";
+$height = (int) trim(fgets(STDIN));
+echo "Вік: ";
+$age = (int) trim(fgets(STDIN));
+echo "Є дорослий поруч? (так/ні): ";
+$adult = mb_strtolower(trim(fgets(STDIN))) === 'так';
+
+if ($height > 120 && ($age >= 8 || $adult)) {
+    echo "Можна кататись\\n";
+} else {
+    echo "Цього разу ні\\n";
+}`},
+
+{n:11, topic:"Логіка", time:"8 хв",
+ text:"Пароль підходить, якщо в ньому не менше 8 символів І є хоча б одна цифра АБО хоча б один знак оклику. Запитай пароль і скажи, підходить він чи ні. Поясни вголос, чому дужки в умові стоять саме так.",
+ hint:"Перевірити наявність цифри можна через <code>preg_match('/[0-9]/', $s)</code>, а знак оклику — через <code>str_contains</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Пароль: ";
+$password = trim(fgets(STDIN));
+
+$longEnough = mb_strlen($password) >= 8;
+$hasDigit = (bool) preg_match('/[0-9]/', $password);
+$hasBang = str_contains($password, '!');
+
+if ($longEnough && ($hasDigit || $hasBang)) {
+    echo "Підходить\\n";
+} else {
+    echo "Не підходить\\n";
+}`},
+
+{n:12, topic:"Цикл while", time:"8 хв",
+ text:"Запитай ціле число й порахуй суму його цифр. Для 1234 має вийти 10. Рядками користуватись не можна — тільки <code>%</code> і цілочисельне ділення.",
+ hint:"Остача від ділення на 10 дає останню цифру, а <code>intdiv($n, 10)</code> прибирає її.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Число: ";
+$n = abs((int) trim(fgets(STDIN)));
+
+$sum = 0;
+
+while ($n > 0) {
+    $sum += $n % 10;
+    $n = intdiv($n, 10);
+}
+
+echo "Сума цифр: $sum\\n";`},
+
+{n:13, topic:"Цикл while", time:"8 хв",
+ text:"Запитай число й виведи його задом наперед: 1234 стає 4321. Знову без рядків — тільки математика.",
+ hint:"Та сама пара операцій, але цифру не додаємо, а приклеюємо: <code>$result = $result * 10 + $digit</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Число: ";
+$n = abs((int) trim(fgets(STDIN)));
+
+$reversed = 0;
+
+while ($n > 0) {
+    $reversed = $reversed * 10 + $n % 10;
+    $n = intdiv($n, 10);
+}
+
+echo "Навпаки: $reversed\\n";`},
+
+{n:14, topic:"Цикл while", time:"6 хв",
+ text:"Запитай число й порахуй, скільки разів його можна поділити на 3 без остачі. Для 54 відповідь 3, бо 54 → 18 → 6 → 2.",
+ hint:"Поки ділиться без остачі — ділимо й рахуємо кроки.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Число: ";
+$n = (int) trim(fgets(STDIN));
+
+$count = 0;
+
+while ($n > 0 && $n % 3 === 0) {
+    $n = intdiv($n, 3);
+    $count++;
+}
+
+echo "Ділиться на 3 рівно $count разів\\n";`},
+
+{n:15, topic:"Цикл for", time:"7 хв",
+ text:"Запитай число й виведи всі його дільники в один рядок через пробіл. Для 12 це 1 2 3 4 6 12.",
+ hint:"Пройди циклом від 1 до самого числа й перевіряй остачу.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Число: ";
+$n = (int) trim(fgets(STDIN));
+
+echo "Дільники: ";
+
+for ($i = 1; $i <= $n; $i++) {
+    if ($n % $i === 0) {
+        echo $i . ' ';
+    }
+}
+
+echo "\\n";`},
+
+{n:16, topic:"Цикл for", time:"8 хв",
+ text:"Запитай число й скажи, чи воно просте. Просте — це те, що ділиться тільки на 1 і на себе. Одиниця простою не вважається.",
+ hint:"Порахуй кількість дільників. Якщо їх рівно два — число просте. Або шукай дільник у діапазоні від 2 до числа мінус один і виходь через <code>break</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Число: ";
+$n = (int) trim(fgets(STDIN));
+
+if ($n < 2) {
+    echo "Не просте\\n";
+    exit;
+}
+
+$prime = true;
+
+for ($i = 2; $i * $i <= $n; $i++) {
+    if ($n % $i === 0) {
+        $prime = false;
+        break;
+    }
+}
+
+echo $prime ? "Просте\\n" : "Не просте\\n";`},
+
+{n:17, topic:"Цикл for", time:"6 хв",
+ text:"Запитай N і порахуй суму всіх непарних чисел від 1 до N. Виведи заодно, скільки їх було.",
+ hint:"Можна йти кроком два: <code>for ($i = 1; $i <= $n; $i += 2)</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "N: ";
+$n = (int) trim(fgets(STDIN));
+
+$sum = 0;
+$count = 0;
+
+for ($i = 1; $i <= $n; $i += 2) {
+    $sum += $i;
+    $count++;
+}
+
+echo "Непарних чисел: $count\\n";
+echo "Їхня сума: $sum\\n";`},
+
+{n:18, topic:"Вкладені цикли", time:"9 хв",
+ text:"Запитай ширину й висоту і намалюй прямокутник із зірочок, у якого зафарбовані тільки краї, а середина порожня.",
+ hint:"Клітинка належить рамці, якщо вона в першому або останньому рядку, або в першій чи останній колонці.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Ширина: ";
+$w = (int) trim(fgets(STDIN));
+echo "Висота: ";
+$h = (int) trim(fgets(STDIN));
+
+for ($row = 1; $row <= $h; $row++) {
+
+    for ($col = 1; $col <= $w; $col++) {
+        if ($row === 1 || $row === $h || $col === 1 || $col === $w) {
+            echo '*';
+        } else {
+            echo ' ';
+        }
+    }
+
+    echo "\\n";
+}`},
+
+{n:19, topic:"Вкладені цикли", time:"8 хв",
+ text:"Намалюй трикутник із цифр: перший рядок «1», другий «12», третій «123» і так до N.",
+ hint:"Внутрішній цикл має йти до номера поточного рядка.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "N: ";
+$n = (int) trim(fgets(STDIN));
+
+for ($row = 1; $row <= $n; $row++) {
+
+    for ($col = 1; $col <= $row; $col++) {
+        echo $col;
+    }
+
+    echo "\\n";
+}`},
+
+{n:20, topic:"Масиви", time:"7 хв",
+ text:"Масив із пʼяти чисел, записаних прямо в коді. Виведи їх у зворотному порядку, не використовуючи <code>array_reverse</code>.",
+ hint:"Цикл <code>for</code> від останнього індексу до нуля з кроком мінус один.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+$numbers = [10, 25, 3, 47, 8];
+
+for ($i = count($numbers) - 1; $i >= 0; $i--) {
+    echo $numbers[$i] . ' ';
+}
+
+echo "\\n";`},
+
+{n:21, topic:"Масиви", time:"8 хв",
+ text:"Масив із десяти чисел, серед яких є відʼємні й нулі. Порахуй окремо, скільки додатних, скільки відʼємних і скільки нулів.",
+ hint:"Три лічильники до циклу, одна умова з трьох гілок усередині.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+$numbers = [4, -2, 0, 15, -7, 0, 3, -1, 9, 12];
+
+$positive = 0;
+$negative = 0;
+$zeros = 0;
+
+foreach ($numbers as $number) {
+    if ($number > 0) {
+        $positive++;
+    } elseif ($number < 0) {
+        $negative++;
+    } else {
+        $zeros++;
+    }
+}
+
+echo "Додатних: $positive\\n";
+echo "Відʼємних: $negative\\n";
+echo "Нулів: $zeros\\n";`},
+
+{n:22, topic:"Масиви", time:"8 хв",
+ text:"Масив із семи слів. Знайди найдовше й виведи його разом із довжиною. Памʼятай про кирилицю.",
+ hint:"Той самий алгоритм, що й пошук максимуму: беремо перше за найдовше й порівнюємо. Довжина — <code>mb_strlen</code>.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+$words = ['кіт', 'програмування', 'масив', 'цикл', 'функція', 'байт', 'змінна'];
+
+$longest = $words[0];
+
+foreach ($words as $word) {
+    if (mb_strlen($word) > mb_strlen($longest)) {
+        $longest = $word;
+    }
+}
+
+echo "Найдовше слово: $longest (" . mb_strlen($longest) . " літер)\\n";`},
+
+{n:23, topic:"Мікс", time:"9 хв",
+ text:"Згенеруй масив із десяти випадкових чисел від 1 до 100. Виведи їх у рядок, а під ними — найбільше, найменше й середнє. Вбудованими <code>max</code> і <code>min</code> користуватись не можна.",
+ hint:"Спочатку наповни масив циклом, потім окремим проходом шукай максимум і мінімум.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+$numbers = [];
+
+for ($i = 0; $i < 10; $i++) {
+    $numbers[] = random_int(1, 100);
+}
+
+echo implode(' ', $numbers) . "\\n";
+
+$max = $numbers[0];
+$min = $numbers[0];
+$sum = 0;
+
+foreach ($numbers as $number) {
+    if ($number > $max) {
+        $max = $number;
+    }
+
+    if ($number < $min) {
+        $min = $number;
+    }
+
+    $sum += $number;
+}
+
+echo "Найбільше: $max\\n";
+echo "Найменше: $min\\n";
+echo "Середнє: " . round($sum / count($numbers), 2) . "\\n";`},
+
+{n:24, topic:"Мікс", time:"10 хв",
+ text:"Програма сама вирішує, скільки разів кинути кубик — від трьох до шести. Кидає, зберігає результати в масив, виводить усі кидки, їхню суму і скільки разів випала шістка.",
+ hint:"Кількість кидків теж випадкова: <code>random_int(3, 6)</code>. Решта — цикл, масив і лічильник.",
+ sol:`<?php
+
+declare(strict_types=1);
+
+$times = random_int(3, 6);
+$rolls = [];
+
+for ($i = 0; $i < $times; $i++) {
+    $rolls[] = random_int(1, 6);
+}
+
+echo "Кидків: $times\\n";
+echo "Результати: " . implode(', ', $rolls) . "\\n";
+
+$sum = 0;
+$sixes = 0;
+
+foreach ($rolls as $roll) {
+    $sum += $roll;
+
+    if ($roll === 6) {
+        $sixes++;
+    }
+}
+
+echo "Сума: $sum\\n";
+echo "Шісток: $sixes\\n";`}
+];
+</script>
+
+<script>
+(function(){
+  const KEY = "warmups-done-v1";
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const RE = /(\/\/[^\n]*|#[^\n]*)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(<\?php|\?>)|(\$[A-Za-z_]\w*)|\b(declare|strict_types|echo|if|elseif|else|while|do|for|foreach|function|return|true|false|null|exit|break|count|round|abs|intdiv)\b|\b(\d+\.?\d*)\b/g;
+  function hl(code){
+    let out = "", last = 0;
+    code.replace(RE, (m,c,s,t,v,k,n,off)=>{
+      out += esc(code.slice(last, off));
+      const cls = c ? "c" : s ? "s" : t ? "k" : v ? "v" : k ? "k" : "n";
+      out += '<span class="'+cls+'">'+esc(m)+'</span>';
+      last = off + m.length;
+      return m;
+    });
+    return out + esc(code.slice(last));
+  }
+
+  let done = new Set();
+  try { const raw = localStorage.getItem(KEY); if (raw) done = new Set(JSON.parse(raw)); } catch(e){}
+  let t;
+  function status(m){ const el=document.getElementById("sync"); el.textContent=m; clearTimeout(t);
+    t=setTimeout(()=>el.textContent="",2400); }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify([...done])); status("збережено"); }
+    catch(e){ status("браузер блокує збереження"); }
+  }
+
+  const TOPICS = [...new Set(WARMUPS.map(w=>w.topic))];
+  let filter = "all";
+
+  document.getElementById("filters").innerHTML =
+    `<button class="filter on" data-t="all">усі · ${WARMUPS.length}</button>` +
+    TOPICS.map(t=>`<button class="filter" data-t="${esc(t)}">${esc(t)} · ${WARMUPS.filter(w=>w.topic===t).length}</button>`).join("");
+
+  document.getElementById("list").innerHTML = WARMUPS.map(w=>`
+    <div class="w" id="w-${w.n}" data-topic="${esc(w.topic)}" data-done="0">
+      <div class="w-head">
+        <button class="w-num" type="button" data-toggle="${w.n}" title="Відмітити зроблену">${w.n}</button>
+        <div class="w-body">
+          <p>${w.text}</p>
+          <div class="w-meta"><i>${esc(w.topic)}</i> · ${esc(w.time)}</div>
+          <details><summary>Підказка</summary><div class="hint">${w.hint}</div></details>
+          <details><summary>Розвʼязок</summary><div><pre>${hl(w.sol)}</pre></div></details>
+        </div>
+      </div>
+    </div>`).join("");
+
+  function render(){
+    WARMUPS.forEach(w=>{
+      const el = document.getElementById("w-" + w.n);
+      el.dataset.done = done.has(w.n) ? "1" : "0";
+      el.classList.toggle("hidden", filter !== "all" && w.topic !== filter);
+    });
+    document.getElementById("s-done").textContent = done.size;
+    document.getElementById("s-left").textContent = WARMUPS.length - done.size;
+    document.getElementById("s-bar").style.width = (done.size / WARMUPS.length * 100) + "%";
+  }
+
+  document.addEventListener("click", e=>{
+    const toggle = e.target.closest("[data-toggle]");
+    if (toggle) {
+      const n = Number(toggle.dataset.toggle);
+      done.has(n) ? done.delete(n) : done.add(n);
+      render(); save();
+      return;
+    }
+
+    const f = e.target.closest(".filter");
+    if (f) {
+      filter = f.dataset.t;
+      document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("on", b === f));
+      render();
+    }
+  });
+
+  document.getElementById("random").onclick = () => {
+    const left = WARMUPS.filter(w=>!done.has(w.n));
+    if (!left.length) return status("усі розминки зроблені");
+    const pick = left[Math.floor(Math.random() * left.length)];
+    filter = "all";
+    document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("on", b.dataset.t === "all"));
+    render();
+    const el = document.getElementById("w-" + pick.n);
+    el.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"center"});
+    el.style.borderColor = "var(--accent)";
+    setTimeout(()=>{ el.style.borderColor = ""; }, 2500);
+  };
+
+  document.getElementById("closeall").onclick = () =>
+    document.querySelectorAll("#list details").forEach(d=>d.open = false);
+
+  document.getElementById("reset").onclick = () => {
+    if (!done.size) return status("позначок немає");
+    if (confirm("Скинути всі позначки про зроблені розминки?")) { done.clear(); render(); save(); }
+  };
+
+  render();
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+
+  var KEY = "warmups-done-v1", NAME = "rozminky.json";
+  var tools = document.querySelector(".tools");
+  if(!tools) return;
+  function mk(txt, fn){ var b=document.createElement("button"); b.className="btn"; b.type="button";
+    b.textContent=txt; b.addEventListener("click", fn); return b; }
+  tools.appendChild(mk("Зберегти у файл", function(){
+    var raw; try{ raw = localStorage.getItem(KEY) || "[]"; }catch(e){ raw = "[]"; }
+    var payload = {key:KEY, saved:new Date().toISOString(), done:JSON.parse(raw)};
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href=url; a.download=NAME;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }));
+})();
+</script>
+</body>
+</html>

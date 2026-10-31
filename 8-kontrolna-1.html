@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Контрольна після 13 занять</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@media print{
+  .tools,.marks{display:none !important}
+  .score{position:static !important}
+  body{background:#fff !important}
+  .q,.task-card,.note,.expect,.how{break-inside:avoid; box-shadow:none !important}
+  pre{white-space:pre-wrap; word-break:break-word}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#F6F7FA; --surface:#FFFFFF; --surface-2:#EDEFF5; --line:#DCE0EA;
+  --ink:#14161C; --ink-2:#4B5262; --ink-3:#7D8494;
+  --accent:#9C2F4A; --accent-soft:#FAE4EA;
+  --amber:#B9760A; --amber-bg:#FDF3E0; --ok:#0E8F49; --ok-bg:#E4F6EC;
+  --warn:#C2401E; --warn-bg:#FCEDE8;
+  --code-bg:#15181F; --code-ink:#E4E7EF; --code-c:#6E7788; --code-s:#8FD98A;
+  --code-v:#A6C0FF; --code-k:#E9A3D2; --code-n:#F0C071;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 8px 24px -14px rgba(20,22,28,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+    --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+    --accent:#FF8FA8; --accent-soft:#2A1119;
+    --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+    --warn:#FF8A6B; --warn-bg:#2A1611;
+    --code-bg:#0A0C12; --code-ink:#DFE3EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1117; --surface:#171A23; --surface-2:#1E222E; --line:#2B3040;
+  --ink:#E9EBF2; --ink-2:#A5ACBD; --ink-3:#78808F;
+  --accent:#FF8FA8; --accent-soft:#2A1119;
+  --amber:#F0B44B; --amber-bg:#221C10; --ok:#3ECF8E; --ok-bg:#11251C;
+  --warn:#FF8A6B; --warn-bg:#2A1611;
+  --code-bg:#0A0C12; --code-ink:#DFE3EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Golos Text","Segoe UI",system-ui,sans-serif; font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:880px; margin:0 auto; padding:clamp(24px,5vw,52px) clamp(16px,4vw,30px) 90px}
+h1,h2,h3,h4{font-family:"Unbounded","Golos Text",system-ui,sans-serif; margin:0; text-wrap:balance;
+  letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(1.85rem,5vw,2.7rem); font-weight:700; line-height:1.1; margin:14px 0 0}
+.lead{color:var(--ink-2); max-width:64ch; margin-top:14px; font-size:clamp(1rem,2.2vw,1.06rem)}
+code:not(pre code){font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:5px; padding:1px 5px; white-space:nowrap}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:5; margin:26px -4px 0; padding:10px 4px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(8px);
+  display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--line)}
+.nav a{font-family:"JetBrains Mono",monospace; font-size:.73rem; text-decoration:none;
+  color:var(--ink-2); background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; padding:6px 11px}
+.nav a:hover{border-color:var(--accent); color:var(--accent)}
+
+/* setup */
+.setup{margin-top:30px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:22px 24px; box-shadow:var(--shadow)}
+.setup h2{font-size:1.08rem; font-weight:700; margin-bottom:6px}
+.setup > p{color:var(--ink-2); font-size:.95rem; margin-bottom:16px}
+.os{display:grid; gap:18px 26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.os h3{font-family:"JetBrains Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.os ol{margin:0; padding-left:19px; display:grid; gap:6px; font-size:.91rem; color:var(--ink-2)}
+.os a{color:var(--accent); font-weight:600; text-decoration:none;
+  border-bottom:1.5px solid color-mix(in srgb, var(--accent) 32%, transparent)}
+
+/* week */
+.week{margin-top:56px; scroll-margin-top:64px}
+.w-head{border-top:3px solid var(--accent); padding-top:18px}
+.w-tag{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent)}
+.w-head h2{font-size:clamp(1.3rem,3.4vw,1.75rem); font-weight:700; margin-top:8px}
+.w-goal{color:var(--ink-2); margin-top:10px; max-width:64ch}
+
+.ses{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  margin-top:16px; box-shadow:var(--shadow)}
+.ses-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  padding-bottom:12px; border-bottom:1px solid var(--line)}
+.ses-day{font-family:"JetBrains Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:4px 9px;
+  border-radius:6px}
+.ses-head h3{font-size:1.06rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0; flex:1}
+.ses-time{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3)}
+.body{display:flex; flex-direction:column; gap:15px}
+.body p{color:var(--ink-2)}
+.body p strong{color:var(--ink)}
+.body ul{margin:0; padding-left:19px; display:grid; gap:7px; color:var(--ink-2)}
+.body ul strong{color:var(--ink)}
+.say{border-left:3px solid var(--accent); padding:2px 0 2px 15px; color:var(--ink);
+  font-size:.97rem}
+.say b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:4px}
+
+pre{margin:0; background:var(--code-bg); border-radius:11px; padding:15px 17px; overflow-x:auto;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.83rem; line-height:1.65;
+  color:var(--code-ink); tab-size:4}
+pre .c{color:var(--code-c); font-style:italic}
+pre .s{color:var(--code-s)}
+pre .v{color:var(--code-v)}
+pre .k{color:var(--code-k)}
+pre .n{color:var(--code-n)}
+.code-wrap{position:relative}
+.code-wrap .tag{position:absolute; top:0; right:12px; font-family:"JetBrains Mono",monospace;
+  font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--code-c);
+  background:var(--code-bg); padding:3px 6px; border-radius:0 0 5px 5px}
+.out{background:var(--surface-2); border:1px solid var(--line); border-left:3px solid var(--ink-3);
+  border-radius:0 8px 8px 0; padding:11px 14px; font-family:"JetBrains Mono",monospace;
+  font-size:.8rem; color:var(--ink-2); white-space:pre-wrap; overflow-x:auto}
+.out b{display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:5px; font-weight:700}
+
+.note{border-radius:11px; padding:13px 16px; font-size:.94rem}
+.note b{font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; display:block; margin-bottom:5px}
+.note.tip{background:var(--ok-bg); border:1px solid color-mix(in srgb, var(--ok) 30%, transparent)}
+.note.tip b{color:var(--ok)}
+.note.warn{background:var(--warn-bg); border:1px solid color-mix(in srgb, var(--warn) 32%, transparent)}
+.note.warn b{color:var(--warn)}
+.note.idea{background:var(--amber-bg); border:1px solid color-mix(in srgb, var(--amber) 32%, transparent)}
+.note.idea b{color:var(--amber)}
+
+/* tasks */
+.tasks{margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; box-shadow:var(--shadow)}
+.tasks > h3{font-size:1.02rem; font-weight:700; margin-bottom:4px}
+.tasks > p{color:var(--ink-2); font-size:.92rem; margin-bottom:14px}
+.task{border-top:1px solid var(--line); padding:15px 0 3px}
+.task:first-of-type{border-top:0; padding-top:4px}
+.task h4{font-size:.97rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  display:flex; gap:10px; align-items:baseline}
+.task h4 i{font-family:"JetBrains Mono",monospace; font-style:normal; font-size:.75rem;
+  color:var(--accent); flex:none}
+.task > p{color:var(--ink-2); font-size:.93rem; margin:6px 0 10px; padding-left:26px}
+.task details{padding-left:26px}
+.task summary{font-family:"JetBrains Mono",monospace; font-size:.72rem; color:var(--ink-3);
+  cursor:pointer; list-style:none; display:inline-flex; gap:7px; align-items:center;
+  border:1px solid var(--line); border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.task summary::-webkit-details-marker{display:none}
+.task summary:hover{color:var(--accent); border-color:var(--accent)}
+.task details[open] summary{margin-bottom:11px}
+.task details > div{display:flex; flex-direction:column; gap:11px}
+
+/* checks */
+.checks{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:18px}
+.chkbox{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+  box-shadow:var(--shadow)}
+.chkbox h3{font-size:.95rem; font-weight:700; margin-bottom:11px}
+.chkbox ul{margin:0; padding-left:18px; display:grid; gap:7px; font-size:.91rem; color:var(--ink-2)}
+.chkbox.traps{border-color:color-mix(in srgb, var(--warn) 40%, var(--line))}
+.chkbox.traps h3{color:var(--warn)}
+.chkbox.quiz{border-color:color-mix(in srgb, var(--ok) 40%, var(--line))}
+.chkbox.quiz h3{color:var(--ok)}
+.chkbox.quiz ul{list-style:none; padding-left:0}
+.chkbox.quiz li{padding-left:16px; position:relative}
+.chkbox.quiz li::before{content:"?"; position:absolute; left:0; color:var(--ok); font-weight:700;
+  font-family:"JetBrains Mono",monospace}
+
+.final{margin-top:64px; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:24px 26px; box-shadow:var(--shadow)}
+.final h2{font-size:1.2rem; font-weight:700; margin-bottom:6px}
+.final > p{color:var(--ink-2); margin-bottom:16px}
+.final ul{margin:0; padding-left:19px; display:grid; gap:9px; color:var(--ink-2)}
+.final strong{color:var(--ink)}
+footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-3);
+  font-size:.84rem}
+@media (max-width:520px){ pre{font-size:.76rem} .task > p,.task details{padding-left:0} }
+</style><style>
+/* оцінювання */
+.score{position:sticky; top:0; z-index:10; margin:26px 0 0;
+  background:color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter:blur(10px);
+  border:1px solid var(--line); border-radius:14px; padding:18px 20px; box-shadow:var(--shadow)}
+.score-top{display:flex; gap:26px; flex-wrap:wrap; align-items:flex-end; justify-content:space-between}
+.score .stat b{display:block; font-family:"Unbounded",sans-serif; font-size:1.5rem; font-weight:700;
+  line-height:1.1; font-variant-numeric:tabular-nums}
+.score .stat span{font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3)}
+.stats{display:flex; gap:26px; flex-wrap:wrap}
+.verdict{font-family:"Unbounded",sans-serif; font-weight:700; font-size:1rem; text-align:right}
+.verdict small{display:block; font-family:"Golos Text",sans-serif; font-weight:400; font-size:.82rem;
+  color:var(--ink-2); margin-top:4px; max-width:34ch}
+.bar{height:10px; background:var(--surface-2); border:1px solid var(--line); border-radius:99px;
+  overflow:hidden; margin-top:14px}
+.bar div{height:100%; width:0; background:var(--accent); transition:width .4s}
+.gaps{margin-top:12px; font-size:.86rem; color:var(--ink-2)}
+.gaps b{font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--warn); display:block; margin-bottom:5px}
+.gaps span{display:inline-block; background:var(--warn-bg); border:1px solid color-mix(in srgb,var(--warn) 30%,transparent);
+  border-radius:99px; padding:2px 10px; margin:0 6px 6px 0; font-size:.82rem}
+
+.q{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:15px 17px;
+  margin-bottom:9px; box-shadow:var(--shadow)}
+.q-head{display:flex; gap:13px; align-items:flex-start}
+.q-num{flex:none; width:30px; height:30px; border-radius:8px; display:grid; place-items:center;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace; font-weight:700; font-size:.78rem}
+.q[data-mark="2"] .q-num,.q[data-mark="4"] .q-num{background:var(--ok); border-color:var(--ok); color:var(--surface)}
+.q[data-mark="1"] .q-num,.q[data-mark="3"] .q-num{background:var(--amber); border-color:var(--amber); color:var(--surface)}
+.q[data-mark="0"] .q-num{background:var(--warn); border-color:var(--warn); color:var(--surface)}
+.q-body{flex:1; min-width:0}
+.q-body > p{font-size:.98rem; font-weight:600}
+.q-tag{font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-3); margin-top:5px}
+.q-tag i{font-style:normal; color:var(--accent)}
+.marks{display:flex; gap:6px; flex-wrap:wrap; margin-top:11px}
+.mark{font-family:"JetBrains Mono",monospace; font-size:.72rem; background:var(--surface-2);
+  color:var(--ink-2); border:1px solid var(--line); border-radius:8px; padding:5px 11px; cursor:pointer}
+.mark:hover{border-color:var(--ink-3); color:var(--ink)}
+.mark.on{background:var(--accent); border-color:var(--accent); color:var(--surface)}
+.q details{margin-top:11px}
+.q summary{font-family:"JetBrains Mono",monospace; font-size:.71rem; color:var(--ink-3); cursor:pointer;
+  list-style:none; display:inline-flex; gap:7px; align-items:center; border:1px solid var(--line);
+  border-radius:8px; padding:5px 11px; background:var(--surface-2)}
+.q summary::-webkit-details-marker{display:none}
+.q summary:hover{color:var(--accent); border-color:var(--accent)}
+.q details[open] summary{margin-bottom:10px}
+.expect{background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 28%,transparent);
+  border-radius:10px; padding:12px 14px; font-size:.92rem; color:var(--ink-2)}
+.expect b{color:var(--ok); font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.1em;
+  text-transform:uppercase; display:block; margin-bottom:5px}
+.task-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  margin-bottom:14px; box-shadow:var(--shadow)}
+.task-card h3{font-size:1.05rem; font-weight:600; font-family:"Golos Text",sans-serif; letter-spacing:0;
+  display:flex; gap:11px; align-items:baseline}
+.task-card h3 i{font-style:normal; font-family:"JetBrains Mono",monospace; font-size:.76rem; color:var(--accent)}
+.task-card > p{color:var(--ink-2); font-size:.94rem; margin-top:9px}
+.crit{margin-top:12px; display:grid; gap:5px; font-size:.88rem; color:var(--ink-2)}
+.crit div{display:grid; grid-template-columns:22px 1fr; gap:9px}
+.crit b{font-family:"JetBrains Mono",monospace; color:var(--accent); font-size:.76rem}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Після 13 занять · уроки 1–7</p>
+    <h1>Контрольна після 13 занять</h1>
+    <p class="lead">Пʼятнадцять усних питань і пʼять практичних завдань. Мета — не поставити оцінку, а побачити, де прогалини, поки їх ще легко закрити. Відмічайте відповіді — бали, вердикт і список тем для повторення рахуються самі.</p>
+
+    <div class="score">
+      <div class="score-top">
+        <div class="stats">
+          <div class="stat"><b id="s-total">0</b><span>балів із 50</span></div>
+          <div class="stat"><b id="s-oral">0 / 30</b><span>усна частина</span></div>
+          <div class="stat"><b id="s-prac">0 / 20</b><span>практика</span></div>
+          <div class="stat"><b id="s-done">0 / 20</b><span>оцінено</span></div>
+        </div>
+        <div class="verdict" id="s-verdict">—<small id="s-hint">Відмічайте відповіді під час перевірки</small></div>
+      </div>
+      <div class="bar"><div id="s-bar"></div></div>
+      <div class="gaps" id="s-gaps"></div>
+    </div>
+
+    <div class="tools">
+      <button class="btn" id="reset">Очистити результат</button>
+      <span id="sync"></span>
+    </div>
+  </header>
+
+  <section class="setup" id="how">
+    <h2>Як проводити</h2>
+    <p>Найкраще двома частинами: усна на одному занятті, практична на наступному. Разом це приблизно два звичайні заняття, тому тиждень без нового матеріалу — нормальна ціна за те, щоб побачити реальну картину.</p>
+    <div class="os">
+      <div>
+        <h3>Усна частина · 25–30 хв</h3>
+        <ol>
+          <li>Питання читаєте вголос, він відповідає словами — не показуйте текст на екрані</li>
+          <li>Після питання мовчите двадцять секунд, навіть якщо він думає вголос</li>
+          <li>«Не памʼятаю точно, але приблизно так…» з правильною суттю — це повна відповідь</li>
+          <li>Не виправляйте одразу: розбір після всіх питань, інакше він почне вгадувати вашу реакцію</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Практика · 60–90 хв</h3>
+        <ol>
+          <li>Можна: свій старий код, <a href="https://www.php.net/manual/uk/" target="_blank" rel="noopener noreferrer">php.net</a>, пошук у гуглі</li>
+          <li>Не можна: AI, готові розвʼязки, ваші підказки в перші 15 хвилин завдання</li>
+          <li>Якщо завдання не йде зовсім — переходьте до наступного, повернетесь у кінці</li>
+          <li>Кожне завдання оцінюється окремо, порядок від простого до складного</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Що сказати перед початком</h3>
+        <ol>
+          <li>Це перевірка плану, а не тебе: якщо щось не вийде — значить я недопояснив</li>
+          <li>Оцінок у журнал не буде, двійок теж</li>
+          <li>Мета — зрозуміти, що повторити, перш ніж рухатись далі</li>
+          <li>Чесне «не знаю» корисніше за вгадування</li>
+        </ol>
+      </div>
+    </div>
+    <div class="note tip" style="margin-top:18px">
+      <b>Як оцінювати усну відповідь</b>
+      <strong>2 бали</strong> — пояснив суть своїми словами, нехай і не ідеально. <strong>1 бал</strong> — памʼятає шматками, зміг після навідного питання. <strong>0</strong> — не згадав або відповів неправильно. Формулювання не має значення: важливо, щоб він розумів механізм, а не переказував визначення.
+    </div>
+  </section>
+
+  <h2 class="sect-title">Усна частина</h2>
+  <p class="sect-sub">Пʼятнадцять питань, максимум 30 балів. Зірочкою позначені ключові — якщо провалені саме вони, рухатись далі зарано незалежно від загальної суми.</p>
+  <section id="oral"></section>
+
+  <h2 class="sect-title">Практична частина</h2>
+  <p class="sect-sub">Пʼять завдань, максимум 20 балів. Умову можна показати на екрані або продиктувати. Еталонні розвʼязки сховані — відкривайте після перевірки, щоб порівняти підходи.</p>
+  <section id="practice"></section>
+
+  <section class="final" id="final">
+    <h2>Що робити з результатом</h2>
+    <ul id="final-list"></ul>
+  </section>
+
+  <footer>Контрольна зроблена під матеріал занять 1–13: середовище й Git, змінні й типи, введення з клавіатури, умови, цикли while і for, вкладені цикли, перше знайомство з масивами. Асоціативних масивів, сортування й функцій тут немає — вони починаються з 14-го заняття.</footer>
+</div>
+
+<script>
+const ORAL = [
+ {n:1, tag:"Як працює PHP", lesson:"заняття 1–2", q:"Що відбувається, коли ти запускаєш <code>php hello.php</code>? І куди дівається код, коли ту саму сторінку відкриваєш у браузері?",
+  expect:"PHP читає файл згори вниз і виконує команду за командою. У браузері код виконується на сервері, а браузеру їде вже готовий результат — тому у «Переглянути код сторінки» немає ані <code>&lt;?php</code>, ані <code>echo</code>."},
+ {n:2, tag:"Git", lesson:"заняття 2", q:"Навіщо робити коміт, якщо файли й так збережені на диску?",
+  expect:"Коміт — точка в історії, до якої можна повернутись, якщо все зламав. Плюс GitHub: код доступний з інших компʼютерів і його видно іншим людям. Достатньо однієї з двох причин своїми словами."},
+ {n:3, tag:"Типи даних", key:true, lesson:"заняття 3", q:"Чим <code>\"5\"</code> відрізняється від <code>5</code>? Що покаже <code>var_dump</code> для кожного?",
+  expect:"Перше — рядок, друге — число. <code>string(1) \"5\"</code> і <code>int(5)</code>. Головне, щоб прозвучала різниця між текстом і числом, а не точне форматування виводу."},
+ {n:4, tag:"Типи даних", lesson:"заняття 3", q:"Чому <code>var_dump(\"Максим\")</code> показує <code>string(12)</code>, якщо в слові шість літер?",
+  expect:"PHP рахує байти, а не символи, і українська літера займає два байти. Для англійського слова було б шість."},
+ {n:5, tag:"Рядки", lesson:"заняття 4", q:"Чим одинарні лапки відрізняються від подвійних?",
+  expect:"У подвійних змінна підставляється своїм значенням, в одинарних виводиться буквально як <code>$name</code>."},
+ {n:6, tag:"Рядки", lesson:"заняття 4", q:"Як склеїти два рядки в PHP? Чому не плюсом?",
+  expect:"Крапкою: <code>$a . $b</code>. Плюс у PHP — тільки для чисел, на рядках у PHP 8 буде помилка. Достатньо впевненого «крапкою»."},
+ {n:7, tag:"Введення даних", key:true, lesson:"заняття 5", q:"Коли користувач вводить 25 з клавіатури — що саме потрапляє у змінну? Що треба зробити, щоб рахувати?",
+  expect:"Потрапляє рядок <code>\"25\"</code>, а не число. Щоб рахувати — привести: <code>(int)</code> або <code>(float)</code>."},
+ {n:8, tag:"Введення даних", lesson:"заняття 5", q:"Що робить <code>trim()</code> і що станеться, якщо його забути?",
+  expect:"Обрізає пробіли й невидимий символ переносу рядка від Enter. Без нього порівняння не спрацьовують, а вивід «стрибає» на наступний рядок."},
+ {n:9, tag:"Умови", key:true, lesson:"заняття 8", q:"У чому різниця між <code>==</code> і <code>===</code>? Який із них треба писати?",
+  expect:"<code>==</code> порівнює тільки значення й сам перетворює типи, <code>===</code> порівнює ще й тип. Писати завжди <code>===</code>. Плюс для повної відповіді — приклад на кшталт <code>0 == false</code> дає true."},
+ {n:10, tag:"Умови", key:true, lesson:"заняття 7", q:"Що станеться, якщо в перевірці оцінок поставити умови в неправильному порядку — спершу «більше 60», потім «більше 90»?",
+  expect:"Для 95 балів спрацює перша ж умова й виведе «задовільно». Помилки не буде — код робочий, відповідь неправильна. Це найважливіше: PHP про таке не попереджає."},
+ {n:11, tag:"Логіка", lesson:"заняття 8", q:"Коли в умові потрібен <code>&&</code>, а коли <code>||</code>? Наведи свій приклад.",
+  expect:"<code>&&</code> — коли мають виконатись обидві умови, <code>||</code> — коли достатньо однієї. Приклад обовʼязково свій, не з уроку."},
+ {n:12, tag:"Цикли", key:true, lesson:"заняття 9", q:"З яких трьох частин складається будь-який цикл? Що станеться, якщо забути кожну з них?",
+  expect:"Початкове значення, умова, зміна лічильника. Без початкового — помилка або дивна поведінка; без умови або без зміни — нескінченний цикл, який зупиняють через <code>Ctrl + C</code>."},
+ {n:13, tag:"Цикли", lesson:"заняття 10", q:"Чим <code>while</code> відрізняється від <code>do-while</code> і коли потрібен другий?",
+  expect:"У <code>do-while</code> умова перевіряється в кінці, тому тіло виконається хоча б раз. Потрібен для меню — його треба показати мінімум один раз."},
+ {n:14, tag:"Цикли", lesson:"заняття 10", q:"Що робить <code>break</code>, а що <code>continue</code>?",
+  expect:"<code>break</code> виходить із циклу повністю, <code>continue</code> пропускає решту поточного кроку й переходить до наступного."},
+ {n:15, tag:"Масиви", key:true, lesson:"заняття 13", q:"Який індекс у першого елемента масиву, а який в останнього? І коли брати <code>foreach</code>, а коли <code>for</code>?",
+  expect:"Перший — 0, останній — <code>count($arr) - 1</code>. <code>foreach</code> — коли треба просто пройти по всіх елементах; <code>for</code> — коли важливий сам номер елемента."}
+];
+
+const PRACTICE = [
+{
+ n:1, title:"Візитка з розрахунком", tag:"змінні, введення, математика", lesson:"заняття 3–5",
+ text:"Програма питає імʼя, вік і місто. Виводить візитку: привітання, місто, скільки приблизно днів і годин людина прожила (рік = 365 днів). Великі числа — з розділювачами тисяч. Вивід охайний, у рамці із символів.",
+ crit:[
+  ["4","Зробив сам, є <code>trim</code> і приведення типу, числа з <code>number_format</code>, рамка не розʼїжджається"],
+  ["3","Зробив сам, але забув <code>trim</code> або розділювачі тисяч"],
+  ["2","Зробив з підказками або програма падає на порожньому введенні"],
+  ["0","Не впорався"]
+ ],
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Як тебе звати? ";
+$name = trim(fgets(STDIN));
+
+echo "Скільки тобі років? ";
+$age = (int) trim(fgets(STDIN));
+
+echo "З якого ти міста? ";
+$city = trim(fgets(STDIN));
+
+$days = $age * 365;
+$hours = $days * 24;
+
+$line = str_repeat('*', 34);
+
+echo "\\n$line\\n";
+echo "*  Привіт, $name!\\n";
+echo "*  Місто: $city\\n";
+echo "*  Прожито днів: " . number_format($days, 0, ',', ' ') . "\\n";
+echo "*  Прожито годин: " . number_format($hours, 0, ',', ' ') . "\\n";
+echo "$line\\n";`,
+ note:"Типова помилка: забутий <code>(int)</code> — тоді множення спрацює, бо PHP перетворить сам, але <code>var_dump</code> покаже рядок. Друга: рамка з <code>str_repeat</code> не збігається по ширині з текстом, і це нормально — на цьому етапі вирівнювання ще не вчили."
+},
+{
+ n:2, title:"Калькулятор знижки", tag:"умови, порядок перевірок", lesson:"заняття 7–8",
+ text:"Програма питає суму покупки й рахує знижку: до 500 грн — без знижки, від 500 до 1000 — 5%, від 1000 до 2000 — 10%, понад 2000 — 15%. Виводить суму знижки й підсумок до сплати. Якщо ввели відʼємне число або нуль — чемне повідомлення замість розрахунку.",
+ crit:[
+  ["4","Усі чотири діапазони правильні, перевірка некоректного введення стоїть першою, межові значення (рівно 500, рівно 1000) обробляються свідомо"],
+  ["3","Логіка правильна, але межові значення плутаються або немає перевірки відʼємної суми"],
+  ["2","Потрібні були підказки щодо порядку умов"],
+  ["0","Не впорався"]
+ ],
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Сума покупки: ";
+$amount = (float) trim(fgets(STDIN));
+
+if ($amount <= 0) {
+    echo "Сума має бути більшою за нуль\\n";
+    exit;
+}
+
+if ($amount > 2000) {
+    $percent = 15;
+} elseif ($amount >= 1000) {
+    $percent = 10;
+} elseif ($amount >= 500) {
+    $percent = 5;
+} else {
+    $percent = 0;
+}
+
+$discount = $amount * $percent / 100;
+$total = $amount - $discount;
+
+echo "Знижка: $percent% = " . number_format($discount, 2, ',', ' ') . " грн\\n";
+echo "До сплати: " . number_format($total, 2, ',', ' ') . " грн\\n";`,
+ note:"Головне, на що дивитись: перевірка <code>$amount &lt;= 0</code> стоїть <strong>до</strong> розрахунків, а діапазони йдуть від більшого до меншого. Якщо він почав з <code>&gt;= 500</code>, сума 3000 отримає 5% — класична помилка з десятого питання усної частини."
+},
+{
+ n:3, title:"Вгадай число з життями", tag:"while, умови, лічильник", lesson:"заняття 9–10",
+ text:"Компʼютер загадує число від 1 до 50. У гравця шість спроб. Після кожної — підказка «більше» або «менше» й скільки спроб лишилось. Якщо вгадав — вітання з кількістю витрачених спроб. Якщо спроби скінчились — показати загадане число.",
+ crit:[
+  ["4","Працює повністю, спроби рахуються правильно, обидва фінали (перемога й поразка) коректні"],
+  ["3","Працює, але лічильник спроб на одиницю більший або менший, ніж має бути"],
+  ["2","Цикл написаний з підказками або гра зациклюється"],
+  ["0","Не впорався"]
+ ],
+ sol:`<?php
+
+declare(strict_types=1);
+
+$secret = random_int(1, 50);
+$lives = 6;
+$attempts = 0;
+
+echo "Я загадав число від 1 до 50. У тебе $lives спроб.\\n";
+
+while ($lives > 0) {
+    echo "\\nТвій варіант: ";
+    $guess = (int) trim(fgets(STDIN));
+    $attempts++;
+    $lives--;
+
+    if ($guess === $secret) {
+        echo "Вгадав за $attempts спроб!\\n";
+        exit;
+    }
+
+    echo $guess < $secret ? "Більше." : "Менше.";
+    echo " Залишилось спроб: $lives\\n";
+}
+
+echo "\\nСпроби скінчились. Я загадував $secret.\\n";`,
+ note:"Перевірте окремо обидва фінали: вгадати з першого разу й навмисно програти. Найчастіша помилка — <code>exit</code> не поставлений, і після перемоги гра продовжується."
+},
+{
+ n:4, title:"Таблиця степенів і піраміда", tag:"for, вкладені цикли", lesson:"заняття 11–12",
+ text:"Дві частини в одному файлі. Перша: таблиця від 1 до N — число, його квадрат і куб у рівних колонках із шапкою. Друга: піраміда із зірочок висотою N, вирівняна по центру. N вводить користувач.",
+ crit:[
+  ["4","Колонки рівні, піраміда симетрична, обидві частини працюють для будь-якого N від 1 до 20"],
+  ["3","Усе працює, але колонки або піраміда трохи розʼїжджаються"],
+  ["2","Одна з двох частин не вийшла або потрібні були підказки щодо вкладеного циклу"],
+  ["0","Не впорався"]
+ ],
+ sol:`<?php
+
+declare(strict_types=1);
+
+echo "Введи N: ";
+$n = (int) trim(fgets(STDIN));
+
+echo "\\n";
+echo str_pad('N', 6, ' ', STR_PAD_LEFT);
+echo str_pad('N^2', 8, ' ', STR_PAD_LEFT);
+echo str_pad('N^3', 10, ' ', STR_PAD_LEFT);
+echo "\\n" . str_repeat('-', 24) . "\\n";
+
+for ($i = 1; $i <= $n; $i++) {
+    echo str_pad((string) $i, 6, ' ', STR_PAD_LEFT);
+    echo str_pad((string) ($i ** 2), 8, ' ', STR_PAD_LEFT);
+    echo str_pad((string) ($i ** 3), 10, ' ', STR_PAD_LEFT);
+    echo "\\n";
+}
+
+echo "\\n";
+
+for ($i = 1; $i <= $n; $i++) {
+    echo str_repeat(' ', $n - $i);
+    echo str_repeat('*', $i * 2 - 1);
+    echo "\\n";
+}`,
+ note:"Перша частина перевіряє <code>for</code> і форматування, друга — вкладену логіку з формулами <code>$n - $i</code> пробілів і <code>$i * 2 - 1</code> зірочок. Якщо піраміда «поїхала» — хай тимчасово замінить пробіл на крапку, щоб побачити їх."
+},
+{
+ n:5, title:"Щоденник оцінок", tag:"масиви, цикл, умови, меню", lesson:"заняття 13 + усе разом",
+ text:"Програма з меню: 1) додати оцінку, 2) показати всі з нумерацією від одиниці, 3) порахувати суму й середній бал, 4) вийти. Оцінки зберігаються в масиві. При додаванні перевіряти, що число від 1 до 12 — інакше не додавати й сказати про це. Меню повторюється, поки не оберуть вихід.",
+ crit:[
+  ["4","Усі чотири пункти працюють, перевірка діапазону є, нумерація для людини з одиниці, середнє рахується правильно й не падає на порожньому списку"],
+  ["3","Працює, але падає або показує дивне на порожньому списку оцінок"],
+  ["2","Частина пунктів меню не працює або потрібні були підказки"],
+  ["0","Не впорався"]
+ ],
+ sol:`<?php
+
+declare(strict_types=1);
+
+$grades = [];
+
+do {
+    echo "\\n=== ЩОДЕННИК (" . count($grades) . " оцінок) ===\\n";
+    echo "1) Додати  2) Показати  3) Статистика  4) Вихід\\n> ";
+    $choice = trim(fgets(STDIN));
+
+    if ($choice === '1') {
+        echo "Оцінка (1-12): ";
+        $grade = (int) trim(fgets(STDIN));
+
+        if ($grade >= 1 && $grade <= 12) {
+            $grades[] = $grade;
+            echo "Додано\\n";
+        } else {
+            echo "Оцінка має бути від 1 до 12\\n";
+        }
+
+    } elseif ($choice === '2') {
+        if (count($grades) === 0) {
+            echo "Оцінок поки немає\\n";
+        }
+
+        foreach ($grades as $index => $grade) {
+            echo ($index + 1) . ". $grade\\n";
+        }
+
+    } elseif ($choice === '3') {
+        if (count($grades) === 0) {
+            echo "Немає з чого рахувати\\n";
+        } else {
+            $sum = 0;
+
+            foreach ($grades as $grade) {
+                $sum += $grade;
+            }
+
+            echo "Оцінок: " . count($grades) . "\\n";
+            echo "Сума: $sum\\n";
+            echo "Середній бал: " . round($sum / count($grades), 2) . "\\n";
+        }
+    }
+} while ($choice !== '4');`,
+ note:"Це підсумкове завдання: тут одразу масив, цикл, умови й введення. Обовʼязково перевірте два сценарії — статистика на порожньому списку (не має бути ділення на нуль) і спроба додати 15 або 0."
+}
+];
+
+const FINAL = [
+ "<strong>43–50 балів.</strong> Матеріал засвоєний краще за план. Можна прискоритись: давати по одному уроку за три заняття замість чотирьох або додати задачі з <a href=\"https://www.codewars.com\" target=\"_blank\" rel=\"noopener noreferrer\">Codewars</a> рівня 8 kyu між заняттями.",
+ "<strong>34–42 бали.</strong> Нормальний результат для цього етапу. Рухаємось за планом, але теми зі списку прогалин варто проговорити на початку наступного заняття — пʼять хвилин, не більше.",
+ "<strong>25–33 бали.</strong> Є відчутні дірки. Перед заняттям 14 провести одне повторювальне: взяти по одному завданню на кожну провалену тему зі старих домашок і зробити заново.",
+ "<strong>До 24 балів.</strong> Рухатись далі зарано — масиви й функції без упевнених циклів перетворяться на вгадування. Повернутись до занять 9–12 і пройти їх ще раз у швидшому темпі, з новими завданнями.",
+ "<strong>Ключові питання важливіші за суму.</strong> Якщо провалені питання, позначені зірочкою — різниця <code>==</code> і <code>===</code>, порядок умов, три частини циклу, індекси масиву — повторюйте саме їх, навіть коли загальний бал високий.",
+ "<strong>Практика важить більше за усну частину.</strong> Хлопець може плутатись у формулюваннях, але писати робочий код — це нормально й навіть типово. Зворотне гірше: гладко розповідає, а завдання не йде."
+];
+</script>
+
+<script>
+(function(){
+  const KEY = "exam-1-results-v1";
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const RE = /(\/\/[^\n]*|#[^\n]*)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(<\?php|\?>)|(\$[A-Za-z_]\w*)|\b(declare|strict_types|echo|if|elseif|else|while|do|for|foreach|function|return|true|false|null|exit|count|round)\b|\b(\d+\.?\d*)\b/g;
+  function hl(code){
+    let out = "", last = 0;
+    code.replace(RE, (m,c,s,t,v,k,n,off)=>{
+      out += esc(code.slice(last, off));
+      const cls = c ? "c" : s ? "s" : t ? "k" : v ? "v" : k ? "k" : "n";
+      out += '<span class="'+cls+'">'+esc(m)+'</span>';
+      last = off + m.length;
+      return m;
+    });
+    return out + esc(code.slice(last));
+  }
+
+  let marks = {};
+  try { const raw = localStorage.getItem(KEY); if (raw) marks = JSON.parse(raw) || {}; } catch(e){}
+  let t;
+  function status(m){ const el=document.getElementById("sync"); el.textContent=m; clearTimeout(t);
+    t=setTimeout(()=>el.textContent="",2400); }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(marks)); status("збережено"); }
+    catch(e){ status("браузер блокує збереження"); }
+  }
+
+  document.getElementById("oral").innerHTML = ORAL.map(q=>`
+    <div class="q" id="q-o${q.n}" data-mark="">
+      <div class="q-head">
+        <span class="q-num">${q.n}</span>
+        <div class="q-body">
+          <p>${q.q}${q.key ? ' <i style="color:var(--accent); font-style:normal">★</i>' : ''}</p>
+          <div class="q-tag"><i>${esc(q.tag)}</i> · ${esc(q.lesson)}</div>
+          <div class="marks">
+            <button class="mark" type="button" data-kind="o" data-n="${q.n}" data-v="2">2 · пояснив</button>
+            <button class="mark" type="button" data-kind="o" data-n="${q.n}" data-v="1">1 · частково</button>
+            <button class="mark" type="button" data-kind="o" data-n="${q.n}" data-v="0">0 · не згадав</button>
+          </div>
+          <details>
+            <summary>Що має прозвучати</summary>
+            <div class="expect"><b>Орієнтир для перевірки</b>${q.expect}</div>
+          </details>
+        </div>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("practice").innerHTML = PRACTICE.map(p=>`
+    <div class="task-card q" id="q-p${p.n}" data-mark="">
+      <h3><i>Завдання ${p.n}</i>${esc(p.title)}</h3>
+      <div class="q-tag" style="margin-top:6px"><i>${esc(p.tag)}</i> · ${esc(p.lesson)}</div>
+      <p>${esc(p.text)}</p>
+      <div class="crit">
+        ${p.crit.map(c=>`<div><b>${c[0]}</b><span>${c[1]}</span></div>`).join("")}
+      </div>
+      <div class="marks">
+        ${p.crit.map(c=>`<button class="mark" type="button" data-kind="p" data-n="${p.n}" data-v="${c[0]}">${c[0]} бал${c[0]==="1"?"":"и"}</button>`).join("")}
+      </div>
+      <details>
+        <summary>Еталонний розвʼязок</summary>
+        <div>
+          <pre>${hl(p.sol)}</pre>
+          <div class="note tip" style="margin-top:12px"><b>На що дивитись</b>${p.note}</div>
+        </div>
+      </details>
+    </div>`).join("");
+
+  document.getElementById("final-list").innerHTML = FINAL.map(x=>`<li>${x}</li>`).join("");
+
+  function render(){
+    document.querySelectorAll(".mark").forEach(b=>{
+      const cur = marks[b.dataset.kind + b.dataset.n];
+      b.classList.toggle("on", cur !== undefined && String(cur) === b.dataset.v);
+    });
+
+    let oral = 0, prac = 0, done = 0;
+    const gaps = new Set();
+
+    ORAL.forEach(q=>{
+      const v = marks["o" + q.n];
+      const card = document.getElementById("q-o" + q.n);
+      card.dataset.mark = v === undefined ? "" : String(v);
+      if (v === undefined) return;
+      done++; oral += v;
+      if (v <= 1) gaps.add(q.tag);
+    });
+
+    PRACTICE.forEach(p=>{
+      const v = marks["p" + p.n];
+      const card = document.getElementById("q-p" + p.n);
+      card.dataset.mark = v === undefined ? "" : String(v);
+      if (v === undefined) return;
+      done++; prac += v;
+      if (v <= 2) p.tag.split(",").forEach(x=>gaps.add(x.trim()));
+    });
+
+    const total = oral + prac;
+    document.getElementById("s-total").textContent = total;
+    document.getElementById("s-oral").textContent = oral + " / 30";
+    document.getElementById("s-prac").textContent = prac + " / 20";
+    document.getElementById("s-done").textContent = done + " / 20";
+    document.getElementById("s-bar").style.width = (total / 50 * 100) + "%";
+
+    const vEl = document.getElementById("s-verdict");
+    const hEl = document.getElementById("s-hint");
+
+    if (done < 20) {
+      vEl.firstChild.textContent = done === 0 ? "—" : "Проміжно: " + total;
+      hEl.textContent = "Оцінено " + done + " з 20 пунктів";
+    } else if (total >= 43) {
+      vEl.firstChild.textContent = "Відмінно";
+      hEl.textContent = "Можна прискорити темп або додати задачі між заняттями";
+    } else if (total >= 34) {
+      vEl.firstChild.textContent = "Норма";
+      hEl.textContent = "Рухаємось за планом, прогалини проговорити на початку наступного заняття";
+    } else if (total >= 25) {
+      vEl.firstChild.textContent = "Є прогалини";
+      hEl.textContent = "Перед заняттям 14 провести одне повторювальне";
+    } else {
+      vEl.firstChild.textContent = "Зарано далі";
+      hEl.textContent = "Повернутись до занять 9–12 і пройти їх ще раз";
+    }
+
+    const keyFailed = ORAL.filter(q=>q.key && marks["o"+q.n] !== undefined && marks["o"+q.n] <= 1);
+    const gapsEl = document.getElementById("s-gaps");
+
+    if (gaps.size === 0) {
+      gapsEl.innerHTML = done === 0 ? "" :
+        '<b>Прогалин не знайдено</b><span style="background:var(--ok-bg); border-color:color-mix(in srgb,var(--ok) 30%,transparent)">усе засвоєно</span>';
+    } else {
+      gapsEl.innerHTML = "<b>Повторити" + (keyFailed.length ? " · провалено ключових: " + keyFailed.length : "") + "</b>"
+        + [...gaps].map(g=>`<span>${esc(g)}</span>`).join("");
+    }
+  }
+
+  document.addEventListener("click", e=>{
+    const b = e.target.closest(".mark");
+    if (!b) return;
+    const id = b.dataset.kind + b.dataset.n;
+    const v = Number(b.dataset.v);
+    if (marks[id] === v) { delete marks[id]; } else { marks[id] = v; }
+    render(); save();
+  });
+
+  document.getElementById("reset").onclick = () => {
+    if (!Object.keys(marks).length) return status("результат порожній");
+    if (confirm("Очистити всі оцінки контрольної?")) { marks = {}; render(); save(); }
+  };
+
+  render();
+})();
+</script>
+<script>
+
+(function(){
+  var was = [];
+  window.addEventListener("beforeprint", function(){
+    was = [];
+    document.querySelectorAll("details").forEach(function(d,i){ was[i]=d.open; d.open=true; });
+  });
+  window.addEventListener("afterprint", function(){
+    document.querySelectorAll("details").forEach(function(d,i){ d.open = was[i]; });
+  });
+
+  var KEY = "exam-1-results-v1", NAME = "kontrolna-1.json";
+  var tools = document.querySelector(".tools");
+  if(!tools) return;
+  function mk(txt, fn){ var b=document.createElement("button"); b.className="btn"; b.type="button";
+    b.textContent=txt; b.addEventListener("click", fn); return b; }
+  var inp=document.createElement("input"); inp.type="file"; inp.accept="application/json,.json";
+  inp.style.display="none";
+  tools.insertBefore(mk("Зберегти у файл", function(){
+    var raw; try{ raw = localStorage.getItem(KEY) || "{}"; }catch(e){ raw = "{}"; }
+    var payload = {key:KEY, saved:new Date().toISOString(), done:JSON.parse(raw)};
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href=url; a.download=NAME;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }), tools.firstChild);
+  tools.appendChild(inp);
+})();
+</script>
+</body>
+</html>
